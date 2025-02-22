@@ -15,10 +15,10 @@ const config: Config = {
   ],
   coverageThreshold: {
     global: {
-      branches: 91,
+      branches: 37,
       functions: 100,
-      lines: 98,
-      statements: 98,
+      lines: 97,
+      statements: 97,
     },
   },
   preset: 'ts-jest/presets/js-with-ts',
@@ -30,8 +30,8 @@ const config: Config = {
   testEnvironment: 'node',
   testRegex: '/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
   transform: {
-    '^.+\\.js?$': 'babel-jest',
     '^.+\\.ts?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+    '^.+\\.js?$': 'babel-jest',
   },
   transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   verbose: true

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-params */
+ 
 import { beforeAll, describe, expect, jest, test } from '@jest/globals';
 
 jest.mock('@fjell/logging', () => {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-params */
+ 
 import { ComKey, Item, ItemProperties, ItemQuery, PriKey, TypesProperties } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI, PathNamesArray } from "./AItemAPI";
