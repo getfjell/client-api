@@ -1408,9 +1408,9 @@ __metadata:
     "@babel/core": "npm:^7.26.9"
     "@babel/preset-env": "npm:^7.26.9"
     "@babel/preset-typescript": "npm:^7.26.0"
-    "@fjell/core": "npm:^4.3.3"
-    "@fjell/http-api": "npm:^4.3.4"
-    "@fjell/logging": "npm:^4.3.8"
+    "@fjell/core": "npm:^4.3"
+    "@fjell/http-api": "npm:^4.3"
+    "@fjell/logging": "npm:^4.3"
     "@jest/globals": "npm:^29.7.0"
     "@tsconfig/recommended": "npm:^1.0.8"
     "@types/jest": "npm:^29.5.14"
@@ -1428,7 +1428,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fjell/core@npm:^4.3.3":
+"@fjell/core@npm:^4.3":
   version: 4.3.3
   resolution: "@fjell/core@npm:4.3.3"
   dependencies:
@@ -1439,16 +1439,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fjell/http-api@npm:^4.3.4":
-  version: 4.3.4
-  resolution: "@fjell/http-api@npm:4.3.4"
+"@fjell/http-api@npm:^4.3":
+  version: 4.3.6
+  resolution: "@fjell/http-api@npm:4.3.6"
   dependencies:
-    "@fjell/logging": "npm:^4.3.8"
-  checksum: 10c0/fe4395b0220f506d0457fd06f0d895dd8a5aec71e68dd9c4946644f07b6bb508de8d5f0842677e9c209d6561019560c3a7e145f99fb27645c2f4623b7eaf8609
+    "@fjell/logging": "npm:^4.3"
+  checksum: 10c0/f330cdf6a502a61a02036c72c414dca94004627a2fa9d129ad4ff7dcb92a7a133cb2b9faf3b1f58717278005f011370c7fa7e22f40afe5974ed44030d30a6c92
   languageName: node
   linkType: hard
 
-"@fjell/logging@npm:^4.3.8":
+"@fjell/logging@npm:^4.3, @fjell/logging@npm:^4.3.8":
   version: 4.3.8
   resolution: "@fjell/logging@npm:4.3.8"
   dependencies:
