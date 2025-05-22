@@ -23,7 +23,8 @@
   "dependencies": {
     "@fjell/core": "^4.4.2",
     "@fjell/http-api": "^4.4.0",
-    "@fjell/logging": "^4.4.2"
+    "@fjell/logging": "^4.4.2",
+    "deepmerge": "^4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
