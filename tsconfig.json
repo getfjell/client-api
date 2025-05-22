@@ -12,10 +12,7 @@
     "declaration": true,
     "target": "es2022",
     "module": "es2022",
-    "moduleResolution": "bundler",
-    "types": [
-      "vitest"
-    ]
+    "moduleResolution": "bundler"
   },
   "include": [
     "./src/**/*.ts",

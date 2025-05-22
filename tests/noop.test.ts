@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { describe, expect, vi, test } from 'vitest';
 
 vi.mock('@fjell/logging', () => ({
   getLogger: vi.fn(() => ({
