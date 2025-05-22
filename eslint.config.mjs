@@ -28,13 +28,8 @@ export default [{
     "@typescript-eslint/no-unused-expressions": "off",
     "no-console": 0,
     "no-unused-vars": "off",
-
-    "max-len": ["error", {
-      code: 120,
-    }],
-
     "max-depth": ["error", 4],
-    "max-params": ["error", 4],
+    "max-params": ["error", 7],
     "max-lines": ["error", 500],
 
     "no-multiple-empty-lines": ["error", {

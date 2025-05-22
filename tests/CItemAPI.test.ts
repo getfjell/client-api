@@ -3,28 +3,46 @@ import { createCItemApi } from '@/CItemAPI';
 import { ClientApi } from '@/ClientApi';
 import { ComKey, Item, LocKey, TypesProperties, UUID } from '@fjell/core';
 import { HttpApi } from '@fjell/http-api';
+import { type Mock, vi } from 'vitest';
 
-jest.mock('@fjell/logging', () => {
-  return {
-    get: jest.fn().mockReturnThis(),
-    getLogger: jest.fn().mockReturnThis(),
-    default: jest.fn(),
-    error: jest.fn(),
-    warning: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-    emergency: jest.fn(),
-    alert: jest.fn(),
-    critical: jest.fn(),
-    notice: jest.fn(),
-    time: jest.fn().mockReturnThis(),
-    end: jest.fn(),
-    log: jest.fn(),
+vi.mock('@fjell/logging', () => ({
+  getLogger: vi.fn(() => ({
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
+  })),
+  default: {
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
   }
-});
-jest.mock('@/AItemAPI', () => ({
-  createAItemAPI: jest.fn(),
+}));
+vi.mock('@/AItemAPI', () => ({
+  createAItemAPI: vi.fn(),
 }));
 
 type TestItem = Item<'test', 'container'>;
@@ -38,18 +56,18 @@ describe('CItemAPI', () => {
 
   beforeEach(() => {
     api = {
-      httpGet: jest.fn(),
-      httpPost: jest.fn(),
-      httpPut: jest.fn(),
-      httpDelete: jest.fn(),
+      httpGet: vi.fn(),
+      httpPost: vi.fn(),
+      httpPut: vi.fn(),
+      httpDelete: vi.fn(),
     } as unknown as HttpApi;
   });
 
   it('should call super.action and return a composite item', async () => {
     const mockItem = {} as TestItem;
 
-    const actionMethod = jest.fn().mockResolvedValue(mockItem);
-    (createAItemAPI as jest.Mock).mockReturnValue({ action: actionMethod });
+    const actionMethod = vi.fn().mockResolvedValue(mockItem);
+    (createAItemAPI as Mock).mockReturnValue({ action: actionMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -62,8 +80,8 @@ describe('CItemAPI', () => {
   it('should call super.all and return an array of composite items', async () => {
     const mockItems = [{} as TestItem];
 
-    const allMethod = jest.fn().mockResolvedValue(mockItems);
-    (createAItemAPI as jest.Mock).mockReturnValue({ all: allMethod });
+    const allMethod = vi.fn().mockResolvedValue(mockItems);
+    (createAItemAPI as Mock).mockReturnValue({ all: allMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -76,8 +94,8 @@ describe('CItemAPI', () => {
   it('should call super.allAction and return a composite item', async () => {
     const mockItem = {} as TestItem;
 
-    const allActionMethod = jest.fn().mockResolvedValue([mockItem]);
-    (createAItemAPI as jest.Mock).mockReturnValue({ allAction: allActionMethod });
+    const allActionMethod = vi.fn().mockResolvedValue([mockItem]);
+    (createAItemAPI as Mock).mockReturnValue({ allAction: allActionMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -90,8 +108,8 @@ describe('CItemAPI', () => {
   it('should call super.one and return a composite item or null', async () => {
     const mockItem = {} as TestItem;
 
-    const oneMethod = jest.fn().mockResolvedValue(mockItem);
-    (createAItemAPI as jest.Mock).mockReturnValue({ one: oneMethod });
+    const oneMethod = vi.fn().mockResolvedValue(mockItem);
+    (createAItemAPI as Mock).mockReturnValue({ one: oneMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -104,8 +122,8 @@ describe('CItemAPI', () => {
   it('should call super.get and return a composite item or null', async () => {
     const mockItem = {} as TestItem;
 
-    const getMethod = jest.fn().mockResolvedValue(mockItem);
-    (createAItemAPI as jest.Mock).mockReturnValue({ get: getMethod });
+    const getMethod = vi.fn().mockResolvedValue(mockItem);
+    (createAItemAPI as Mock).mockReturnValue({ get: getMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -117,8 +135,8 @@ describe('CItemAPI', () => {
 
   it('should call super.create and return a composite item and its key', async () => {
     const mockItem = {} as TestItem;
-    const createMethod = jest.fn().mockResolvedValue(mockItem);
-    (createAItemAPI as jest.Mock).mockReturnValue({ create: createMethod });
+    const createMethod = vi.fn().mockResolvedValue(mockItem);
+    (createAItemAPI as Mock).mockReturnValue({ create: createMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -129,8 +147,8 @@ describe('CItemAPI', () => {
   });
 
   it('should call super.remove and return a boolean', async () => {
-    const removeMethod = jest.fn().mockResolvedValue(true);
-    (createAItemAPI as jest.Mock).mockReturnValue({ remove: removeMethod });
+    const removeMethod = vi.fn().mockResolvedValue(true);
+    (createAItemAPI as Mock).mockReturnValue({ remove: removeMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -142,8 +160,8 @@ describe('CItemAPI', () => {
 
   it('should call super.update and return a composite item', async () => {
     const mockItem = {} as TestItem;
-    const updateMethod = jest.fn().mockResolvedValue(mockItem);
-    (createAItemAPI as jest.Mock).mockReturnValue({ update: updateMethod });
+    const updateMethod = vi.fn().mockResolvedValue(mockItem);
+    (createAItemAPI as Mock).mockReturnValue({ update: updateMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
@@ -155,8 +173,8 @@ describe('CItemAPI', () => {
 
   it('should call super.find and return an array of composite items', async () => {
     const mockItems = [{} as TestItem];
-    const findMethod = jest.fn().mockResolvedValue(mockItems);
-    (createAItemAPI as jest.Mock).mockReturnValue({ find: findMethod });
+    const findMethod = vi.fn().mockResolvedValue(mockItems);
+    (createAItemAPI as Mock).mockReturnValue({ find: findMethod });
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 

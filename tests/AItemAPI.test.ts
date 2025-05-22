@@ -2,28 +2,46 @@ import { createAItemAPI } from "@/AItemAPI";
 import { ClientApi } from "@/ClientApi";
 import { Item, PriKey, UUID } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
+import { vi } from 'vitest';
 
-jest.mock('@fjell/logging', () => {
-  return {
-    get: jest.fn().mockReturnThis(),
-    getLogger: jest.fn().mockReturnThis(),
-    default: jest.fn(),
-    error: jest.fn(),
-    warning: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-    emergency: jest.fn(),
-    alert: jest.fn(),
-    critical: jest.fn(),
-    notice: jest.fn(),
-    time: jest.fn().mockReturnThis(),
-    end: jest.fn(),
-    log: jest.fn(),
+vi.mock('@fjell/logging', () => ({
+  getLogger: vi.fn(() => ({
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
+  })),
+  default: {
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
   }
-});
+}));
 
-jest.mock("@fjell/http-api");
+vi.mock("@fjell/http-api");
 
 describe("AItemAPI", () => {
   let api: HttpApi;
@@ -35,10 +53,10 @@ describe("AItemAPI", () => {
   beforeEach(() => {
 
     api = {
-      httpGet: jest.fn(),
-      httpPost: jest.fn(),
-      httpPut: jest.fn(),
-      httpDelete: jest.fn(),
+      httpGet: vi.fn(),
+      httpPost: vi.fn(),
+      httpPut: vi.fn(),
+      httpDelete: vi.fn(),
     } as unknown as HttpApi;
     containersAPI = createAItemAPI<Item<"container">, "container">(api, "container", ["containers"]);
   });
@@ -53,7 +71,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         },
       };
-      api.httpPost = jest.fn().mockResolvedValue(item);
+      api.httpPost = vi.fn().mockResolvedValue(item);
       const result = await containersAPI.action(key, "action", {}, {});
       expect(result).toEqual(item);
     });
@@ -76,7 +94,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = jest.fn().mockResolvedValue(items);
+      api.httpGet = vi.fn().mockResolvedValue(items);
       const result = await containersAPI.all({}, {}, []);
       expect(result).toEqual(items);
     });
@@ -93,7 +111,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       };
-      api.httpPost = jest.fn().mockResolvedValue([item]);
+      api.httpPost = vi.fn().mockResolvedValue([item]);
       const result = await containersAPI.allAction("action", {}, {}, []);
       expect(result).toEqual([item]);
     });
@@ -109,7 +127,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       };
-      api.httpGet = jest.fn().mockResolvedValue(item);
+      api.httpGet = vi.fn().mockResolvedValue(item);
       const result = await containersAPI.get(key, {});
       expect(result).toEqual(item);
     });
@@ -126,7 +144,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = jest.fn().mockResolvedValue(items);
+      api.httpGet = vi.fn().mockResolvedValue(items);
       const result = await containersAPI.one({}, {}, []);
       expect(result).toEqual(items[0]);
     });
@@ -143,7 +161,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       };
-      api.httpPost = jest.fn().mockResolvedValue(item);
+      api.httpPost = vi.fn().mockResolvedValue(item);
       const result = await containersAPI.create(item, {}, []);
       expect(result).toEqual(item);
     });
@@ -151,7 +169,7 @@ describe("AItemAPI", () => {
 
   describe("remove", () => {
     it("should remove item correctly", async () => {
-      api.httpDelete = jest.fn().mockResolvedValue(true);
+      api.httpDelete = vi.fn().mockResolvedValue(true);
       const result = await containersAPI.remove(key, {});
       expect(result).toBe(true);
     });
@@ -168,7 +186,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       };
-      api.httpPut = jest.fn().mockResolvedValue(item);
+      api.httpPut = vi.fn().mockResolvedValue(item);
       const result = await containersAPI.update(key, {
         key: "key", data: {}, events: {
           created: { at: new Date() },
@@ -199,7 +217,7 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = jest.fn().mockResolvedValue(items);
+      api.httpGet = vi.fn().mockResolvedValue(items);
       const result = await containersAPI.find("testFinder", {
         param1: "value1",
         param2: 123,

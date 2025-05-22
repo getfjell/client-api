@@ -1,4 +1,7 @@
-export { createCItemApi, CItemApi  } from "./CItemAPI";
-export { createPItemApi, PItemApi } from "./PItemAPI";
-export { ClientApi } from "./ClientApi";
-export { ClientApiOptions } from "./ClientApiOptions";
+export type { CItemApi } from "./CItemAPI";
+export type { PItemApi } from "./PItemAPI";
+export type { ClientApi } from "./ClientApi";
+export type { ClientApiOptions } from "./ClientApiOptions";
+
+export { createCItemApi } from "./CItemAPI";
+export { createPItemApi } from "./PItemAPI";

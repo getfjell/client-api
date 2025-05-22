@@ -1,49 +1,55 @@
 {
   "name": "@fjell/client-api",
   "description": "Client API for Fjell",
-  "version": "4.3.3",
+  "version": "4.4.0",
   "license": "Apache-2.0",
-  "main": "./dist/src/index.js",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "require": "./dist/src/index.js",
-      "default": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "type": "module",
   "scripts": {
-    "lint": "eslint .",
-    "dev": "concurrently \"tsc --watch\" \"tsc-alias -w\"",
-    "build": "yarn run lint && tsc --build --verbose --force && tsc-alias -p tsconfig.json",
+    "build": "tsc --noEmit && vite build",
+    "lint": "eslint . --ext .ts --fix",
     "clean": "rimraf dist",
-    "test": "yarn run lint && NODE_OPTIONS='--experimental-require-module' yarn run jest --coverage"
+    "test": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
-    "@fjell/core": "^4.3",
-    "@fjell/http-api": "^4.3",
-    "@fjell/logging": "^4.3"
+    "@fjell/core": "^4.4.2",
+    "@fjell/http-api": "^4.4.0",
+    "@fjell/logging": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-typescript": "^7.26.0",
-    "@jest/globals": "^29.7.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
+    "@swc/core": "^1.11.24",
     "@tsconfig/recommended": "^1.0.8",
-    "@types/jest": "^29.5.14",
     "@types/luxon": "^3.4.2",
-    "@typescript-eslint/eslint-plugin": "^8.24.1",
-    "@typescript-eslint/parser": "^8.24.1",
-    "babel-jest": "^29.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "@vitest/coverage-istanbul": "^3.1.4",
+    "@vitest/coverage-v8": "^3.1.4",
+    "@vitest/ui": "^3.1.4",
     "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
-    "jest": "^29.7.0",
     "rimraf": "^6.0.1",
-    "ts-jest": "^29.2.5",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-node": "^5.0.1",
+    "vitest": "^3.1.4"
   },
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "pnpm@10.11.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/getfjell/client-api.git"

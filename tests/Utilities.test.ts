@@ -1,30 +1,48 @@
+import { vi } from 'vitest';
 import { Item, LocKey, LocKeyArray, PriKey, UUID } from "@fjell/core";
 import { createUtilities } from "@/Utilities";
 
-jest.mock('@fjell/logging', () => {
-  return {
-    get: jest.fn().mockReturnThis(),
-    getLogger: jest.fn().mockReturnThis(),
-    default: jest.fn(),
-    error: jest.fn(),
-    warning: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-    emergency: jest.fn(),
-    alert: jest.fn(),
-    critical: jest.fn(),
-    notice: jest.fn(),
-    time: jest.fn().mockReturnThis(),
-    end: jest.fn(),
-    log: jest.fn(),
+vi.mock('@fjell/logging', () => ({
+  getLogger: vi.fn(() => ({
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
+  })),
+  default: {
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
   }
-});
+}));
 
 describe("Utilities", () => {
   const pkType = "test";
   const pathNames = ["tests", "containers"];
-  
+
   const utilities = createUtilities<Item<"test", "container">, "test", "container">(pkType, pathNames);
 
   const testKey: PriKey<"test"> = { kt: "test", pk: "1-1-1-1-1" as UUID };
@@ -110,7 +128,7 @@ describe("Utilities", () => {
       const pathNames = ["tests"];
       const utilities = createUtilities<Item<"test">, "test">(pkType, pathNames);
       const testKey: PriKey<"test"> = { kt: "test", pk: "1-1-1-1-1" as UUID };
-      
+
       const path = utilities.getPath(testKey);
       expect(path).toBe("/tests/1-1-1-1-1");
     });
@@ -118,9 +136,9 @@ describe("Utilities", () => {
     it("should generate path for LocKey array", () => {
       const pkType = "test";
       const pathNames = ["tests", "containers"];
-        
+
       const utilities = createUtilities<Item<"test", "container">, "test", "container">(pkType, pathNames);
-      
+
       const containerKey: LocKey<"container"> = { kt: "container", lk: "container-1" };
       const path = utilities.getPath([containerKey]);
       expect(path).toBe("/containers/container-1/tests");

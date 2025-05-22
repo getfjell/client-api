@@ -3,28 +3,46 @@ import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "@/AItemAPI";
 import { Item, PriKey, UUID } from "@fjell/core";
 import { ClientApi } from "@/ClientApi";
+import { type Mock, vi } from 'vitest';
 
-jest.mock('@fjell/logging', () => {
-  return {
-    get: jest.fn().mockReturnThis(),
-    getLogger: jest.fn().mockReturnThis(),
-    default: jest.fn(),
-    error: jest.fn(),
-    warning: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-    emergency: jest.fn(),
-    alert: jest.fn(),
-    critical: jest.fn(),
-    notice: jest.fn(),
-    time: jest.fn().mockReturnThis(),
-    end: jest.fn(),
-    log: jest.fn(),
+vi.mock('@fjell/logging', () => ({
+  getLogger: vi.fn(() => ({
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
+  })),
+  default: {
+    get: vi.fn().mockReturnThis(),
+    getLogger: vi.fn().mockReturnThis(),
+    default: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    trace: vi.fn(),
+    emergency: vi.fn(),
+    alert: vi.fn(),
+    critical: vi.fn(),
+    notice: vi.fn(),
+    time: vi.fn().mockReturnThis(),
+    end: vi.fn(),
+    log: vi.fn(),
   }
-});
-jest.mock("@/AItemAPI", () => ({
-  createAItemAPI: jest.fn(),
+}));
+vi.mock("@/AItemAPI", () => ({
+  createAItemAPI: vi.fn(),
 }));
 
 describe("PItemAPI", () => {
@@ -34,17 +52,17 @@ describe("PItemAPI", () => {
 
   beforeEach(() => {
     api = {
-      httpGet: jest.fn(),
-      httpPost: jest.fn(),
-      httpPut: jest.fn(),
-      httpDelete: jest.fn(),
+      httpGet: vi.fn(),
+      httpPost: vi.fn(),
+      httpPut: vi.fn(),
+      httpDelete: vi.fn(),
     } as unknown as HttpApi;
   });
 
   it("should call action method", async () => {
 
-    const actionMethod = jest.fn().mockResolvedValue({} as Item<"test">);
-    (createAItemAPI as jest.Mock).mockReturnValue({ action: actionMethod });
+    const actionMethod = vi.fn().mockResolvedValue({} as Item<"test">);
+    (createAItemAPI as Mock).mockReturnValue({ action: actionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -57,8 +75,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call all method", async () => {
-    const allMethod = jest.fn().mockResolvedValue([{} as Item<"test">]);
-    (createAItemAPI as jest.Mock).mockReturnValue({ all: allMethod });
+    const allMethod = vi.fn().mockResolvedValue([{} as Item<"test">]);
+    (createAItemAPI as Mock).mockReturnValue({ all: allMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -69,8 +87,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call allAction method", async () => {
-    const allActionMethod = jest.fn().mockResolvedValue([{} as Item<"test">]);
-    (createAItemAPI as jest.Mock).mockReturnValue({ allAction: allActionMethod });
+    const allActionMethod = vi.fn().mockResolvedValue([{} as Item<"test">]);
+    (createAItemAPI as Mock).mockReturnValue({ allAction: allActionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -81,8 +99,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call one method", async () => {
-    const oneMethod = jest.fn().mockResolvedValue({} as Item<"test">);
-    (createAItemAPI as jest.Mock).mockReturnValue({ one: oneMethod });
+    const oneMethod = vi.fn().mockResolvedValue({} as Item<"test">);
+    (createAItemAPI as Mock).mockReturnValue({ one: oneMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -93,8 +111,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call get method", async () => {
-    const getMethod = jest.fn().mockResolvedValue({} as Item<"test">);
-    (createAItemAPI as jest.Mock).mockReturnValue({ get: getMethod });
+    const getMethod = vi.fn().mockResolvedValue({} as Item<"test">);
+    (createAItemAPI as Mock).mockReturnValue({ get: getMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -105,8 +123,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call create method", async () => {
-    const createMethod = jest.fn().mockResolvedValue([{ kt: "test", pk: "1-1-1-1-1" }, {} as Item<"test">]);
-    (createAItemAPI as jest.Mock).mockReturnValue({ create: createMethod });
+    const createMethod = vi.fn().mockResolvedValue([{ kt: "test", pk: "1-1-1-1-1" }, {} as Item<"test">]);
+    (createAItemAPI as Mock).mockReturnValue({ create: createMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -117,8 +135,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call remove method", async () => {
-    const removeMethod = jest.fn().mockResolvedValue(true);
-    (createAItemAPI as jest.Mock).mockReturnValue({ remove: removeMethod });
+    const removeMethod = vi.fn().mockResolvedValue(true);
+    (createAItemAPI as Mock).mockReturnValue({ remove: removeMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -129,8 +147,8 @@ describe("PItemAPI", () => {
   });
 
   it("should call update method", async () => {
-    const updateMethod = jest.fn().mockResolvedValue({} as Item<"test">);
-    (createAItemAPI as jest.Mock).mockReturnValue({ update: updateMethod });
+    const updateMethod = vi.fn().mockResolvedValue({} as Item<"test">);
+    (createAItemAPI as Mock).mockReturnValue({ update: updateMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -141,8 +159,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in action method", async () => {
-    const actionMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ action: actionMethod });
+    const actionMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ action: actionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -152,19 +170,19 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in all method", async () => {
-    const allMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ all: allMethod });
+    const allMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ all: allMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
-    
+
     await expect(pItemAPI.all({}, {}, [])).rejects.toThrow("Test Error");
 
     expect(allMethod).toHaveBeenCalledWith({}, {}, []);
   });
 
   it("should handle errors in allAction method", async () => {
-    const allActionMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ allAction: allActionMethod });
+    const allActionMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ allAction: allActionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -174,8 +192,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in one method", async () => {
-    const oneMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ one: oneMethod });
+    const oneMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ one: oneMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -185,8 +203,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in get method", async () => {
-    const getMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ get: getMethod });
+    const getMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ get: getMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -196,8 +214,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in create method", async () => {
-    const createMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ create: createMethod });
+    const createMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ create: createMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -207,8 +225,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in remove method", async () => {
-    const removeMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ remove: removeMethod });
+    const removeMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ remove: removeMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -218,8 +236,8 @@ describe("PItemAPI", () => {
   });
 
   it("should handle errors in update method", async () => {
-    const updateMethod = jest.fn().mockRejectedValue(new Error("Test Error"));
-    (createAItemAPI as jest.Mock).mockReturnValue({ update: updateMethod });
+    const updateMethod = vi.fn().mockRejectedValue(new Error("Test Error"));
+    (createAItemAPI as Mock).mockReturnValue({ update: updateMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
@@ -230,8 +248,8 @@ describe("PItemAPI", () => {
 
   it('should call super.find and return an array of composite items', async () => {
     const mockItems = [{} as Item<"test">];
-    const findMethod = jest.fn().mockResolvedValue(mockItems);
-    (createAItemAPI as jest.Mock).mockReturnValue({ find: findMethod });
+    const findMethod = vi.fn().mockResolvedValue(mockItems);
+    (createAItemAPI as Mock).mockReturnValue({ find: findMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
