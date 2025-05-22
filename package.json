@@ -3,12 +3,13 @@
   "description": "Client API for Fjell",
   "version": "4.4.0",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "default": "./dist/index.js"
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
     }
   },
   "type": "module",
