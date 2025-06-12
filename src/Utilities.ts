@@ -15,31 +15,31 @@ import deepmerge from "deepmerge";
 const logger = LibLogger.get('client-api', 'Utility');
 
 export interface Utilities<
-    V extends Item<S, L1, L2, L3, L4, L5>,
-    S extends string,
-    L1 extends string = never,
-    L2 extends string = never,
-    L3 extends string = never,
-    L4 extends string = never,
-    L5 extends string = never
+  V extends Item<S, L1, L2, L3, L4, L5>,
+  S extends string,
+  L1 extends string = never,
+  L2 extends string = never,
+  L3 extends string = never,
+  L4 extends string = never,
+  L5 extends string = never
 > {
-    verifyLocations: (locations: LocKeyArray<L1, L2, L3, L4, L5> | [] | never) => boolean;
-    processOne: (apiCall: Promise<V>) => Promise<V>;
-    processArray: (api: Promise<V[]>) => Promise<V[]>;
-    convertDoc: (doc: V) => V;
-    getPath: (key: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S> | LocKeyArray<L1, L2, L3, L4, L5> | []) => string;
-    validatePK: (item: Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[]) =>
-      Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[];
+  verifyLocations: (locations: LocKeyArray<L1, L2, L3, L4, L5> | [] | never) => boolean;
+  processOne: (apiCall: Promise<V>) => Promise<V>;
+  processArray: (api: Promise<V[]>) => Promise<V[]>;
+  convertDoc: (doc: V) => V;
+  getPath: (key: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S> | LocKeyArray<L1, L2, L3, L4, L5> | []) => string;
+  validatePK: (item: Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[]) =>
+    Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[];
 }
 
 export const createUtilities = <
-    V extends Item<S, L1, L2, L3, L4, L5>,
-    S extends string,
-    L1 extends string = never,
-    L2 extends string = never,
-    L3 extends string = never,
-    L4 extends string = never,
-    L5 extends string = never
+  V extends Item<S, L1, L2, L3, L4, L5>,
+  S extends string,
+  L1 extends string = never,
+  L2 extends string = never,
+  L3 extends string = never,
+  L4 extends string = never,
+  L5 extends string = never
 >(pkType: S, pathNames: string[]): Utilities<V, S, L1, L2, L3, L4, L5> => {
 
   logger.default('createUtilities', { pkType, pathNames });
@@ -47,10 +47,10 @@ export const createUtilities = <
   const verifyLocations = (
     locations: LocKeyArray<L1, L2, L3, L4, L5> | [] | never,
   ): boolean => {
-  
+
     if (locations && locations.length < pathNames.length - 1) {
       throw new Error('Not enough locations for pathNames: locations:'
-          + locations.length + ' pathNames:' + pathNames.length);
+        + locations.length + ' pathNames:' + pathNames.length);
     }
     return true;
   }
@@ -96,33 +96,33 @@ export const createUtilities = <
   };
 
   const getPath =
-  (
-    key: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S> | LocKeyArray<L1, L2, L3, L4, L5> | [],
-  ):
-    string => {
+    (
+      key: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S> | LocKeyArray<L1, L2, L3, L4, L5> | [],
+    ):
+      string => {
 
-    const localPathNames = [...pathNames];
-    logger.default('getPath', { key, pathNames: localPathNames });
+      const localPathNames = [...pathNames];
+      logger.default('getPath', { key, pathNames: localPathNames });
 
-    // console.log('getPath key: ' + JSON.stringify(key));
+      // console.log('getPath key: ' + JSON.stringify(key));
 
-    const keys = generateKeyArray(key);
+      const keys = generateKeyArray(key);
 
-    // console.log('getPath keys: ' + JSON.stringify(keys));
-    // console.log('getPath pathNames: ' + JSON.stringify(pathNames));
+      // console.log('getPath keys: ' + JSON.stringify(keys));
+      // console.log('getPath pathNames: ' + JSON.stringify(pathNames));
 
-    let path: string = addPath('', keys, localPathNames);
+      let path: string = addPath('', keys, localPathNames);
 
-    // If there is only one collection left in the collections array, this means that
-    // we received LocKeys and we need to add the last collection to the reference
-    if (localPathNames.length === 1) {
-      path = `${path}/${localPathNames[0]}`;
-    }
+      // If there is only one collection left in the collections array, this means that
+      // we received LocKeys and we need to add the last collection to the reference
+      if (localPathNames.length === 1) {
+        path = `${path}/${localPathNames[0]}`;
+      }
 
-    logger.default('getPath created', { key, path });
+      logger.default('getPath created', { key, path });
 
-    return path;
-  };
+      return path;
+    };
 
   const addPath = (
     base: string,
@@ -134,19 +134,19 @@ export const createUtilities = <
       logger.error('addPath should never have keys with a length less than the length of pathNames - 1',
         { keys, localPathNames });
       throw new Error('addPath should never have keys with a length less than the length of pathNames - 1: '
-      + keys.length + ' ' + localPathNames.length + ' ' + JSON.stringify(keys, localPathNames));
+        + keys.length + ' ' + localPathNames.length + ' ' + JSON.stringify(keys, localPathNames));
     } else if (keys.length > localPathNames.length) {
       logger.error('addPath should never have keys with a length greater than the length of pathNames',
         { keys, pathNames });
       throw new Error('addPath should never have keys with a length greater than the length of pathNames: '
-      + keys.length + ' ' + localPathNames.length + ' ' + JSON.stringify(keys, localPathNames));
+        + keys.length + ' ' + localPathNames.length + ' ' + JSON.stringify(keys, localPathNames));
     }
     if (keys.length === 0) {
-    // If you've recursively consumed all of the keys, return the base.
+      // If you've recursively consumed all of the keys, return the base.
       logger.default('addPath returning base', { base });
       return base;
     } else {
-    // Retrieve the next key and collection, and create the next base
+      // Retrieve the next key and collection, and create the next base
       let nextBase: string;
       const key = keys.pop();
       const pathName = localPathNames.pop();
@@ -168,7 +168,7 @@ export const createUtilities = <
 
   const validatePK = (
     item: Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[]):
-        Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[] => {
+    Item<S, L1, L2, L3, L4, L5> | Item<S, L1, L2, L3, L4, L5>[] => {
     return coreValidatePK<S, L1, L2, L3, L4, L5>(item, pkType);
   }
 
