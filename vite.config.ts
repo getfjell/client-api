@@ -37,8 +37,9 @@ export default defineConfig({
     outDir: 'dist',
     lib: {
       entry: './src/index.ts',
-      formats: ['es', 'cjs'],
-      fileName: (format) => format === 'cjs' ? '[name].cjs' : '[name].js',
+      formats: ['es'],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      fileName: (format) => '[name].js',
     },
     rollupOptions: {
       input: 'src/index.ts',
@@ -46,13 +47,6 @@ export default defineConfig({
         {
           format: 'esm',
           entryFileNames: '[name].js',
-          preserveModules: true,
-          exports: 'named',
-          sourcemap: 'inline',
-        },
-        {
-          format: 'cjs',
-          entryFileNames: '[name].cjs',
           preserveModules: true,
           exports: 'named',
           sourcemap: 'inline',

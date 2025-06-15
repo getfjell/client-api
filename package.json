@@ -3,18 +3,17 @@
   "description": "Client API for Fjell",
   "version": "4.4.0",
   "license": "Apache-2.0",
-  "main": "./dist/index.cjs",
+  "type": "module",
   "module": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
       "import": "./dist/index.js"
     }
   },
-  "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && vite build",
+    "dev": "concurrently \"tsc --noEmit --watch\" \"vite build --watch\"",
+    "build": "pnpm run lint && tsc --noEmit && vite build",
     "lint": "eslint . --ext .ts --fix",
     "clean": "rimraf dist",
     "test": "vitest run --coverage",
