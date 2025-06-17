@@ -1,4 +1,4 @@
- 
+
 import {
   ComKey,
   Item,
@@ -35,42 +35,42 @@ export interface CItemApi<
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     action: string,
     body: any,
-    options: Partial<PostMethodOptions>
+    options?: Partial<PostMethodOptions>
   ) => Promise<V>;
   all: (
     query: ItemQuery,
-    options: Partial<GetMethodOptions>,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | []
+    options?: Partial<GetMethodOptions>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
   allAction: (
     action: string,
     body: any,
-    options: Partial<PostMethodOptions>,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | []
+    options?: Partial<PostMethodOptions>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
   get: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    options: Partial<GetMethodOptions>,
+    options?: Partial<GetMethodOptions>,
   ) => Promise<V | null>;
   create: (
     item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
-    options: Partial<PostMethodOptions>,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | []
+    options?: Partial<PostMethodOptions>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V>;
   remove: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    options: Partial<DeleteMethodOptions>
+    options?: Partial<DeleteMethodOptions>
   ) => Promise<boolean>;
   update: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
-    options: Partial<PutMethodOptions>
+    options?: Partial<PutMethodOptions>
   ) => Promise<V>;
   find: (
     finder: string,
     finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options: Partial<GetMethodOptions>,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | []
+    options?: Partial<GetMethodOptions>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
 };
 
@@ -82,12 +82,7 @@ export const createCItemApi = <
   L3 extends string = never,
   L4 extends string = never,
   L5 extends string = never
->(
-    api: HttpApi,
-    type: S,
-    pathNames: PathNamesArray<L1, L2, L3, L4, L5>,
-    options: ClientApiOptions
-  ): CItemApi<V, S, L1, L2, L3, L4, L5> => {
+>(api: HttpApi, type: S, pathNames: PathNamesArray<L1, L2, L3, L4, L5>, options?: ClientApiOptions): CItemApi<V, S, L1, L2, L3, L4, L5> => {
 
   logger.default('createCItemApi', { api, type, pathNames, options });
 

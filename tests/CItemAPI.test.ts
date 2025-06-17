@@ -3,7 +3,7 @@ import { createCItemApi } from '@/CItemAPI';
 import { ClientApi } from '@/ClientApi';
 import { ComKey, Item, LocKey, TypesProperties, UUID } from '@fjell/core';
 import { HttpApi } from '@fjell/http-api';
-import { type Mock, vi, expect, describe, beforeEach, it } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 vi.mock('@fjell/logging', () => ({
   getLogger: vi.fn(() => ({
