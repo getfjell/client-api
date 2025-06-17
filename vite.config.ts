@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { VitePluginNode } from 'vite-plugin-node';
 import dts from 'vite-plugin-dts';
-import path from 'path';
+import * as path from 'path';
 import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
@@ -14,6 +14,17 @@ export default defineConfig({
       appPath: './src/index.ts',
       exportName: 'viteNodeApp',
       tsCompiler: 'swc',
+      swcOptions: {
+        sourceMaps: true,
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+            tsx: false,
+            decorators: true,
+          },
+          target: 'es2020',
+        },
+      },
     }),
     // visualizer({
     //     template: 'network',
@@ -37,9 +48,7 @@ export default defineConfig({
     outDir: 'dist',
     lib: {
       entry: './src/index.ts',
-      formats: ['es'],
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      fileName: (format) => '[name].js',
+      fileName: () => '[name].js',
     },
     rollupOptions: {
       input: 'src/index.ts',
@@ -49,7 +58,6 @@ export default defineConfig({
           entryFileNames: '[name].js',
           preserveModules: true,
           exports: 'named',
-          sourcemap: 'inline',
         },
       ],
     },
