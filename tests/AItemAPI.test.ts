@@ -2,7 +2,7 @@ import { createAItemAPI } from "@/AItemAPI";
 import { ClientApi } from "@/ClientApi";
 import { Item, PriKey, UUID } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { vi, expect, describe, beforeEach, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@fjell/logging', () => ({
   getLogger: vi.fn(() => ({

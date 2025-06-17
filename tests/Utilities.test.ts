@@ -1,4 +1,4 @@
-import { vi, expect, describe, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Item, LocKey, LocKeyArray, PriKey, UUID } from "@fjell/core";
 import { createUtilities } from "@/Utilities";
 
