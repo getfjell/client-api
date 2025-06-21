@@ -69,19 +69,20 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.test.ts'],
+    exclude: [...configDefaults.exclude, 'dist', 'coverage', 'src/index.ts'],
     coverage: {
       provider: 'v8', // or 'istanbul' for more detailed reports
       reporter: ['text', 'html', 'lcov'],
       thresholds: {
         global: {
-          branches: 66,
-          functions: 71,
-          lines: 75,
-          statements: 75,
+          branches: 93,
+          functions: 93,
+          lines: 90,
+          statements: 90,
         }
       }
     },
-    exclude: [...configDefaults.exclude, 'dist', 'coverage']
   },
 });

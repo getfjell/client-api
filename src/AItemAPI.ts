@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Item, QueryParams } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
@@ -26,8 +27,8 @@ export type PathNamesArray<
             [string, string]) :
           [string, string, string]) :
         [string, string, string, string]) :
-    [string, string, string, string, string]) :
-  [string, string, string, string, string, string]);
+      [string, string, string, string, string]) :
+    [string, string, string, string, string, string]);
 
 export const finderToParams = (
   finder: string,
@@ -48,16 +49,16 @@ export const createAItemAPI = <
   L4 extends string = never,
   L5 extends string = never
 >(
-    api: HttpApi,
-    pkType: S,
-    pathNames: PathNamesArray<L1, L2, L3, L4, L5>,
-    options?: ClientApiOptions,
-  ): ClientApi<V, S, L1, L2, L3, L4, L5> => {
+  api: HttpApi,
+  pkType: S,
+  pathNames: PathNamesArray<L1, L2, L3, L4, L5>,
+  options?: ClientApiOptions,
+): ClientApi<V, S, L1, L2, L3, L4, L5> => {
 
   logger.default('createAItemAPI', { pkType, pathNames, options });
 
   let mergedOptions: ClientApiOptions;
-  
+
   const defaultOptions: ClientApiOptions = {
     readAuthenticated: true,
     allAuthenticated: true,
@@ -70,7 +71,7 @@ export const createAItemAPI = <
     mergedOptions = defaultOptions;
   }
 
-  const utilities =  createUtilities<V, S, L1, L2, L3, L4, L5>(pkType, pathNames);
+  const utilities = createUtilities<V, S, L1, L2, L3, L4, L5>(pkType, pathNames);
   const operations = getOperations<V, S, L1, L2, L3, L4, L5>(api, mergedOptions, utilities);
 
   return {
@@ -78,7 +79,9 @@ export const createAItemAPI = <
     all: operations.all,
     allAction: operations.allAction,
     create: operations.create,
+    facet: operations.facet,
     find: operations.find,
+    findOne: operations.findOne,
     get: operations.get,
     one: operations.one,
     remove: operations.remove,
