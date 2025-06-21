@@ -1,43 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Item, LocKey, LocKeyArray, PriKey, UUID } from "@fjell/core";
 import { createUtilities } from "@/Utilities";
-
-vi.mock('@fjell/logging', () => ({
-  getLogger: vi.fn(() => ({
-    get: vi.fn().mockReturnThis(),
-    getLogger: vi.fn().mockReturnThis(),
-    default: vi.fn(),
-    error: vi.fn(),
-    warning: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-    trace: vi.fn(),
-    emergency: vi.fn(),
-    alert: vi.fn(),
-    critical: vi.fn(),
-    notice: vi.fn(),
-    time: vi.fn().mockReturnThis(),
-    end: vi.fn(),
-    log: vi.fn(),
-  })),
-  default: {
-    get: vi.fn().mockReturnThis(),
-    getLogger: vi.fn().mockReturnThis(),
-    default: vi.fn(),
-    error: vi.fn(),
-    warning: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-    trace: vi.fn(),
-    emergency: vi.fn(),
-    alert: vi.fn(),
-    critical: vi.fn(),
-    notice: vi.fn(),
-    time: vi.fn().mockReturnThis(),
-    end: vi.fn(),
-    log: vi.fn(),
-  }
-}));
 
 describe("Utilities", () => {
   const pkType = "test";
