@@ -66,12 +66,23 @@ export interface CItemApi<
     item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
     options?: Partial<PutMethodOptions>
   ) => Promise<V>;
+  facet: (
+    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
+    facet: string,
+    options?: Partial<GetMethodOptions>,
+  ) => Promise<any>;
   find: (
     finder: string,
     finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
     options?: Partial<GetMethodOptions>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
+  findOne: (
+    finder: string,
+    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
+    options?: Partial<GetMethodOptions>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
+  ) => Promise<V>;
 };
 
 export const createCItemApi = <
@@ -97,6 +108,8 @@ export const createCItemApi = <
     create: aItemAPI.create,
     remove: aItemAPI.remove,
     update: aItemAPI.update,
+    facet: aItemAPI.facet,
     find: aItemAPI.find,
+    findOne: aItemAPI.findOne,
   } as unknown as CItemApi<V, S, L1, L2, L3, L4, L5>;
 }

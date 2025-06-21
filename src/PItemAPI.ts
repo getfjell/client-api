@@ -65,12 +65,25 @@ export interface PItemApi<
     locations?: []
   ) => Promise<V>;
 
+  facet: (
+    ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
+    facet: string,
+    options?: Partial<GetMethodOptions>,
+  ) => Promise<any>;
+
   find: (
     finder: string,
     finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
     options?: Partial<GetMethodOptions>,
     locations?: []
   ) => Promise<V[]>;
+
+  findOne: (
+    finder: string,
+    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
+    options?: Partial<GetMethodOptions>,
+    locations?: []
+  ) => Promise<V>;
 }
 
 export const createPItemApi = <V extends Item<S>, S extends string>(
@@ -144,6 +157,14 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     ): Promise<V> =>
       await aItemAPI.update(ik, item, options) as V;
 
+  const facet =
+    async (
+      ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
+      facet: string,
+      options: Partial<GetMethodOptions> = {},
+    ): Promise<any> =>
+      await aItemAPI.facet(ik, facet, options) as any;
+
   const find =
     async (
       finder: string,
@@ -151,6 +172,14 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
       options: Partial<GetMethodOptions> = {},
     ): Promise<V[]> =>
       await aItemAPI.find(finder, finderParams, options, []) as V[];
+
+  const findOne =
+    async (
+      finder: string,
+      finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
+      options: Partial<GetMethodOptions> = {},
+    ): Promise<V> =>
+      await aItemAPI.findOne(finder, finderParams, options, []) as V;
 
   return {
     ...aItemAPI,
@@ -162,7 +191,9 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     create,
     remove,
     update,
+    facet,
     find,
+    findOne,
   };
 
 };
