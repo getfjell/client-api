@@ -1,5 +1,6 @@
 import { Item } from "@fjell/core";
 import { ClientApi } from "./ClientApi";
+import { DeleteMethodOptions, GetMethodOptions, PostMethodOptions, PutMethodOptions } from "@fjell/http-api";
 
 export interface ClientApiOptions {
   readAuthenticated?: boolean;
@@ -14,4 +15,8 @@ export interface ClientApiOptions {
     string | never,
     string | never
   >;
+  getOptions?: Partial<GetMethodOptions>;
+  postOptions?: Partial<PostMethodOptions>;
+  putOptions?: Partial<PutMethodOptions>;
+  deleteOptions?: Partial<DeleteMethodOptions>;
 }

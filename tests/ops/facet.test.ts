@@ -1,5 +1,5 @@
 import { ComKey, Item, PriKey } from "@fjell/core";
-import { GetMethodOptions, HttpApi } from "@fjell/http-api";
+import { HttpApi } from "@fjell/http-api";
 import { getFacetOperation } from "@/ops/facet";
 import { ClientApiOptions } from "@/ClientApiOptions";
 import { Utilities } from "@/Utilities";
@@ -62,7 +62,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/status",
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });
@@ -86,7 +87,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/metadata",
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });
@@ -105,7 +107,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/permissions",
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });
@@ -113,23 +116,18 @@ describe("getFacetOperation", () => {
     it("should merge custom options with default options", async () => {
       const mockFacetData = { config: { theme: "dark" } };
       const primaryKey: PriKey<"test"> = { kt: "test", pk: "test-custom" };
-      const customOptions: Partial<GetMethodOptions> = {
-        accept: "application/json",
-        contentType: "application/vnd.api+json"
-      };
 
       vi.mocked(mockHttpApi.httpGet).mockResolvedValue(mockFacetData);
 
       const facet = getFacetOperation(mockHttpApi, mockApiOptions, mockUtilities);
 
-      await facet(primaryKey, "config", customOptions);
+      await facet(primaryKey, "config");
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/config",
         {
           isAuthenticated: true,
-          accept: "application/json",
-          contentType: "application/vnd.api+json"
+          params: {}
         }
       );
     });
@@ -150,7 +148,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/info",
         {
-          isAuthenticated: false
+          isAuthenticated: false,
+          params: {}
         }
       );
     });
@@ -158,20 +157,18 @@ describe("getFacetOperation", () => {
     it("should override isAuthenticated from options with writeAuthenticated", async () => {
       const mockFacetData = { value: 123 };
       const primaryKey: PriKey<"test"> = { kt: "test", pk: "test-override" };
-      const customOptions: Partial<GetMethodOptions> = {
-        isAuthenticated: false
-      };
 
       vi.mocked(mockHttpApi.httpGet).mockResolvedValue(mockFacetData);
 
       const facet = getFacetOperation(mockHttpApi, mockApiOptions, mockUtilities);
 
-      await facet(primaryKey, "stats", customOptions);
+      await facet(primaryKey, "stats");
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/stats",
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });
@@ -190,7 +187,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/validation",
         {
-          isAuthenticated: void 0
+          isAuthenticated: void 0,
+          params: {}
         }
       );
     });
@@ -232,7 +230,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path/test",
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });
@@ -251,7 +250,8 @@ describe("getFacetOperation", () => {
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         `/test/path/${specialFacetName}`,
         {
-          isAuthenticated: true
+          isAuthenticated: true,
+          params: {}
         }
       );
     });

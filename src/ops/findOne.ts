@@ -3,7 +3,7 @@ import {
   LocKeyArray,
   QueryParams
 } from "@fjell/core";
-import { GetMethodOptions, HttpApi } from "@fjell/http-api";
+import { HttpApi } from "@fjell/http-api";
 
 import { finderToParams } from "@/AItemAPI";
 import { ClientApiOptions } from "@/ClientApiOptions";
@@ -28,18 +28,17 @@ export const getFindOneOperation = <
 
   const findOne = async (
     finder: string,
-    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options: Partial<GetMethodOptions> = {},
+    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
     locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
   ): Promise<V> => {
-    logger.default('findOne', { finder, finderParams, locations });
     utilities.verifyLocations(locations);
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
 
     const params: QueryParams = finderToParams(finder, finderParams);
     params.one = true;
 
-    const requestOptions = Object.assign({}, options, { isAuthenticated: apiOptions.allAuthenticated, params });
+    const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params });
+    logger.default('findOne', { finder, finderParams, locations, requestOptions });
 
     return (utilities.validatePK(await utilities.processArray(
       api.httpGet<V[]>(

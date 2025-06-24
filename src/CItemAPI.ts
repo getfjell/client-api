@@ -8,17 +8,13 @@ import {
   TypesProperties
 } from "@fjell/core";
 import {
-  DeleteMethodOptions,
-  GetMethodOptions,
-  HttpApi,
-  PostMethodOptions,
-  PutMethodOptions,
+  HttpApi
 } from "@fjell/http-api";
 import { createAItemAPI, PathNamesArray } from "./AItemAPI";
 
+import LibLogger from "@/logger";
 import { ClientApi } from "./ClientApi";
 import { ClientApiOptions } from "./ClientApiOptions";
-import LibLogger from "@/logger";
 
 const logger = LibLogger.get('CItemAPI');
 
@@ -35,52 +31,48 @@ export interface CItemApi<
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     action: string,
     body: any,
-    options?: Partial<PostMethodOptions>
   ) => Promise<V>;
   all: (
     query: ItemQuery,
-    options?: Partial<GetMethodOptions>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
   allAction: (
     action: string,
-    body: any,
-    options?: Partial<PostMethodOptions>,
+    body?: any,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
+  allFacet: (
+    facet: string,
+    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
+  ) => Promise<any>;
   get: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    options?: Partial<GetMethodOptions>,
   ) => Promise<V | null>;
   create: (
     item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
-    options?: Partial<PostMethodOptions>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V>;
   remove: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    options?: Partial<DeleteMethodOptions>
   ) => Promise<boolean>;
   update: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
-    options?: Partial<PutMethodOptions>
   ) => Promise<V>;
   facet: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     facet: string,
-    options?: Partial<GetMethodOptions>,
+    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
   ) => Promise<any>;
   find: (
     finder: string,
-    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options?: Partial<GetMethodOptions>,
+    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V[]>;
   findOne: (
     finder: string,
-    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options?: Partial<GetMethodOptions>,
+    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V>;
 };
@@ -103,6 +95,7 @@ export const createCItemApi = <
     action: aItemAPI.action,
     all: aItemAPI.all,
     allAction: aItemAPI.allAction,
+    allFacet: aItemAPI.allFacet,
     one: aItemAPI.one,
     get: aItemAPI.get,
     create: aItemAPI.create,

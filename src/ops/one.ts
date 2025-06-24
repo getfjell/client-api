@@ -5,7 +5,7 @@ import {
   QueryParams,
   queryToParams
 } from "@fjell/core";
-import { GetMethodOptions, HttpApi } from "@fjell/http-api";
+import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "@/ClientApiOptions";
 import LibLogger from "@/logger";
@@ -27,22 +27,20 @@ export const getOneOperation = <
 
   ): (
     query: ItemQuery,
-    options?: Partial<GetMethodOptions>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V | null> => {
 
   const one = async (
     query: ItemQuery = {} as ItemQuery,
-    options: Partial<GetMethodOptions> = {},
     locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
   ): Promise<V | null> => {
-    logger.default('one', { query, locations });
     utilities.verifyLocations(locations);
 
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
 
     const params: QueryParams = queryToParams(query);
-    const requestOptions = Object.assign({}, options, { isAuthenticated: apiOptions.readAuthenticated, params });
+    const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.readAuthenticated, params });
+    logger.default('one', { query, locations, requestOptions });
 
     let item: V | null = null;
 

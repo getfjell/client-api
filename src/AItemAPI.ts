@@ -63,6 +63,10 @@ export const createAItemAPI = <
     readAuthenticated: true,
     allAuthenticated: true,
     writeAuthenticated: true,
+    getOptions: {},
+    postOptions: {},
+    putOptions: {},
+    deleteOptions: {},
   };
 
   if (options) {
@@ -78,6 +82,7 @@ export const createAItemAPI = <
     action: operations.action,
     all: operations.all,
     allAction: operations.allAction,
+    allFacet: operations.allFacet,
     create: operations.create,
     facet: operations.facet,
     find: operations.find,

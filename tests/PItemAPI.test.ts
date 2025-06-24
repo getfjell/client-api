@@ -29,11 +29,11 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.action(primaryKey, "testAction", {}, {});
+    const result = await pItemAPI.action(primaryKey, "testAction", {});
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    expect(actionMethod).toHaveBeenCalledWith(primaryKey, "testAction", {}, {});
+    expect(actionMethod).toHaveBeenCalledWith(primaryKey, "testAction", {});
     expect(result).toEqual({});
   });
 
@@ -43,9 +43,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.all({}, {}, []);
+    const result = await pItemAPI.all({});
 
-    expect(allMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(allMethod).toHaveBeenCalledWith({}, []);
     expect(result).toEqual([{}]);
   });
 
@@ -55,9 +55,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.allAction("testAction", {}, {}, []);
+    const result = await pItemAPI.allAction("testAction", {});
 
-    expect(allActionMethod).toHaveBeenCalledWith("testAction", {}, {}, []);
+    expect(allActionMethod).toHaveBeenCalledWith("testAction", {}, []);
     expect(result).toEqual([{}]);
   });
 
@@ -67,9 +67,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.one({}, {}, []);
+    const result = await pItemAPI.one({});
 
-    expect(oneMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(oneMethod).toHaveBeenCalledWith({}, []);
     expect(result).toEqual({});
   });
 
@@ -79,9 +79,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.get(primaryKey, {});
+    const result = await pItemAPI.get(primaryKey);
 
-    expect(getMethod).toHaveBeenCalledWith(primaryKey, {});
+    expect(getMethod).toHaveBeenCalledWith(primaryKey);
     expect(result).toEqual({});
   });
 
@@ -91,9 +91,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.create({} as Item<"test">, {}, []);
+    const result = await pItemAPI.create({} as Item<"test">);
 
-    expect(createMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(createMethod).toHaveBeenCalledWith({}, []);
     expect(result).toEqual([{ kt: "test", pk: "1-1-1-1-1" }, {}]);
   });
 
@@ -103,9 +103,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.remove(primaryKey, {});
+    const result = await pItemAPI.remove(primaryKey);
 
-    expect(removeMethod).toHaveBeenCalledWith(primaryKey, {});
+    expect(removeMethod).toHaveBeenCalledWith(primaryKey);
     expect(result).toBe(true);
   });
 
@@ -115,9 +115,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.update(primaryKey, {} as Item<"test">, {});
+    const result = await pItemAPI.update(primaryKey, {} as Item<"test">);
 
-    expect(updateMethod).toHaveBeenCalledWith(primaryKey, {}, {});
+    expect(updateMethod).toHaveBeenCalledWith(primaryKey, {});
     expect(result).toEqual({});
   });
 
@@ -127,9 +127,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.action(primaryKey, "testAction", {}, {})).rejects.toThrow("Test Error");
+    await expect(pItemAPI.action(primaryKey, "testAction", {})).rejects.toThrow("Test Error");
 
-    expect(actionMethod).toHaveBeenCalledWith(primaryKey, "testAction", {}, {});
+    expect(actionMethod).toHaveBeenCalledWith(primaryKey, "testAction", {});
   });
 
   it("should handle errors in all method", async () => {
@@ -138,9 +138,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.all({}, {}, [])).rejects.toThrow("Test Error");
+    await expect(pItemAPI.all({})).rejects.toThrow("Test Error");
 
-    expect(allMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(allMethod).toHaveBeenCalledWith({}, []);
   });
 
   it("should handle errors in allAction method", async () => {
@@ -149,9 +149,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.allAction("testAction", {}, {}, [])).rejects.toThrow("Test Error");
+    await expect(pItemAPI.allAction("testAction", {})).rejects.toThrow("Test Error");
 
-    expect(allActionMethod).toHaveBeenCalledWith("testAction", {}, {}, []);
+    expect(allActionMethod).toHaveBeenCalledWith("testAction", {}, []);
   });
 
   it("should handle errors in one method", async () => {
@@ -160,9 +160,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.one({}, {}, [])).rejects.toThrow("Test Error");
+    await expect(pItemAPI.one({})).rejects.toThrow("Test Error");
 
-    expect(oneMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(oneMethod).toHaveBeenCalledWith({}, []);
   });
 
   it("should handle errors in get method", async () => {
@@ -171,9 +171,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.get(primaryKey, {})).rejects.toThrow("Test Error");
+    await expect(pItemAPI.get(primaryKey)).rejects.toThrow("Test Error");
 
-    expect(getMethod).toHaveBeenCalledWith(primaryKey, {});
+    expect(getMethod).toHaveBeenCalledWith(primaryKey);
   });
 
   it("should handle errors in create method", async () => {
@@ -182,9 +182,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.create({} as Item<"test">, {}, [])).rejects.toThrow("Test Error");
+    await expect(pItemAPI.create({} as Item<"test">)).rejects.toThrow("Test Error");
 
-    expect(createMethod).toHaveBeenCalledWith({}, {}, []);
+    expect(createMethod).toHaveBeenCalledWith({}, []);
   });
 
   it("should handle errors in remove method", async () => {
@@ -193,9 +193,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.remove(primaryKey, {})).rejects.toThrow("Test Error");
+    await expect(pItemAPI.remove(primaryKey)).rejects.toThrow("Test Error");
 
-    expect(removeMethod).toHaveBeenCalledWith(primaryKey, {});
+    expect(removeMethod).toHaveBeenCalledWith(primaryKey);
   });
 
   it("should handle errors in update method", async () => {
@@ -204,9 +204,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    await expect(pItemAPI.update(primaryKey, {} as Item<"test">, {})).rejects.toThrow("Test Error");
+    await expect(pItemAPI.update(primaryKey, {} as Item<"test">)).rejects.toThrow("Test Error");
 
-    expect(updateMethod).toHaveBeenCalledWith(primaryKey, {}, {});
+    expect(updateMethod).toHaveBeenCalledWith(primaryKey, {});
   });
 
   it('should call super.find and return an array of composite items', async () => {
@@ -216,9 +216,9 @@ describe("PItemAPI", () => {
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
-    const result = await pItemAPI.find('someFinder', {}, {}, []);
+    const result = await pItemAPI.find('someFinder', {});
 
-    expect(findMethod).toHaveBeenCalledWith('someFinder', {}, {}, []);
+    expect(findMethod).toHaveBeenCalledWith('someFinder', {});
     expect(result).toBe(mockItems);
   });
 });
