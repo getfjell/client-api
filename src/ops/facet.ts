@@ -3,7 +3,7 @@ import {
   Item,
   PriKey,
 } from "@fjell/core";
-import { GetMethodOptions, HttpApi } from "@fjell/http-api";
+import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "@/ClientApiOptions";
 import LibLogger from "@/logger";
@@ -42,11 +42,10 @@ export const getFacetOperation = <
   const facet = async (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     facet: string,
-    options: Partial<GetMethodOptions> = {}
+    params: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
   ): Promise<any> => {
-    logger.default('facet', { ik, facet });
-
-    const requestOptions = Object.assign({}, options, { isAuthenticated: apiOptions.writeAuthenticated });
+    const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.writeAuthenticated, params });
+    logger.default('facet', { ik, facet, requestOptions });
 
     return api.httpGet<any>(
       `${utilities.getPath(ik)}/${facet}`,

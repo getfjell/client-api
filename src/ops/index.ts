@@ -15,6 +15,7 @@ import { ClientApiOptions } from "@/ClientApiOptions"
 import { ClientApi } from "@/ClientApi"
 import { getFindOneOperation } from "./findOne"
 import { getFacetOperation } from "./facet"
+import { getAllFacetOperation } from "./allFacet"
 
 export const getOperations =
   <
@@ -42,6 +43,11 @@ export const getOperations =
         utilities,
       ),
       allAction: getAllActionOperation<V, S, L1, L2, L3, L4, L5>(
+        api,
+        apiOptions,
+        utilities,
+      ),
+      allFacet: getAllFacetOperation<V, S, L1, L2, L3, L4, L5>(
         api,
         apiOptions,
         utilities,

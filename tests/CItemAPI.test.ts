@@ -34,9 +34,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.action({} as TestComKey, 'someAction', {}, {});
+    const result = await cItemApi.action({} as TestComKey, 'someAction', {});
 
-    expect(actionMethod).toHaveBeenCalledWith({}, 'someAction', {}, {});
+    expect(actionMethod).toHaveBeenCalledWith({}, 'someAction', {});
     expect(result).toBe(mockItem);
   });
 
@@ -48,9 +48,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.all({}, {}, [locKey]);
+    const result = await cItemApi.all({}, [locKey]);
 
-    expect(allMethod).toHaveBeenCalledWith({}, {}, [locKey]);
+    expect(allMethod).toHaveBeenCalledWith({}, [locKey]);
     expect(result).toBe(mockItems);
   });
 
@@ -62,9 +62,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.allAction('someAction', {}, {}, [locKey]);
+    const result = await cItemApi.allAction('someAction', {}, [locKey]);
 
-    expect(allActionMethod).toHaveBeenCalledWith('someAction', {}, {}, [locKey]);
+    expect(allActionMethod).toHaveBeenCalledWith('someAction', {}, [locKey]);
     expect(result).toEqual([mockItem]);
   });
 
@@ -76,9 +76,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.one({}, {}, [locKey]);
+    const result = await cItemApi.one({}, [locKey]);
 
-    expect(oneMethod).toHaveBeenCalledWith({}, {}, [locKey]);
+    expect(oneMethod).toHaveBeenCalledWith({}, [locKey]);
     expect(result).toBe(mockItem);
   });
 
@@ -90,9 +90,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.get({} as TestComKey, {});
+    const result = await cItemApi.get({} as TestComKey);
 
-    expect(getMethod).toHaveBeenCalledWith({}, {});
+    expect(getMethod).toHaveBeenCalledWith({});
     expect(result).toBe(mockItem);
   });
 
@@ -103,9 +103,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.create({} as TypesProperties<TestItem, 'test', 'container'>, {}, [locKey]);
+    const result = await cItemApi.create({} as TypesProperties<TestItem, 'test', 'container'>, [locKey]);
 
-    expect(createMethod).toHaveBeenCalledWith({}, {}, [locKey]);
+    expect(createMethod).toHaveBeenCalledWith({}, [locKey]);
     expect(result).toEqual(mockItem);
   });
 
@@ -115,9 +115,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.remove({} as TestComKey, {});
+    const result = await cItemApi.remove({} as TestComKey);
 
-    expect(removeMethod).toHaveBeenCalledWith({}, {});
+    expect(removeMethod).toHaveBeenCalledWith({});
     expect(result).toBe(true);
   });
 
@@ -128,9 +128,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.update({} as TestComKey, {} as TypesProperties<TestItem, 'test', 'container'>, {});
+    const result = await cItemApi.update({} as TestComKey, {} as TypesProperties<TestItem, 'test', 'container'>);
 
-    expect(updateMethod).toHaveBeenCalledWith({}, {}, {});
+    expect(updateMethod).toHaveBeenCalledWith({}, {});
     expect(result).toBe(mockItem);
   });
 
@@ -141,9 +141,9 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.find('someFinder', {}, {}, [locKey]);
+    const result = await cItemApi.find('someFinder', {}, [locKey]);
 
-    expect(findMethod).toHaveBeenCalledWith('someFinder', {}, {}, [locKey]);
+    expect(findMethod).toHaveBeenCalledWith('someFinder', {}, [locKey]);
     expect(result).toBe(mockItems);
   });
 

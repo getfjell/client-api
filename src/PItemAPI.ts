@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ComKey, Item, ItemProperties, ItemQuery, PriKey, TypesProperties } from "@fjell/core";
+import { ComKey, Item, ItemQuery, PriKey, TypesProperties } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { createAItemAPI, PathNamesArray } from "./AItemAPI";
+import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
 
-import { DeleteMethodOptions, GetMethodOptions, PostMethodOptions, PutMethodOptions } from "@fjell/http-api";
-import { ClientApiOptions } from "./ClientApiOptions";
 import LibLogger from "@/logger";
+import { ClientApiOptions } from "./ClientApiOptions";
 const logger = LibLogger.get('PItemAPI');
 
 export interface PItemApi<
@@ -19,70 +17,57 @@ export interface PItemApi<
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
     action: string,
     body: any,
-    options?: Partial<PostMethodOptions>,
-    locations?: []
   ) => Promise<V>;
 
   all: (
     query: ItemQuery,
-    options?: Partial<GetMethodOptions>,
-    locations?: []
   ) => Promise<V[]>;
 
   allAction: (
     action: string,
-    body: any,
-    options?: Partial<PostMethodOptions>
+    body?: any,
   ) => Promise<V[]>;
+
+  allFacet: (
+    facet: string,
+    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
+  ) => Promise<any>;
 
   one: (
     query: ItemQuery,
-    options?: Partial<GetMethodOptions>
   ) => Promise<V | null>;
 
   get: (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-    options?: Partial<GetMethodOptions>,
-    locations?: []
   ) => Promise<V | null>;
 
   create: (
     item: TypesProperties<V, S>,
-    options?: Partial<PostMethodOptions>,
-    locations?: []
   ) => Promise<V>;
 
   remove: (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-    options?: Partial<DeleteMethodOptions>,
-    locations?: []
   ) => Promise<boolean>;
 
   update: (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
     item: TypesProperties<V, S>,
-    options?: Partial<PutMethodOptions>,
-    locations?: []
   ) => Promise<V>;
 
   facet: (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
     facet: string,
-    options?: Partial<GetMethodOptions>,
+    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
   ) => Promise<any>;
 
   find: (
     finder: string,
-    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options?: Partial<GetMethodOptions>,
-    locations?: []
+    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
   ) => Promise<V[]>;
 
   findOne: (
     finder: string,
-    finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    options?: Partial<GetMethodOptions>,
-    locations?: []
+    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
   ) => Promise<V>;
 }
 
@@ -102,90 +87,88 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
       action: string,
       body: any = {},
-      options: Partial<PostMethodOptions> = {},
     ): Promise<V> =>
-      await aItemAPI.action(ik, action, body, options) as V;
+      await aItemAPI.action(ik, action, body) as V;
 
   const all =
     async (
       query: ItemQuery = {} as ItemQuery,
-      options: Partial<GetMethodOptions> = {},
     ): Promise<V[]> =>
-      await aItemAPI.all(query, options, []) as V[];
+      await aItemAPI.all(query, []) as V[];
 
   const allAction =
     async (
       action: string,
       body: any = {},
-      options: Partial<PostMethodOptions> = {},
     ): Promise<V[]> =>
-      await aItemAPI.allAction(action, body, options, []) as V[];
+      await aItemAPI.allAction(action, body, []) as V[];
+
+  const allFacet =
+    async (
+      facet: string,
+      params: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
+    ): Promise<any> =>
+      await aItemAPI.allFacet(facet, params) as any;
 
   const one =
     async (
       query: ItemQuery = {} as ItemQuery,
-      options: Partial<GetMethodOptions> = {},
     ): Promise<V | null> =>
-      await aItemAPI.one(query, options, []) as V | null;
+      await aItemAPI.one(query, []) as V | null;
 
   const get =
     async (
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-      options: Partial<GetMethodOptions> = {},
     ): Promise<V | null> =>
-      await aItemAPI.get(ik, options) as V | null;
+      await aItemAPI.get(ik) as V | null;
 
   const create =
     async (
       item: TypesProperties<V, S>,
-      options: Partial<PostMethodOptions> = {},
     ): Promise<V> =>
-      await aItemAPI.create(item, options, []) as V;
+      await aItemAPI.create(item, []) as V;
 
   const remove =
     async (
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-      options: Partial<DeleteMethodOptions> = {},
     ): Promise<boolean> =>
-      await aItemAPI.remove(ik, options) as boolean;
+      await aItemAPI.remove(ik) as boolean;
 
   const update =
     async (
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
       item: TypesProperties<V, S>,
-      options: Partial<PutMethodOptions> = {},
     ): Promise<V> =>
-      await aItemAPI.update(ik, item, options) as V;
+      await aItemAPI.update(ik, item) as V;
 
   const facet =
     async (
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
       facet: string,
-      options: Partial<GetMethodOptions> = {},
+      params: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
     ): Promise<any> =>
-      await aItemAPI.facet(ik, facet, options) as any;
+      await aItemAPI.facet(ik, facet, params) as any;
 
   const find =
     async (
       finder: string,
-      finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-      options: Partial<GetMethodOptions> = {},
+      finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
     ): Promise<V[]> =>
-      await aItemAPI.find(finder, finderParams, options, []) as V[];
+      await aItemAPI.find(finder, finderParams) as V[];
 
   const findOne =
     async (
       finder: string,
-      finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-      options: Partial<GetMethodOptions> = {},
+      finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
     ): Promise<V> =>
-      await aItemAPI.findOne(finder, finderParams, options, []) as V;
+      await aItemAPI.findOne(finder, finderParams) as V;
 
   return {
     ...aItemAPI,
     action,
     all,
     allAction,
+    allFacet,
     one,
     get,
     create,

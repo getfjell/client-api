@@ -1,5 +1,5 @@
 import { Item, LocKeyArray, QueryParams } from "@fjell/core";
-import { GetMethodOptions, HttpApi } from "@fjell/http-api";
+import { HttpApi } from "@fjell/http-api";
 import { getFindOneOperation } from "@/ops/findOne";
 import { finderToParams } from "@/AItemAPI";
 import { ClientApiOptions } from "@/ClientApiOptions";
@@ -89,7 +89,7 @@ describe("getFindOneOperation", () => {
 
       const findOne = getFindOneOperation(mockHttpApi, mockApiOptions, mockUtilities);
 
-      await findOne("byId", { id: "1" }, {}, locations);
+      await findOne("byId", { id: "1" }, locations);
 
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith(locations);
       expect(mockUtilities.getPath).toHaveBeenCalledWith(locations);
@@ -98,10 +98,6 @@ describe("getFindOneOperation", () => {
     it("should merge options correctly", async () => {
       const mockItem: TestItem = { id: "1", name: "Test Item" } as TestItem;
       const mockResponse = [mockItem];
-      const customOptions: Partial<GetMethodOptions> = {
-        isAuthenticated: false,
-        accept: "application/xml"
-      };
 
       vi.mocked(mockHttpApi.httpGet).mockResolvedValue(mockResponse);
       vi.mocked(mockUtilities.processArray).mockResolvedValue(mockResponse);
@@ -109,13 +105,12 @@ describe("getFindOneOperation", () => {
 
       const findOne = getFindOneOperation(mockHttpApi, mockApiOptions, mockUtilities);
 
-      await findOne("byId", { id: "1" }, customOptions);
+      await findOne("byId", { id: "1" });
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path",
         {
           isAuthenticated: true,
-          accept: "application/xml",
           params: { finder: "test", one: true }
         }
       );

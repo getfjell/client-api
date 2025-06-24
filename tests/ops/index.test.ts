@@ -201,7 +201,7 @@ describe("getOperations", () => {
       const operationKeys = Object.keys(clientApi);
 
       // Verify that we get a consistent set of operations
-      expect(operationKeys.length).toBe(11); // Current count of working operations
+      expect(operationKeys.length).toBe(12); // Current count of working operations
       expect(operationKeys).toContain('all');
       expect(operationKeys).toContain('action');
       expect(operationKeys).toContain('create');
@@ -221,9 +221,9 @@ describe("getOperations", () => {
 
       // Test the exact current behavior
       const expectedOperations = [
-        'action', 'all', 'allAction', 'create',
+        'action', 'all', 'allAction', 'allFacet', 'create',
         'find', 'get', 'one', 'remove', 'update',
-        'facet', 'findOne'
+        'facet', 'findOne',
       ].sort();
 
       expect(operationKeys).toEqual(expectedOperations);
