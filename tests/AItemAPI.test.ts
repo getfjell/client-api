@@ -35,7 +35,7 @@ describe("AItemAPI", () => {
         },
       };
       api.httpPost = vi.fn().mockResolvedValue(item);
-      const result = await containersAPI.action(key, "action", {}, {});
+      const result = await containersAPI.action(key, "action", {});
       expect(result).toEqual(item);
     });
   });
@@ -58,7 +58,7 @@ describe("AItemAPI", () => {
         }
       }];
       api.httpGet = vi.fn().mockResolvedValue(items);
-      const result = await containersAPI.all({}, {}, []);
+      const result = await containersAPI.all({}, []);
       expect(result).toEqual(items);
     });
   });
@@ -75,7 +75,7 @@ describe("AItemAPI", () => {
         }
       };
       api.httpPost = vi.fn().mockResolvedValue([item]);
-      const result = await containersAPI.allAction("action", {}, {}, []);
+      const result = await containersAPI.allAction("action", {}, []);
       expect(result).toEqual([item]);
     });
   });
@@ -91,7 +91,7 @@ describe("AItemAPI", () => {
         }
       };
       api.httpGet = vi.fn().mockResolvedValue(item);
-      const result = await containersAPI.get(key, {});
+      const result = await containersAPI.get(key);
       expect(result).toEqual(item);
     });
   });
@@ -108,7 +108,7 @@ describe("AItemAPI", () => {
         }
       }];
       api.httpGet = vi.fn().mockResolvedValue(items);
-      const result = await containersAPI.one({}, {}, []);
+      const result = await containersAPI.one({}, []);
       expect(result).toEqual(items[0]);
     });
   });
@@ -125,7 +125,7 @@ describe("AItemAPI", () => {
         }
       };
       api.httpPost = vi.fn().mockResolvedValue(item);
-      const result = await containersAPI.create(item, {}, []);
+      const result = await containersAPI.create(item, []);
       expect(result).toEqual(item);
     });
   });
@@ -133,7 +133,7 @@ describe("AItemAPI", () => {
   describe("remove", () => {
     it("should remove item correctly", async () => {
       api.httpDelete = vi.fn().mockResolvedValue(true);
-      const result = await containersAPI.remove(key, {});
+      const result = await containersAPI.remove(key);
       expect(result).toBe(true);
     });
   });
@@ -156,7 +156,7 @@ describe("AItemAPI", () => {
           updated: { at: new Date() },
           deleted: { at: null }
         }
-      }, {});
+      });
       expect(result).toEqual(item);
     });
   });
@@ -187,7 +187,7 @@ describe("AItemAPI", () => {
         param3: true,
         param4: new Date(),
         param5: ["a", "b", "c"]
-      }, {}, []);
+      }, []);
       expect(result).toEqual(items);
       expect(api.httpGet).toHaveBeenCalledWith(
         "/containers",
