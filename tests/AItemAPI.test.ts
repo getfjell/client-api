@@ -151,7 +151,7 @@ describe("AItemAPI", () => {
       };
       api.httpPut = vi.fn().mockResolvedValue(item);
       const result = await containersAPI.update(key, {
-        key: "key", data: {}, events: {
+        key: key, data: {}, events: {
           created: { at: new Date() },
           updated: { at: new Date() },
           deleted: { at: null }
