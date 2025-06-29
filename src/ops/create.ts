@@ -1,6 +1,5 @@
 import {
   Item,
-  ItemProperties,
   LocKeyArray
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
@@ -26,7 +25,7 @@ export const getCreateOperation = <
   ) => {
 
   const create = async (
-    item: ItemProperties<S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
     locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
   ): Promise<V> => {
     const requestOptions = Object.assign({}, apiOptions.postOptions, { isAuthenticated: apiOptions.writeAuthenticated });

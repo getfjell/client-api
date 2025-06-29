@@ -1,7 +1,6 @@
 import {
   ComKey,
   Item,
-  ItemProperties,
   PriKey
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
@@ -28,7 +27,7 @@ export const getUpdateOperation = <
 
   const update = async (
     ik: PriKey<S> | ComKey<S, L1, L2, L3, L4, L5>,
-    item: ItemProperties<S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
   ): Promise<V> => {
     const requestOptions = Object.assign({}, apiOptions.putOptions, { isAuthenticated: apiOptions.writeAuthenticated });
     logger.default('update', { ik, item, requestOptions });

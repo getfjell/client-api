@@ -3,6 +3,9 @@ import { VitePluginNode } from 'vite-plugin-node';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { configDefaults } from 'vitest/config';
+import { readFileSync } from 'fs';
+
+const { dependencies } = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 export default defineConfig({
   server: {
@@ -51,6 +54,7 @@ export default defineConfig({
       fileName: () => '[name].js',
     },
     rollupOptions: {
+      external: [...Object.keys(dependencies || {})],
       input: 'src/index.ts',
       output: [
         {

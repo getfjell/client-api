@@ -1,7 +1,7 @@
 import { createAItemAPI } from '@/AItemAPI';
 import { createCItemApi } from '@/CItemAPI';
 import { ClientApi } from '@/ClientApi';
-import { ComKey, Item, LocKey, TypesProperties, UUID } from '@fjell/core';
+import { ComKey, Item, LocKey, UUID } from '@fjell/core';
 import { HttpApi } from '@fjell/http-api';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 vi.mock('@/AItemAPI', () => ({
@@ -103,7 +103,7 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.create({} as TypesProperties<TestItem, 'test', 'container'>, [locKey]);
+    const result = await cItemApi.create({} as Partial<Item<'test', 'container'>>, [locKey]);
 
     expect(createMethod).toHaveBeenCalledWith({}, [locKey]);
     expect(result).toEqual(mockItem);
@@ -128,7 +128,7 @@ describe('CItemAPI', () => {
 
     cItemApi = createCItemApi<TestItem, 'test', 'container'>(api, 'test', ['tests', 'containers'], {});
 
-    const result = await cItemApi.update({} as TestComKey, {} as TypesProperties<TestItem, 'test', 'container'>);
+    const result = await cItemApi.update({} as TestComKey, {} as Partial<Item<'test', 'container'>>);
 
     expect(updateMethod).toHaveBeenCalledWith({}, {});
     expect(result).toBe(mockItem);

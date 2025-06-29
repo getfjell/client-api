@@ -1,4 +1,4 @@
-import { ComKey, Item, ItemQuery, LocKeyArray, PriKey, TypesProperties } from "@fjell/core";
+import { ComKey, Item, ItemQuery, LocKeyArray, PriKey } from "@fjell/core";
 
 export interface ClientApi<
   V extends Item<S, L1, L2, L3, L4, L5>,
@@ -29,7 +29,7 @@ export interface ClientApi<
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<any>;
   create: (
-    item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V>;
   facet: (
@@ -59,6 +59,6 @@ export interface ClientApi<
   ) => Promise<boolean>;
   update: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
   ) => Promise<V>;
 }

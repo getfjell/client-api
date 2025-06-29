@@ -5,7 +5,6 @@ import {
   ItemQuery,
   LocKeyArray,
   PriKey,
-  TypesProperties
 } from "@fjell/core";
 import {
   HttpApi
@@ -50,7 +49,7 @@ export interface CItemApi<
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
   ) => Promise<V | null>;
   create: (
-    item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ) => Promise<V>;
   remove: (
@@ -58,7 +57,7 @@ export interface CItemApi<
   ) => Promise<boolean>;
   update: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    item: TypesProperties<V, S, L1, L2, L3, L4, L5>,
+    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
   ) => Promise<V>;
   facet: (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
