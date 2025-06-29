@@ -1,5 +1,4 @@
-
-import { ComKey, Item, ItemQuery, PriKey, TypesProperties } from "@fjell/core";
+import { ComKey, Item, ItemQuery, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
@@ -42,7 +41,7 @@ export interface PItemApi<
   ) => Promise<V | null>;
 
   create: (
-    item: TypesProperties<V, S>,
+    item: Partial<Item<S>>,
   ) => Promise<V>;
 
   remove: (
@@ -51,7 +50,7 @@ export interface PItemApi<
 
   update: (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-    item: TypesProperties<V, S>,
+    item: Partial<Item<S>>,
   ) => Promise<V>;
 
   facet: (
@@ -124,7 +123,7 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
 
   const create =
     async (
-      item: TypesProperties<V, S>,
+      item: Partial<Item<S>>,
     ): Promise<V> =>
       await aItemAPI.create(item, []) as V;
 
@@ -137,7 +136,7 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
   const update =
     async (
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
-      item: TypesProperties<V, S>,
+      item: Partial<Item<S>>,
     ): Promise<V> =>
       await aItemAPI.update(ik, item) as V;
 
