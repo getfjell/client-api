@@ -12,3 +12,6 @@ release:
 publish:
   mergeMethod: squash
   dependencyUpdatePatterns: ["@fjell/*"]
+link:
+  scopeRoots:
+    '@fjell': '../../getfjell/'
