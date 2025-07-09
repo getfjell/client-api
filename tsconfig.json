@@ -1,27 +1,25 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "sourceMap": true,
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+    "extends": "@tsconfig/recommended/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "sourceMap": true,
+        "outDir": "dist",
+        "esModuleInterop": true,
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        },
+        "declaration": true,
+        "target": "es2022",
+        "module": "es2022",
+        "moduleResolution": "bundler"
     },
-    "declaration": true,
-    "target": "es2022",
-    "module": "es2022",
-    "moduleResolution": "bundler"
-  },
-  "include": [
-    "./src/**/*.ts",
-    "./tests/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "jest.config.js"
-  ]
+    "include": [
+        "./src/**/*.ts",
+        "./tests/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

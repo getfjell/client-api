@@ -6,9 +6,7 @@ tests/
 
 .DS_Store
 .eslintrc.json
-babel.config.js
 cloudbuild.yaml
-jest.config.ts
 tsconfig.json
 yarn.lock
 .yarnrc.yml
@@ -23,7 +21,6 @@ pnpm-workspace.yaml
 eslint.config.mjs
 .kodrdriv/
 src/
-babel.config.js
 commit.sh
 release.sh
 
