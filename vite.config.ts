@@ -79,6 +79,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8', // or 'istanbul' for more detailed reports
       reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.ts', 'examples/**/*.ts'],
+      exclude: ['src/index.ts', 'tests/**', 'node_modules/**'],
       thresholds: {
         global: {
           branches: 93,
