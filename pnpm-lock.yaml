@@ -18,8 +18,8 @@ importers:
         specifier: ^4.4.7
         version: 4.4.7
       '@fjell/registry':
-        specifier: ^4.4.7
-        version: 4.4.7
+        specifier: ^4.4.11
+        version: 4.4.11
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -129,7 +129,7 @@ importers:
         version: 7.0.4(@types/node@24.0.13)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.0)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
+        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
       vite-plugin-node:
         specifier: ^7.0.0
         version: 7.0.0(@swc/core@1.12.14)(vite@7.0.4(@types/node@24.0.13))
@@ -190,7 +190,7 @@ importers:
         version: 7.0.4(@types/node@24.0.13)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.0)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
+        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
       vite-plugin-node:
         specifier: ^7.0.0
         version: 7.0.0(@swc/core@1.12.14)(vite@7.0.4(@types/node@24.0.13))
@@ -247,7 +247,7 @@ importers:
         version: 7.0.4(@types/node@24.0.13)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.0)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
+        version: 4.5.4(@types/node@24.0.13)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13))
       vite-plugin-node:
         specifier: ^7.0.0
         version: 7.0.0(@swc/core@1.12.14)(vite@7.0.4(@types/node@24.0.13))
@@ -726,8 +726,8 @@ packages:
   '@fjell/logging@4.4.7':
     resolution: {integrity: sha512-ned1kfEpFZSDraH/KRaRodoozyBB7PwlrQuiAmBiUUadfBKx6mx56fZIFRlzb/XUHZIypw237I+4P/bsx7cEzg==}
 
-  '@fjell/registry@4.4.7':
-    resolution: {integrity: sha512-3lbLO4P6WYHgBqiAU/UQRQ1goenlOqMLhqsovX/HyBJEDLlebZVLpktJoSOQVX56aIgHR9C30PeXBCEOkI3YAg==}
+  '@fjell/registry@4.4.11':
+    resolution: {integrity: sha512-GaVnDJGLWW7w2waVJb+NxatiopY2LyHqY3BfZSMP835i9ibj232NV34QBiBh3VSXIuWGrKdSAQkPz4F1DGjujg==}
     engines: {node: '>=21'}
 
   '@humanfs/core@0.19.1':
@@ -1339,20 +1339,11 @@ packages:
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
 
-  '@volar/language-core@2.4.18':
-    resolution: {integrity: sha512-G3yYV85ekH4TV0EDS6DsS/dUJWrz675H9UgsxFz5pQbmas51a0Q2fF6Lb2q4RKgytuLZ4E0MBdT5PlVsJXNalw==}
-
   '@volar/language-core@2.4.20':
     resolution: {integrity: sha512-dRDF1G33xaAIDqR6+mXUIjXYdu9vzSxlMGfMEwBxQsfY/JMUEXSpLTR057oTKlUQ2nIvCmP9k94A8h8z2VrNSA==}
 
-  '@volar/source-map@2.4.18':
-    resolution: {integrity: sha512-zaj2V/zo/CHQ/xA75h60jBPgrz+Ou9s6aPl7dX0rT46/uill9aB/ZaDk92ROpJsa/9e2xftCeNAU9ZwVyB/egQ==}
-
   '@volar/source-map@2.4.20':
     resolution: {integrity: sha512-mVjmFQH8mC+nUaVwmbxoYUy8cww+abaO8dWzqPUjilsavjxH0jCJ3Mp8HFuHsdewZs2c+SP+EO7hCd8Z92whJg==}
-
-  '@volar/typescript@2.4.18':
-    resolution: {integrity: sha512-xcbsMG8m/yhvO1VIKnTtc+llZxw3YtWkZiV7/F1qNpTORdPExkZRcBxJ5d19MXLpkeiQ+DG5JURHh1SV0bcWRA==}
 
   '@volar/typescript@2.4.20':
     resolution: {integrity: sha512-Oc4DczPwQyXcVbd+5RsNEqX6ia0+w3p+klwdZQ6ZKhFjWoBP9PCPQYlKYRi/tDemWphW93P/Vv13vcE9I9D2GQ==}
@@ -2965,7 +2956,7 @@ snapshots:
 
   '@fjell/logging@4.4.7': {}
 
-  '@fjell/registry@4.4.7':
+  '@fjell/registry@4.4.11':
     dependencies:
       '@fjell/core': 4.4.7
       '@fjell/logging': 4.4.7
@@ -3078,14 +3069,6 @@ snapshots:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
-
-  '@rollup/pluginutils@5.2.0(rollup@4.45.0)':
-    dependencies:
-      '@types/estree': 1.0.8
-      estree-walker: 2.0.2
-      picomatch: 4.0.2
-    optionalDependencies:
-      rollup: 4.45.0
 
   '@rollup/pluginutils@5.2.0(rollup@4.45.1)':
     dependencies:
@@ -3556,23 +3539,11 @@ snapshots:
       loupe: 3.1.4
       tinyrainbow: 2.0.0
 
-  '@volar/language-core@2.4.18':
-    dependencies:
-      '@volar/source-map': 2.4.18
-
   '@volar/language-core@2.4.20':
     dependencies:
       '@volar/source-map': 2.4.20
 
-  '@volar/source-map@2.4.18': {}
-
   '@volar/source-map@2.4.20': {}
-
-  '@volar/typescript@2.4.18':
-    dependencies:
-      '@volar/language-core': 2.4.18
-      path-browserify: 1.0.1
-      vscode-uri: 3.1.0
 
   '@volar/typescript@2.4.20':
     dependencies:
@@ -4672,11 +4643,11 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-dts@4.5.4(@types/node@24.0.13)(rollup@4.45.0)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13)):
+  vite-plugin-dts@4.5.4(@types/node@24.0.13)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.13)):
     dependencies:
       '@microsoft/api-extractor': 7.52.8(@types/node@24.0.13)
-      '@rollup/pluginutils': 5.2.0(rollup@4.45.0)
-      '@volar/typescript': 2.4.18
+      '@rollup/pluginutils': 5.2.0(rollup@4.45.1)
+      '@volar/typescript': 2.4.20
       '@vue/language-core': 2.2.0(typescript@5.8.3)
       compare-versions: 6.1.1
       debug: 4.4.1
