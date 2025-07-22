@@ -26,19 +26,20 @@
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
-    "@fjell/core": "^4.4.7",
-    "@fjell/http-api": "^4.4.5",
-    "@fjell/logging": "^4.4.7",
+    "@fjell/core": "^4.4.13",
+    "@fjell/http-api": "^4.4.15",
+    "@fjell/logging": "^4.4.13",
     "@fjell/registry": "^4.4.11",
     "deepmerge": "^4.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.31.0",
+    "@fjell/eslint-config": "^1.0.5",
     "@swc/core": "^1.13.1",
     "@tsconfig/recommended": "^1.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.37.0",
-    "@typescript-eslint/parser": "^8.37.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@vitest/coverage-istanbul": "^3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
