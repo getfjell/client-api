@@ -16,6 +16,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    /* Testing */
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
