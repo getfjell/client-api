@@ -3,9 +3,9 @@ import { expect, test, vi } from 'vitest'
 import App from './App'
 
 // Mock fetch for testing
-global.fetch = vi.fn()
+globalThis.fetch = vi.fn()
 
-const mockFetch = fetch as any
+const mockFetch = globalThis.fetch as any
 
 test('renders App component', () => {
   // Setup fetch mocks
