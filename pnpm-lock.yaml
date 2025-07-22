@@ -4,29 +4,22 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@fjell/core': link:../fjell-core
-  '@fjell/eslint-config': link:../fjell-eslint-config
-  '@fjell/http-api': link:../fjell-http-api
-  '@fjell/logging': link:../fjell-logging
-  '@fjell/registry': link:../fjell-registry
-
 importers:
 
   .:
     dependencies:
       '@fjell/core':
-        specifier: link:../fjell-core
-        version: link:../fjell-core
+        specifier: ^4.4.13
+        version: 4.4.13
       '@fjell/http-api':
-        specifier: link:../fjell-http-api
-        version: link:../fjell-http-api
+        specifier: ^4.4.15
+        version: 4.4.15
       '@fjell/logging':
-        specifier: link:../fjell-logging
-        version: link:../fjell-logging
+        specifier: ^4.4.13
+        version: 4.4.13
       '@fjell/registry':
-        specifier: link:../fjell-registry
-        version: link:../fjell-registry
+        specifier: ^4.4.11
+        version: 4.4.11
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -38,8 +31,8 @@ importers:
         specifier: ^9.31.0
         version: 9.31.0
       '@fjell/eslint-config':
-        specifier: link:../fjell-eslint-config
-        version: link:../fjell-eslint-config
+        specifier: ^1.0.5
+        version: 1.0.5(eslint@9.31.0)(typescript@5.8.3)
       '@swc/core':
         specifier: ^1.13.1
         version: 1.13.1
@@ -387,6 +380,25 @@ packages:
   '@eslint/plugin-kit@0.3.4':
     resolution: {integrity: sha512-Ul5l+lHEcw3L5+k8POx6r74mxEYKG5kOb6Xpy2gCRW6zweT6TEhAf8vhxGgjhqrd/VO/Dirhsb+1hNpD1ue9hw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@fjell/core@4.4.13':
+    resolution: {integrity: sha512-+oZprCSL7HDvcOwXDBIkPq9i4bxkvwfZ2IfRh3uopRTo2hJlcQ1hWkGZdIvwXfkl9H4PLiuWgCuI9xeHyR+2FA==}
+
+  '@fjell/eslint-config@1.0.5':
+    resolution: {integrity: sha512-0RzrW3iD4Sv4wlYXHEYo1+2xYRu9QLZ90uypRjTdrRwmwJwl9wY3Qa9nUYnBu963+Sqlb8ZJewstzC8KRPRycA==}
+    peerDependencies:
+      eslint: ^9.0.0
+      typescript: ^5.0.0
+
+  '@fjell/http-api@4.4.15':
+    resolution: {integrity: sha512-yChzFdANTHITiFI8E/v2r2gGcH3BYUKqGsaYarOfz8B4Ijg1nJ21KiowupnYwybL6fLk9Nmmt+R5d3yVKj6EaA==}
+
+  '@fjell/logging@4.4.13':
+    resolution: {integrity: sha512-0pZHeDT2dZAA0HH+cwu6ThlklJy4I93+Ynx2k1JA0/ebCZRxymJKacRhMmhWZyexH5+/o5yEf6p4fYhrzpkbKQ==}
+
+  '@fjell/registry@4.4.11':
+    resolution: {integrity: sha512-GaVnDJGLWW7w2waVJb+NxatiopY2LyHqY3BfZSMP835i9ibj232NV34QBiBh3VSXIuWGrKdSAQkPz4F1DGjujg==}
+    engines: {node: '>=21'}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1024,8 +1036,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.5.189:
-    resolution: {integrity: sha512-y9D1ntS1ruO/pZ/V2FtLE+JXLQe28XoRpZ7QCCo0T8LdQladzdcOVQZH/IWLVJvCw12OGMb6hYOeOAjntCmJRQ==}
+  electron-to-chromium@1.5.190:
+    resolution: {integrity: sha512-k4McmnB2091YIsdCgkS0fMVMPOJgxl93ltFzaryXqwip1AaxeDqKCGLxkXODDA5Ab/D+tV5EL5+aTx76RvLRxw==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1400,6 +1412,10 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
+
+  luxon@3.7.1:
+    resolution: {integrity: sha512-RkRWjA926cTvz5rAb1BqyWkKbbjzCGchDUIKMCUvNi17j6f6j8uHGDV82Aqcqtzd+icoYpELmG3ksgGiFNNcNg==}
+    engines: {node: '>=12'}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -2230,6 +2246,35 @@ snapshots:
       '@eslint/core': 0.15.1
       levn: 0.4.1
 
+  '@fjell/core@4.4.13':
+    dependencies:
+      '@fjell/logging': 4.4.13
+      deepmerge: 4.3.1
+      luxon: 3.7.1
+
+  '@fjell/eslint-config@1.0.5(eslint@9.31.0)(typescript@5.8.3)':
+    dependencies:
+      '@eslint/eslintrc': 3.3.1
+      '@eslint/js': 9.31.0
+      '@typescript-eslint/eslint-plugin': 8.38.0(@typescript-eslint/parser@8.38.0(eslint@9.31.0)(typescript@5.8.3))(eslint@9.31.0)(typescript@5.8.3)
+      '@typescript-eslint/parser': 8.38.0(eslint@9.31.0)(typescript@5.8.3)
+      eslint: 9.31.0
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@fjell/http-api@4.4.15':
+    dependencies:
+      '@fjell/logging': 4.4.13
+
+  '@fjell/logging@4.4.13': {}
+
+  '@fjell/registry@4.4.11':
+    dependencies:
+      '@fjell/core': 4.4.13
+      '@fjell/logging': 4.4.13
+      deepmerge: 4.3.1
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -2812,7 +2857,7 @@ snapshots:
   browserslist@4.25.1:
     dependencies:
       caniuse-lite: 1.0.30001727
-      electron-to-chromium: 1.5.189
+      electron-to-chromium: 1.5.190
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
@@ -2906,7 +2951,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.5.189: {}
+  electron-to-chromium@1.5.190: {}
 
   emoji-regex@8.0.0: {}
 
@@ -3328,6 +3373,8 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  luxon@3.7.1: {}
 
   magic-string@0.30.17:
     dependencies:
