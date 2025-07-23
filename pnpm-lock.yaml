@@ -13,13 +13,13 @@ importers:
         version: 4.4.13
       '@fjell/http-api':
         specifier: ^4.4.15
-        version: 4.4.15
+        version: 4.4.16
       '@fjell/logging':
         specifier: ^4.4.13
-        version: 4.4.13
+        version: 4.4.17
       '@fjell/registry':
         specifier: ^4.4.11
-        version: 4.4.11
+        version: 4.4.16
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -77,7 +77,7 @@ importers:
         version: 7.0.0(@swc/core@1.13.1)(vite@7.0.5(@types/node@24.0.13))
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
 
 packages:
 
@@ -390,14 +390,14 @@ packages:
       eslint: ^9.0.0
       typescript: ^5.0.0
 
-  '@fjell/http-api@4.4.15':
-    resolution: {integrity: sha512-yChzFdANTHITiFI8E/v2r2gGcH3BYUKqGsaYarOfz8B4Ijg1nJ21KiowupnYwybL6fLk9Nmmt+R5d3yVKj6EaA==}
+  '@fjell/http-api@4.4.16':
+    resolution: {integrity: sha512-GSMicb/pURdpApC3GMnUQNwa2NkD9tEajPQ0oGU9wZ+2uVHV2zg/yUtmPtyJcTk+DHh/6xG6lzIdmrFG8negVg==}
 
-  '@fjell/logging@4.4.13':
-    resolution: {integrity: sha512-0pZHeDT2dZAA0HH+cwu6ThlklJy4I93+Ynx2k1JA0/ebCZRxymJKacRhMmhWZyexH5+/o5yEf6p4fYhrzpkbKQ==}
+  '@fjell/logging@4.4.17':
+    resolution: {integrity: sha512-e6YnAB7/sVuVmUgtuAh0XIk70HewsoPxlQwmXHhXQYosxleW6zytIPvPUWpA8xL26HcUFyTy71aKkhIJ0ZM9VA==}
 
-  '@fjell/registry@4.4.11':
-    resolution: {integrity: sha512-GaVnDJGLWW7w2waVJb+NxatiopY2LyHqY3BfZSMP835i9ibj232NV34QBiBh3VSXIuWGrKdSAQkPz4F1DGjujg==}
+  '@fjell/registry@4.4.16':
+    resolution: {integrity: sha512-k24HEuCZKP36z7/wjfTBx4pGlrxOSGDKik2V0Nj5TeKwnL/wAizZwtenfDSBKe+H+Vc0wo+lgfyYga7pBQ8eFA==}
     engines: {node: '>=21'}
 
   '@humanfs/core@0.19.1':
@@ -700,6 +700,9 @@ packages:
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
 
+  '@types/debug@4.1.12':
+    resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
@@ -708,6 +711,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/ms@2.1.0':
+    resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
   '@types/node@24.0.13':
     resolution: {integrity: sha512-Qm9OYVOFHFYg3wJoTSrz80hoec5Lia/dPp84do3X7dZvLikQvM1YpmvTBEdIr/e+U8HTkFjLHLnl78K/qjf+jQ==}
@@ -2248,7 +2254,7 @@ snapshots:
 
   '@fjell/core@4.4.13':
     dependencies:
-      '@fjell/logging': 4.4.13
+      '@fjell/logging': 4.4.17
       deepmerge: 4.3.1
       luxon: 3.7.1
 
@@ -2263,16 +2269,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fjell/http-api@4.4.15':
+  '@fjell/http-api@4.4.16':
     dependencies:
-      '@fjell/logging': 4.4.13
+      '@fjell/logging': 4.4.17
 
-  '@fjell/logging@4.4.13': {}
+  '@fjell/logging@4.4.17': {}
 
-  '@fjell/registry@4.4.11':
+  '@fjell/registry@4.4.16':
     dependencies:
       '@fjell/core': 4.4.13
-      '@fjell/logging': 4.4.13
+      '@fjell/logging': 4.4.17
       deepmerge: 4.3.1
 
   '@humanfs/core@0.19.1': {}
@@ -2538,11 +2544,19 @@ snapshots:
     dependencies:
       '@types/deep-eql': 4.0.2
 
+  '@types/debug@4.1.12':
+    dependencies:
+      '@types/ms': 2.1.0
+    optional: true
+
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/ms@2.1.0':
+    optional: true
 
   '@types/node@24.0.13':
     dependencies:
@@ -2654,7 +2668,7 @@ snapshots:
       magicast: 0.3.5
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -2673,7 +2687,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -2722,7 +2736,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -3802,7 +3816,7 @@ snapshots:
       '@types/node': 24.0.13
       fsevents: 2.3.3
 
-  vitest@3.2.4(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(@vitest/ui@3.2.4)(jsdom@26.1.0):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -3828,6 +3842,7 @@ snapshots:
       vite-node: 3.2.4(@types/node@24.0.13)
       why-is-node-running: 2.3.0
     optionalDependencies:
+      '@types/debug': 4.1.12
       '@types/node': 24.0.13
       '@vitest/ui': 3.2.4(vitest@3.2.4)
       jsdom: 26.1.0
