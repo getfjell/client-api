@@ -23,4 +23,8 @@ eslint.config.mjs
 src/
 commit.sh
 release.sh
-
+docs/
+examples/
+build.js
+esbuild.config.js
+generate-types.js
