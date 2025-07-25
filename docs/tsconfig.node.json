@@ -1,6 +1,7 @@
 {
   "extends": "@fjell/docs-template/tsconfig.node.json",
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "vitest.config.ts"
   ]
 }

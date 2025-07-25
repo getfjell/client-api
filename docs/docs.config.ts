@@ -31,6 +31,7 @@ const config: DocsConfig = {
       file: '/client-api/examples-README.md'
     }
   ],
+  // @ts-ignore - filesToCopy property exists at runtime but may not be in types
   filesToCopy: [
     {
       source: '../examples/README.md',
