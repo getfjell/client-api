@@ -17,8 +17,8 @@
     }
   },
   "scripts": {
-    "dev": "concurrently \"tsc --noEmit --watch\" \"node esbuild.config.js --watch\"",
-    "build": "pnpm run lint && tsc --noEmit && node esbuild.config.js && node generate-types.js",
+    "dev": "concurrently \"tsc --noEmit --watch\" \"node build.js --watch\"",
+    "build": "pnpm run lint && tsc --noEmit && node build.js",
     "lint": "eslint . --ext .ts --fix",
     "clean": "rimraf dist",
     "test": "vitest run --coverage",
