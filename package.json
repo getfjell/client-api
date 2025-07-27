@@ -1,7 +1,7 @@
 {
   "name": "@fjell/client-api",
   "description": "Client API for Fjell",
-  "version": "4.4.15",
+  "version": "4.4.16",
   "keywords": [
     "client",
     "api",
