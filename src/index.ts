@@ -10,3 +10,10 @@ export { createPItemApi } from "./PItemAPI";
 export * from './Instance';
 export * from './InstanceFactory';
 export * from './Registry';
+
+// Error handling
+export * from './errors/index.js';
+export * from './ops/errorHandling.js';
+
+// HTTP wrapper
+export * from './http/HttpWrapper.js';
