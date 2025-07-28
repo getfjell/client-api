@@ -3,6 +3,20 @@
  *
  * This example demonstrates the comprehensive error handling capabilities
  * including retry logic, custom error types, and graceful error recovery.
+ *
+ * COMPREHENSIVE ERROR HANDLING FEATURES:
+ * - Network error recovery with exponential backoff
+ * - Server error retry with configurable strategies
+ * - Rate limiting handling with Retry-After respect
+ * - Authentication and authorization error handling
+ * - Validation error processing with detailed feedback
+ * - Custom error handlers and monitoring integration
+ * - Graceful degradation and fallback mechanisms
+ * - Circuit breaker patterns for service protection
+ * - Error analytics and operational insights
+ *
+ * This example shows both mock scenarios for demonstration and
+ * real API integration patterns for production use.
  */
 
 // Mock API setup to simulate various error conditions
@@ -374,9 +388,249 @@ async function demonstrateCustomRetryConfig() {
   }
 }
 
-// Main execution function
+/**
+ * Demonstrate real API integration with error handling
+ */
+async function demonstrateRealApiIntegration() {
+  console.log('\n' + '='.repeat(60));
+  console.log('🔗 DEMO: Real API Integration Patterns');
+  console.log('='.repeat(60));
+
+  console.log('\n📚 Production API Configuration Example:');
+  console.log(`
+// Production-ready API configuration
+const productionConfig = {
+  baseUrl: 'https://api.production.com/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer prod-token',
+    'X-Service-Name': 'fjell-client',
+    'X-Environment': 'production'
+  },
+
+  // Aggressive retry for critical operations
+  retryConfig: {
+    maxRetries: 5,
+    initialDelayMs: 1000,
+    maxDelayMs: 30000,
+    backoffMultiplier: 2,
+    enableJitter: true,
+
+    // Custom retry logic for business-critical operations
+    shouldRetry: (error, attemptNumber) => {
+      // Always retry network and server errors
+      if (error.isRetryable) return true;
+
+      // Special handling for payment operations
+      if (error.context?.operation === 'payment' && error.status === 409) {
+        return attemptNumber < 2; // Limited retries for conflicts
+      }
+
+      return false;
+    },
+
+    // Custom retry callback for monitoring
+    onRetry: (error, attemptNumber, delay) => {
+      // Send to monitoring service
+      monitoring.recordRetry({
+        operation: error.context?.operation,
+        errorCode: error.code,
+        attemptNumber,
+        delay
+      });
+    }
+  },
+
+  // Enterprise error handler
+  errorHandler: (error, context) => {
+    // Log to centralized logging
+    logger.error('API Operation Failed', {
+      error: error.message,
+      code: error.code,
+      context,
+      timestamp: new Date().toISOString(),
+      requestId: context?.requestId
+    });
+
+    // Send to error tracking service
+    errorTracking.captureException(error, {
+      tags: {
+        service: 'fjell-client-api',
+        operation: context?.operation
+      },
+      extra: context
+    });
+
+    // Alert on critical errors
+    if (error.code === 'PAYMENT_FAILED' || error.status >= 500) {
+      alerting.sendAlert({
+        severity: 'high',
+        message: \`API operation failed: \${error.message}\`,
+        service: 'fjell-client-api',
+        context
+      });
+    }
+
+    // Business logic for specific errors
+    if (error.code === 'RATE_LIMIT_ERROR') {
+      // Implement circuit breaker
+      circuitBreaker.recordFailure();
+    }
+  }
+};
+
+// Create production APIs with comprehensive error handling
+const userApi = createPItemApi<User, 'user'>('user', ['users'], productionConfig);
+const orderApi = createCItemApi<Order, 'order', 'customer'>('order', ['customers', 'orders'], productionConfig);
+`);
+
+  console.log('\n🛡️ Error Handling Patterns in Production:');
+  console.log(`
+// Pattern 1: Graceful degradation
+try {
+  const user = await userApi.get(userKey);
+  return user;
+} catch (error) {
+  if (error.code === 'NOT_FOUND_ERROR') {
+    // Return default user or redirect to registration
+    return createGuestUser();
+  }
+
+  if (error.code === 'NETWORK_ERROR') {
+    // Use cached data if available
+    return await getCachedUser(userKey) || createOfflineUser();
+  }
+
+  // Re-throw critical errors
+  throw error;
+}
+
+// Pattern 2: Circuit breaker integration
+const circuitBreakerConfig = {
+  failureThreshold: 5,
+  recoveryTimeout: 30000,
+  monitoringPeriod: 60000
+};
+
+try {
+  await circuitBreaker.execute(async () => {
+    return await userApi.create(userData);
+  }, circuitBreakerConfig);
+} catch (error) {
+  if (error.code === 'CIRCUIT_BREAKER_OPEN') {
+    // Use alternative service or queue for later
+    return await fallbackUserService.create(userData);
+  }
+  throw error;
+}
+
+// Pattern 3: Business workflow error recovery
+async function processOrder(orderData) {
+  const transaction = await beginTransaction();
+
+  try {
+    // Step 1: Create order
+    const order = await orderApi.create(orderData, [customerId]);
+
+    // Step 2: Process payment
+    const payment = await paymentApi.create({
+      orderId: order.id,
+      amount: order.total
+    });
+
+    // Step 3: Update inventory
+    await inventoryApi.action(productKey, 'reserve', {
+      quantity: orderData.quantity
+    });
+
+    await transaction.commit();
+    return order;
+
+  } catch (error) {
+    await transaction.rollback();
+
+    // Compensating actions based on error type
+    if (error.code === 'PAYMENT_FAILED') {
+      await orderApi.action(order.id, 'mark-payment-failed');
+      await notificationService.sendPaymentFailedEmail(customerId);
+    } else if (error.code === 'INVENTORY_INSUFFICIENT') {
+      await orderApi.remove(order.id);
+      await notificationService.sendOutOfStockNotification(customerId);
+    }
+
+    throw error;
+  }
+}
+`);
+
+  console.log('\n📊 Monitoring and Analytics Integration:');
+  console.log(`
+// Error metrics collection
+const errorMetrics = {
+  // Track error rates by operation
+  recordErrorRate: (operation, errorCode) => {
+    metrics.increment('api.errors.total', {
+      operation,
+      error_code: errorCode
+    });
+  },
+
+  // Track retry success rates
+  recordRetrySuccess: (operation, attemptNumber) => {
+    metrics.increment('api.retries.success', {
+      operation,
+      attempt: attemptNumber
+    });
+  },
+
+  // Track response times including retries
+  recordOperationTiming: (operation, duration, attempts) => {
+    metrics.timing('api.operation.duration', duration, {
+      operation,
+      attempts: attempts.toString()
+    });
+  }
+};
+
+// Business impact tracking
+const businessMetrics = {
+  // Track revenue impact of errors
+  recordRevenueImpact: (errorCode, orderValue) => {
+    if (errorCode === 'PAYMENT_FAILED') {
+      metrics.increment('business.revenue.lost', orderValue);
+    }
+  },
+
+  // Track customer satisfaction impact
+  recordCustomerImpact: (errorCode, customerId) => {
+    if (['TIMEOUT_ERROR', 'NETWORK_ERROR'].includes(errorCode)) {
+      metrics.increment('business.customer.poor_experience', {
+        customer_id: customerId
+      });
+    }
+  }
+};
+`);
+
+  console.log('\n✅ Real API Integration Patterns Complete!');
+  console.log('\n📋 Production Checklist:');
+  console.log('• ✅ Configure appropriate retry strategies for your use case');
+  console.log('• ✅ Implement custom error handlers for monitoring and alerting');
+  console.log('• ✅ Set up circuit breakers for external service protection');
+  console.log('• ✅ Implement graceful degradation and fallback mechanisms');
+  console.log('• ✅ Add comprehensive logging and error tracking');
+  console.log('• ✅ Monitor business impact metrics and SLA compliance');
+  console.log('• ✅ Set up automated alerts for critical error patterns');
+  console.log('• ✅ Implement compensating transactions for business workflows');
+  console.log('• ✅ Test error scenarios in staging environments');
+  console.log('• ✅ Document error handling procedures for operations team');
+}
+
+/**
+ * Enhanced main function with real API integration
+ */
 export async function runErrorHandlingExample(): Promise<void> {
-  console.log('🚀 Fjell Client API - Error Handling Examples');
+  console.log('🚀 Fjell Client API - Comprehensive Error Handling Examples');
   console.log('This demonstrates comprehensive error handling with retry logic, custom error types, and graceful recovery.');
 
   await demonstrateSuccessfulRetry();
@@ -386,6 +640,9 @@ export async function runErrorHandlingExample(): Promise<void> {
   await demonstrateTimeoutRecovery();
   await demonstrateValidationError();
   await demonstrateCustomRetryConfig();
+
+  // NEW: Real API integration patterns
+  await demonstrateRealApiIntegration();
 
   console.log('\n' + '='.repeat(60));
   console.log('✅ Error Handling Examples Complete!');
@@ -399,6 +656,11 @@ export async function runErrorHandlingExample(): Promise<void> {
   console.log('• Configurable retry behavior');
   console.log('• Non-retryable error detection');
   console.log('• Custom error handling for special cases');
+  console.log('• 🆕 Production API integration patterns');
+  console.log('• 🆕 Circuit breaker and fallback mechanisms');
+  console.log('• 🆕 Business workflow error recovery');
+  console.log('• 🆕 Monitoring and analytics integration');
+  console.log('• 🆕 Enterprise-grade error handling strategies');
 }
 
 // Export the example function for use in other modules

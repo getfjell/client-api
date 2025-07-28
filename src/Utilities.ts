@@ -9,7 +9,7 @@ import {
   PriKey,
 } from "@fjell/core";
 
-import LibLogger from "@/logger";
+import LibLogger from "./logger";
 import deepmerge from "deepmerge";
 
 const logger = LibLogger.get('client-api', 'Utility');

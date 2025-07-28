@@ -3,7 +3,7 @@ import { ClientApi } from "./ClientApi";
 import { InstanceFactory as BaseInstanceFactory, Registry, RegistryHub } from "@fjell/registry";
 import { createInstance, Instance } from "./Instance";
 import { Coordinate } from "@fjell/registry";
-import LibLogger from "@/logger";
+import LibLogger from "./logger";
 
 const logger = LibLogger.get("InstanceFactory");
 

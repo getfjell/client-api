@@ -11,7 +11,7 @@ import {
 } from "@fjell/http-api";
 import { createAItemAPI, PathNamesArray } from "./AItemAPI";
 
-import LibLogger from "@/logger";
+import LibLogger from "./logger";
 import { ClientApi } from "./ClientApi";
 import { ClientApiOptions } from "./ClientApiOptions";
 

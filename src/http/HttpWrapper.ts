@@ -4,7 +4,7 @@ import {
   createHttpError,
   createNetworkError,
   RateLimitError
-} from '../errors/index.js';
+} from '../errors/index';
 
 // Simple logger interface for now
 const logger = {

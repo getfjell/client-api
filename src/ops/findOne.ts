@@ -5,10 +5,10 @@ import {
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
-import { finderToParams } from "@/AItemAPI";
-import { ClientApiOptions } from "@/ClientApiOptions";
-import LibLogger from "@/logger";
-import { Utilities } from "@/Utilities";
+import { finderToParams } from "../AItemAPI";
+import { ClientApiOptions } from "../ClientApiOptions";
+import LibLogger from "../logger";
+import { Utilities } from "../Utilities";
 
 const logger = LibLogger.get('client-api', 'ops', 'find');
 

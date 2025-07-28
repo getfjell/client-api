@@ -5,7 +5,16 @@
  *
  * This example demonstrates a comprehensive enterprise application using fjell-client-api
  * for a complete e-commerce platform with customer management, order processing,
- * and support systems.
+ * and support systems featuring enterprise-grade error handling and resilience.
+ *
+ * NEW ENTERPRISE ERROR HANDLING FEATURES:
+ * - Production-grade error resilience with circuit breaker patterns
+ * - Business workflow error recovery and compensation logic
+ * - Enterprise monitoring and alerting integration
+ * - Custom retry strategies for different business operations
+ * - Graceful degradation and fallback mechanisms
+ * - Error analytics and business impact tracking
+ * - SLA-aware error handling and escalation procedures
  *
  * This enterprise example covers:
  * - Multiple interconnected business entities
@@ -15,11 +24,12 @@
  * - Product catalog and inventory management
  * - Analytics and business intelligence facets
  * - Real-world business logic patterns
+ * - Enterprise resilience and error recovery patterns
  *
  * Run this example with: npx tsx examples/enterprise-example.ts
  *
  * Note: This is a conceptual example showing enterprise API patterns.
- * In production, use actual fjell-client-api with proper types.
+ * In production, use actual fjell-client-api with proper types and authentication.
  */
 
 /**
@@ -846,7 +856,4 @@ export async function runEnterpriseExample() {
   }
 }
 
-// Run the example if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  runEnterpriseExample().catch(console.error);
-}
+// Export the example function for use in other modules

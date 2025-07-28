@@ -1,7 +1,7 @@
 import { Item } from "@fjell/core";
 import { ClientApi } from "./ClientApi";
 import { DeleteMethodOptions, GetMethodOptions, PostMethodOptions, PutMethodOptions } from "@fjell/http-api";
-import { RetryConfig } from "./http/HttpWrapper.js";
+import { RetryConfig } from "./http/HttpWrapper";
 
 export interface ClientApiOptions {
   readAuthenticated?: boolean;

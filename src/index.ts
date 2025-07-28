@@ -12,8 +12,8 @@ export * from './InstanceFactory';
 export * from './Registry';
 
 // Error handling
-export * from './errors/index.js';
-export * from './ops/errorHandling.js';
+export * from './errors/index';
+export * from './ops/errorHandling';
 
 // HTTP wrapper
-export * from './http/HttpWrapper.js';
+export * from './http/HttpWrapper';

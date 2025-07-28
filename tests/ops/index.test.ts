@@ -1,35 +1,61 @@
 import { Item } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { getOperations } from "@/ops/index";
-import { ClientApiOptions } from "@/ClientApiOptions";
-import { Utilities } from "@/Utilities";
+import { getOperations } from "../../src/ops/index";
+import { ClientApiOptions } from "../../src/ClientApiOptions";
+import { Utilities } from "../../src/Utilities";
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock all operation modules
-vi.mock("@/ops/all");
-vi.mock("@/ops/action");
-vi.mock("@/ops/allAction");
-vi.mock("@/ops/one");
-vi.mock("@/ops/create");
-vi.mock("@/ops/update");
-vi.mock("@/ops/get");
-vi.mock("@/ops/remove");
-vi.mock("@/ops/find");
-vi.mock("@/ops/facet");
-vi.mock("@/ops/findOne");
+vi.mock("../../src/ops/all", () => ({
+  getAllOperation: vi.fn()
+}));
+vi.mock("../../src/ops/action", () => ({
+  getActionOperation: vi.fn()
+}));
+vi.mock("../../src/ops/allAction", () => ({
+  getAllActionOperation: vi.fn()
+}));
+vi.mock("../../src/ops/one", () => ({
+  getOneOperation: vi.fn()
+}));
+vi.mock("../../src/ops/create", () => ({
+  getCreateOperation: vi.fn()
+}));
+vi.mock("../../src/ops/update", () => ({
+  getUpdateOperation: vi.fn()
+}));
+vi.mock("../../src/ops/get", () => ({
+  getGetOperation: vi.fn()
+}));
+vi.mock("../../src/ops/remove", () => ({
+  getRemoveOperation: vi.fn()
+}));
+vi.mock("../../src/ops/find", () => ({
+  getFindOperation: vi.fn()
+}));
+vi.mock("../../src/ops/facet", () => ({
+  getFacetOperation: vi.fn()
+}));
+vi.mock("../../src/ops/findOne", () => ({
+  getFindOneOperation: vi.fn()
+}));
+vi.mock("../../src/ops/allFacet", () => ({
+  getAllFacetOperation: vi.fn()
+}));
 
 // Import the mocked functions
-import { getAllOperation } from "@/ops/all";
-import { getActionOperation } from "@/ops/action";
-import { getAllActionOperation } from "@/ops/allAction";
-import { getOneOperation } from "@/ops/one";
-import { getCreateOperation } from "@/ops/create";
-import { getUpdateOperation } from "@/ops/update";
-import { getGetOperation } from "@/ops/get";
-import { getRemoveOperation } from "@/ops/remove";
-import { getFindOperation } from "@/ops/find";
-import { getFacetOperation } from "@/ops/facet";
-import { getFindOneOperation } from "@/ops/findOne";
+import { getAllOperation } from "../../src/ops/all";
+import { getActionOperation } from "../../src/ops/action";
+import { getAllActionOperation } from "../../src/ops/allAction";
+import { getOneOperation } from "../../src/ops/one";
+import { getCreateOperation } from "../../src/ops/create";
+import { getUpdateOperation } from "../../src/ops/update";
+import { getGetOperation } from "../../src/ops/get";
+import { getRemoveOperation } from "../../src/ops/remove";
+import { getFindOperation } from "../../src/ops/find";
+import { getFacetOperation } from "../../src/ops/facet";
+import { getFindOneOperation } from "../../src/ops/findOne";
+import { getAllFacetOperation } from "../../src/ops/allFacet";
 
 // Test types
 interface TestItem extends Item<"test", "loc1", "loc2"> {
@@ -54,6 +80,7 @@ describe("getOperations", () => {
   const mockFindOperation = vi.fn();
   const mockFacetOperation = vi.fn();
   const mockFindOneOperation = vi.fn();
+  const mockAllFacetOperation = vi.fn();
 
   beforeEach(() => {
     // Reset all mocks
@@ -96,6 +123,7 @@ describe("getOperations", () => {
     vi.mocked(getFindOperation).mockReturnValue(mockFindOperation);
     vi.mocked(getFacetOperation).mockReturnValue(mockFacetOperation);
     vi.mocked(getFindOneOperation).mockReturnValue(mockFindOneOperation);
+    vi.mocked(getAllFacetOperation).mockReturnValue(mockAllFacetOperation);
   });
 
   describe("getOperations function", () => {
@@ -106,8 +134,11 @@ describe("getOperations", () => {
       expect(clientApi).toHaveProperty('action');
       expect(clientApi).toHaveProperty('all');
       expect(clientApi).toHaveProperty('allAction');
+      expect(clientApi).toHaveProperty('allFacet');
       expect(clientApi).toHaveProperty('create');
+      expect(clientApi).toHaveProperty('facet');
       expect(clientApi).toHaveProperty('find');
+      expect(clientApi).toHaveProperty('findOne');
       expect(clientApi).toHaveProperty('get');
       expect(clientApi).toHaveProperty('one');
       expect(clientApi).toHaveProperty('remove');
@@ -120,8 +151,11 @@ describe("getOperations", () => {
       expect(typeof clientApi.action).toBe('function');
       expect(typeof clientApi.all).toBe('function');
       expect(typeof clientApi.allAction).toBe('function');
+      expect(typeof clientApi.allFacet).toBe('function');
       expect(typeof clientApi.create).toBe('function');
+      expect(typeof clientApi.facet).toBe('function');
       expect(typeof clientApi.find).toBe('function');
+      expect(typeof clientApi.findOne).toBe('function');
       expect(typeof clientApi.get).toBe('function');
       expect(typeof clientApi.one).toBe('function');
       expect(typeof clientApi.remove).toBe('function');
@@ -213,6 +247,7 @@ describe("getOperations", () => {
       expect(operationKeys).toContain('allAction');
       expect(operationKeys).toContain('facet');
       expect(operationKeys).toContain('findOne');
+      expect(operationKeys).toContain('allFacet');
     });
 
     it("should return exactly the expected operations", () => {
@@ -222,8 +257,7 @@ describe("getOperations", () => {
       // Test the exact current behavior
       const expectedOperations = [
         'action', 'all', 'allAction', 'allFacet', 'create',
-        'find', 'get', 'one', 'remove', 'update',
-        'facet', 'findOne',
+        'facet', 'find', 'findOne', 'get', 'one', 'remove', 'update'
       ].sort();
 
       expect(operationKeys).toEqual(expectedOperations);
