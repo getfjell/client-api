@@ -5,11 +5,6 @@
     "sourceMap": true,
     "outDir": "dist",
     "esModuleInterop": true,
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
     "declaration": true,
     "target": "es2022",
     "module": "es2022",

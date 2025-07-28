@@ -3,7 +3,7 @@ import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
 
-import LibLogger from "@/logger";
+import LibLogger from "./logger";
 import { ClientApiOptions } from "./ClientApiOptions";
 const logger = LibLogger.get('PItemAPI');
 

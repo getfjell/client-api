@@ -1,13 +1,15 @@
 import { Item, LocKeyArray, QueryParams } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { getFindOneOperation } from "@/ops/findOne";
-import { finderToParams } from "@/AItemAPI";
-import { ClientApiOptions } from "@/ClientApiOptions";
-import { Utilities } from "@/Utilities";
+import { getFindOneOperation } from "../../src/ops/findOne";
+import { finderToParams } from "../../src/AItemAPI";
+import { ClientApiOptions } from "../../src/ClientApiOptions";
+import { Utilities } from "../../src/Utilities";
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
-vi.mock("@/AItemAPI");
+vi.mock("../../src/AItemAPI", () => ({
+  finderToParams: vi.fn()
+}));
 
 // Test types
 interface TestItem extends Item<"test", "loc1", "loc2"> {
@@ -19,7 +21,6 @@ describe("getFindOneOperation", () => {
   let mockHttpApi: HttpApi;
   let mockApiOptions: ClientApiOptions;
   let mockUtilities: Utilities<TestItem, "test", "loc1", "loc2">;
-  let mockFinderToParams: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     // Reset all mocks
@@ -48,9 +49,8 @@ describe("getFindOneOperation", () => {
       validatePK: vi.fn().mockImplementation((arr) => arr)
     } as any;
 
-    // Mock finderToParams
-    mockFinderToParams = vi.mocked(finderToParams);
-    mockFinderToParams.mockReturnValue({ finder: "test" });
+    // Setup finderToParams mock
+    vi.mocked(finderToParams).mockReturnValue({ finder: "test" });
   });
 
   describe("findOne function", () => {
@@ -68,7 +68,7 @@ describe("getFindOneOperation", () => {
 
       expect(result).toBe(mockItem);
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith([]);
-      expect(mockFinderToParams).toHaveBeenCalledWith("byId", { id: "1" });
+      expect(finderToParams).toHaveBeenCalledWith("byId", { id: "1" });
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
         "/test/path",
         {
@@ -135,7 +135,7 @@ describe("getFindOneOperation", () => {
 
       await findOne("complex", complexParams);
 
-      expect(mockFinderToParams).toHaveBeenCalledWith("complex", complexParams);
+      expect(finderToParams).toHaveBeenCalledWith("complex", complexParams);
     });
 
     it("should set one parameter to true", async () => {
@@ -143,7 +143,7 @@ describe("getFindOneOperation", () => {
       const mockResponse = [mockItem];
       const mockParams: QueryParams = { finder: "test", existing: "param" };
 
-      mockFinderToParams.mockReturnValue(mockParams);
+      vi.mocked(finderToParams).mockReturnValue(mockParams);
       vi.mocked(mockHttpApi.httpGet).mockResolvedValue(mockResponse);
       vi.mocked(mockUtilities.processArray).mockResolvedValue(mockResponse);
       vi.mocked(mockUtilities.validatePK).mockReturnValue(mockResponse);

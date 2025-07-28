@@ -1,8 +1,8 @@
 import { Item, LocKeyArray } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { getAllFacetOperation } from "@/ops/allFacet";
-import { ClientApiOptions } from "@/ClientApiOptions";
-import { Utilities } from "@/Utilities";
+import { getAllFacetOperation } from "../../src/ops/allFacet";
+import { ClientApiOptions } from "../../src/ClientApiOptions";
+import { Utilities } from "../../src/Utilities";
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Test types

@@ -10,3 +10,10 @@ export { createPItemApi } from "./PItemAPI";
 export * from './Instance';
 export * from './InstanceFactory';
 export * from './Registry';
+
+// Error handling
+export * from './errors/index';
+export * from './ops/errorHandling';
+
+// HTTP wrapper
+export * from './http/HttpWrapper';
