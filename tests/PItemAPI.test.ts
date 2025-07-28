@@ -1,10 +1,10 @@
-import { createPItemApi } from "@/PItemAPI";
+import { createPItemApi } from "../src/PItemAPI";
 import { HttpApi } from "@fjell/http-api";
-import { createAItemAPI } from "@/AItemAPI";
+import { createAItemAPI } from "../src/AItemAPI";
 import { Item, PriKey, UUID } from "@fjell/core";
-import { ClientApi } from "@/ClientApi";
+import { ClientApi } from "../src/ClientApi";
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-vi.mock("@/AItemAPI", () => ({
+vi.mock("../src/AItemAPI", () => ({
   createAItemAPI: vi.fn(),
 }));
 

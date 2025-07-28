@@ -7,7 +7,7 @@ import { getOperations } from "./ops";
 import { createUtilities } from "./Utilities";
 import { ClientApi } from "./ClientApi";
 
-import LibLogger from "@/logger";
+import LibLogger from "./logger";
 
 const logger = LibLogger.get('AItemAPI');
 

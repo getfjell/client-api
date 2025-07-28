@@ -5,9 +5,9 @@ import {
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
-import { ClientApiOptions } from "@/ClientApiOptions";
-import LibLogger from "@/logger";
-import { Utilities } from "@/Utilities";
+import { ClientApiOptions } from "../ClientApiOptions";
+import LibLogger from "../logger";
+import { Utilities } from "../Utilities";
 
 const logger = LibLogger.get('client-api', 'ops', 'remove');
 

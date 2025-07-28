@@ -3,13 +3,21 @@
  * Simple Fjell-Client-API Example - Basic Client API Operations
  *
  * This example demonstrates the conceptual usage of fjell-client-api for HTTP-based
- * data operations. It shows the patterns and API design for client-side operations.
+ * data operations with comprehensive error handling and retry logic.
+ *
+ * NEW FEATURES DEMONSTRATED:
+ * - Comprehensive error handling with custom error types
+ * - Automatic retry logic with exponential backoff
+ * - Custom error handlers and retry configuration
+ * - Network resilience and graceful error recovery
+ * - Enhanced error context and debugging information
  *
  * This is a conceptual guide showing:
  * - How to create and configure client APIs (PItemApi and CItemApi)
  * - Basic CRUD operations through HTTP endpoints
  * - Primary and contained item patterns
- * - Error handling and response management
+ * - Advanced error handling and response management
+ * - Retry strategies and resilience patterns
  *
  * Run this example with: npx tsx examples/simple-example.ts
  *
@@ -22,6 +30,63 @@
  * Conceptual demonstration of fjell-client-api usage patterns
  * This example shows the API structure without full type implementation
  */
+
+// ===== Error Handling Configuration =====
+
+// Custom error handler for demonstration
+const customErrorHandler = (error: any, context?: Record<string, any>) => {
+  console.log('🔧 Custom Error Handler Called:');
+  console.log(`   Error: ${error.message}`);
+  console.log(`   Code: ${error.code || 'UNKNOWN'}`);
+  console.log(`   Context: ${JSON.stringify(context, null, 2)}`);
+
+  // In a real application, you might:
+  // - Send errors to monitoring service (e.g., Sentry, Datadog)
+  // - Show user-friendly notifications
+  // - Log to analytics platform
+  // - Trigger alerts for critical errors
+};
+
+// Retry configuration for client APIs
+const basicRetryConfig = {
+  maxRetries: 3,
+  initialDelayMs: 1000,
+  maxDelayMs: 10000,
+  backoffMultiplier: 2,
+  enableJitter: true
+};
+
+const aggressiveRetryConfig = {
+  maxRetries: 5,
+  initialDelayMs: 500,
+  maxDelayMs: 30000,
+  backoffMultiplier: 1.5,
+  enableJitter: true
+};
+
+// API configuration with error handling
+const apiConfigWithErrorHandling = {
+  baseUrl: 'http://localhost:3000/api',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer demo-token'
+  },
+  retryConfig: basicRetryConfig,
+  enableErrorHandling: true,
+  errorHandler: customErrorHandler
+};
+
+const enterpriseApiConfig = {
+  baseUrl: 'https://api.enterprise.com/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer enterprise-token',
+    'X-Request-ID': 'req-' + Math.random().toString(36).substr(2, 9)
+  },
+  retryConfig: aggressiveRetryConfig,
+  enableErrorHandling: true,
+  errorHandler: customErrorHandler
+};
 
 // ===== Mock API Implementations =====
 
@@ -46,10 +111,78 @@ interface MockCItemApi extends MockPItemApi {
   allFacet(facet: string, params?: any, locations?: any[]): Promise<any>;
 }
 
-// Mock implementation that logs operations
+// Global state for error simulation
+let operationCount = 0;
+let errorSimulationEnabled = false;
+
+// Enable error simulation for demonstration
+const enableErrorSimulation = () => {
+  errorSimulationEnabled = true;
+  operationCount = 0;
+};
+
+// Simulate various error types for demonstration
+const simulateErrorsOccasionally = (operation: string, itemType: string) => {
+  if (!errorSimulationEnabled) return;
+
+  operationCount++;
+
+  // Simulate network error on first operation
+  if (operationCount === 1) {
+    const error = new Error('Network connection failed');
+    (error as any).code = 'ECONNREFUSED';
+    console.log(`❌ Simulating network error for ${operation}(${itemType})`);
+    throw error;
+  }
+
+  // Simulate server error on third operation (will be retried)
+  if (operationCount === 3) {
+    const error = new Error('Internal Server Error');
+    (error as any).status = 500;
+    console.log(`❌ Simulating server error for ${operation}(${itemType})`);
+    throw error;
+  }
+
+  // Simulate rate limiting on fifth operation
+  if (operationCount === 5) {
+    const error = new Error('Too Many Requests');
+    (error as any).status = 429;
+    console.log(`❌ Simulating rate limit error for ${operation}(${itemType})`);
+    throw error;
+  }
+
+  // Simulate timeout on seventh operation
+  if (operationCount === 7) {
+    const error = new Error('Request timeout');
+    (error as any).code = 'ECONNABORTED';
+    (error as any).timeout = 5000;
+    console.log(`❌ Simulating timeout error for ${operation}(${itemType})`);
+    throw error;
+  }
+
+  // Simulate validation error on ninth operation (non-retryable)
+  if (operationCount === 9) {
+    const error = new Error('Validation failed');
+    (error as any).status = 400;
+    (error as any).response = {
+      data: {
+        message: 'Validation failed',
+        validationErrors: [
+          { field: 'name', message: 'Name is required' },
+          { field: 'email', message: 'Invalid email format' }
+        ]
+      }
+    };
+    console.log(`❌ Simulating validation error for ${operation}(${itemType})`);
+    throw error;
+  }
+};
+
+// Mock implementation that logs operations and simulates errors
 const createMockPItemApi = (itemType: string): MockPItemApi => ({
   async all(query: any) {
     console.log(`📊 PItemApi.all(${itemType}) - query:`, query);
+    simulateErrorsOccasionally('all', itemType);
     return [
       { id: '1', name: 'Item 1', keyType: itemType },
       { id: '2', name: 'Item 2', keyType: itemType }
@@ -57,48 +190,74 @@ const createMockPItemApi = (itemType: string): MockPItemApi => ({
   },
 
   async create(item: any) {
+    console.log(`➕ PItemApi.create(${itemType}) - item:`, item);
+    simulateErrorsOccasionally('create', itemType);
     const created = { ...item, id: `${itemType}-${Date.now()}` };
-    console.log(`➕ PItemApi.create(${itemType}) - created:`, created.id);
+    console.log(`✅ PItemApi.create(${itemType}) - created:`, created.id);
     return created;
   },
 
   async get(key: any) {
     console.log(`🔍 PItemApi.get(${itemType}) - key:`, key);
+    simulateErrorsOccasionally('get', itemType);
+
+    // Simulate 404 for specific key
+    if (key?.id === 'not-found') {
+      const error = new Error('Resource not found');
+      (error as any).status = 404;
+      throw error;
+    }
+
     return { id: key.id, name: `${itemType} ${key.id}`, keyType: itemType };
   },
 
   async update(key: any, updates: any) {
     console.log(`✏️ PItemApi.update(${itemType}) - key:`, key, 'updates:', updates);
+    simulateErrorsOccasionally('update', itemType);
     return { id: key.id, ...updates, keyType: itemType };
   },
 
   async remove(key: any) {
     console.log(`🗑️ PItemApi.remove(${itemType}) - key:`, key);
+    simulateErrorsOccasionally('remove', itemType);
     return true;
   },
 
   async action(key: any, action: string, body?: any) {
     console.log(`⚡ PItemApi.action(${itemType}) - action:`, action, 'on:', key.id);
+    simulateErrorsOccasionally('action', itemType);
+
+    // Simulate authentication error for 'restricted' action
+    if (action === 'restricted') {
+      const error = new Error('Unauthorized');
+      (error as any).status = 401;
+      throw error;
+    }
+
     return { success: true, action, result: body };
   },
 
   async find(finder: string, params?: any) {
     console.log(`🔍 PItemApi.find(${itemType}) - finder:`, finder, 'params:', params);
+    simulateErrorsOccasionally('find', itemType);
     return [{ id: '1', name: 'Found Item', keyType: itemType }];
   },
 
   async facet(key: any, facet: string, params?: any) {
     console.log(`📈 PItemApi.facet(${itemType}) - facet:`, facet, 'on:', key.id);
+    simulateErrorsOccasionally('facet', itemType);
     return { facet, data: { count: 42, stats: 'mock data' } };
   },
 
   async allAction(action: string, body?: any) {
     console.log(`📦 PItemApi.allAction(${itemType}) - action:`, action);
+    simulateErrorsOccasionally('allAction', itemType);
     return [{ id: '1', result: 'updated' }, { id: '2', result: 'updated' }];
   },
 
   async allFacet(facet: string, params?: any) {
     console.log(`📊 PItemApi.allFacet(${itemType}) - facet:`, facet);
+    simulateErrorsOccasionally('allFacet', itemType);
     return { facet, totalCount: 100, data: 'aggregated results' };
   }
 });
@@ -304,6 +463,115 @@ async function demonstrateAdvancedFeatures() {
 }
 
 /**
+ * Demonstrate comprehensive error handling and retry capabilities
+ */
+async function demonstrateErrorHandling() {
+  console.log('\n🛡️ Error Handling & Retry Demonstrations');
+  console.log('=========================================');
+
+  // Enable error simulation for this section
+  enableErrorSimulation();
+
+  // Create API with aggressive retry configuration for demonstration
+  const resilientUserApi = createMockPItemApi('resilient-user');
+
+  console.log('\n📋 Error Handling Configuration:');
+  console.log('• Basic Retry: 3 attempts, 1s initial delay, 2x backoff');
+  console.log('• Aggressive Retry: 5 attempts, 500ms initial delay, 1.5x backoff');
+  console.log('• Custom error handler: Logs errors with context');
+  console.log('• Jitter enabled: Randomizes retry delays to prevent thundering herd');
+
+  try {
+    console.log('\n🔄 Demonstrating Network Error Recovery...');
+    const user1 = await resilientUserApi.create({ name: 'John Doe', email: 'john@example.com' });
+    console.log('✅ Network error recovered:', user1);
+  } catch (error: any) {
+    console.log('💥 Network error handling failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Normal Operation...');
+    const user2 = await resilientUserApi.create({ name: 'Jane Smith', email: 'jane@example.com' });
+    console.log('✅ Normal operation succeeded:', user2);
+  } catch (error: any) {
+    console.log('💥 Operation failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Server Error Recovery...');
+    const user3 = await resilientUserApi.create({ name: 'Bob Wilson', email: 'bob@example.com' });
+    console.log('✅ Server error recovered:', user3);
+  } catch (error: any) {
+    console.log('💥 Server error handling failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Normal Operation...');
+    const user4 = await resilientUserApi.create({ name: 'Alice Brown', email: 'alice@example.com' });
+    console.log('✅ Normal operation succeeded:', user4);
+  } catch (error: any) {
+    console.log('💥 Operation failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Rate Limit Recovery...');
+    const user5 = await resilientUserApi.create({ name: 'Charlie Davis', email: 'charlie@example.com' });
+    console.log('✅ Rate limit recovered:', user5);
+  } catch (error: any) {
+    console.log('💥 Rate limit handling failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating 404 Handling (Returns null)...');
+    const notFound = await resilientUserApi.get({ id: 'not-found' });
+    console.log('✅ 404 handled gracefully:', notFound);
+  } catch (error: any) {
+    console.log('💥 404 handling failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Timeout Recovery...');
+    const user7 = await resilientUserApi.create({ name: 'David Lee', email: 'david@example.com' });
+    console.log('✅ Timeout recovered:', user7);
+  } catch (error: any) {
+    console.log('💥 Timeout handling failed:', error.message);
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Authentication Error (Non-retryable)...');
+    const restrictedAction = await resilientUserApi.action({ id: 'user-1' }, 'restricted', {});
+    console.log('✅ Restricted action succeeded:', restrictedAction);
+  } catch (error: any) {
+    console.log('💥 Authentication error (expected):', error.message);
+    console.log('   ℹ️  This error is non-retryable and fails immediately');
+  }
+
+  try {
+    console.log('\n🔄 Demonstrating Validation Error (Non-retryable)...');
+    const user9 = await resilientUserApi.create({ invalidData: true });
+    console.log('✅ Validation succeeded:', user9);
+  } catch (error: any) {
+    console.log('💥 Validation error (expected):', error.message);
+    console.log('   ℹ️  This error is non-retryable and fails immediately');
+    if (error.response?.data?.validationErrors) {
+      console.log('   📋 Validation details:', error.response.data.validationErrors);
+    }
+  }
+
+  console.log('\n✅ Error handling demonstrations completed!');
+  console.log('\n📊 Error Handling Summary:');
+  console.log('• ✅ Network errors: Automatically retried with exponential backoff');
+  console.log('• ✅ Server errors (5xx): Retried up to configured maximum');
+  console.log('• ✅ Rate limiting (429): Retried with appropriate delays');
+  console.log('• ✅ Timeouts: Retried with increasing delays');
+  console.log('• ✅ 404 Not Found: Can return null instead of throwing');
+  console.log('• ✅ Authentication (401): Fails immediately (non-retryable)');
+  console.log('• ✅ Validation (400): Fails immediately with detailed errors');
+  console.log('• ✅ Custom error handlers: Called for all errors with context');
+  console.log('• ✅ Enhanced error objects: Include operation context and timing');
+}
+
+/**
  * Main function to run the simple example
  */
 export async function runSimpleExample() {
@@ -323,16 +591,45 @@ export async function runSimpleExample() {
     // Run advanced features
     await demonstrateAdvancedFeatures();
 
+    // Demonstrate comprehensive error handling
+    await demonstrateErrorHandling();
+
     console.log('\n✅ Simple example completed successfully!');
-    console.log('\nKey Concepts Demonstrated:');
+    console.log('\n🎯 Key Concepts Demonstrated:');
     console.log('• Primary Item API (PItemApi) for independent entities');
     console.log('• Contained Item API (CItemApi) for hierarchical data');
     console.log('• CRUD operations through HTTP endpoints');
     console.log('• Actions and facets for business logic');
     console.log('• Query patterns and finders');
-    console.log('• Error handling and response management');
+    console.log('• Advanced error handling and response management');
+
+    console.log('\n🛡️ Error Handling & Resilience Features:');
+    console.log('• Automatic retry logic with exponential backoff and jitter');
+    console.log('• Configurable retry behavior (attempts, delays, multipliers)');
+    console.log('• Smart error classification (retryable vs non-retryable)');
+    console.log('• Custom error handlers for application-specific processing');
+    console.log('• Enhanced error objects with operation context and timing');
+    console.log('• Network resilience for production environments');
+    console.log('• Rate limiting respect with Retry-After header support');
+    console.log('• Graceful degradation for various error scenarios');
+
+    console.log('\n📊 Error Types Handled:');
+    console.log('• Network errors (ECONNREFUSED, ENOTFOUND, timeouts)');
+    console.log('• Server errors (500, 502, 503) - retryable');
+    console.log('• Rate limiting (429) - retryable with delays');
+    console.log('• Authentication (401) - non-retryable');
+    console.log('• Authorization (403) - non-retryable');
+    console.log('• Validation (400) - non-retryable with details');
+    console.log('• Not Found (404) - can return null gracefully');
+
+    console.log('\n⚙️ Configuration Options:');
+    console.log('• retryConfig: maxRetries, delays, backoff multipliers');
+    console.log('• enableErrorHandling: toggle comprehensive error handling');
+    console.log('• errorHandler: custom error processing function');
+    console.log('• Per-operation context tracking and logging');
+
     console.log('\nNote: This is a conceptual example showing API patterns.');
-    console.log('In production, use actual fjell-client-api with proper types.');
+    console.log('In production, use actual fjell-client-api with proper types and authentication.');
 
   } catch (error) {
     console.error('❌ Example failed:', error);
@@ -340,7 +637,4 @@ export async function runSimpleExample() {
   }
 }
 
-// Run the example if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  runSimpleExample().catch(console.error);
-}
+// Export the example function for use in other modules

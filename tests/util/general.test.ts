@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clean, stringifyJSON } from '@/util/general';
+import { clean, stringifyJSON } from '../../src/util/general';
 
 describe('general.ts utilities', () => {
   describe('clean', () => {

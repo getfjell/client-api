@@ -10,8 +10,12 @@ This directory contains examples demonstrating how to use fjell-client-api for H
 - **Primary and Contained APIs** - PItemApi for independent entities, CItemApi for hierarchical data
 - **Client API configuration** - HTTP endpoints, authentication, and error handling
 - **Actions and facets** - Business logic execution and analytics retrieval
+- **🆕 Comprehensive Error Handling** - Automatic retry logic, custom error types, resilience patterns
+- **🆕 Retry Configuration** - Exponential backoff, jitter, configurable retry behavior
+- **🆕 Error Classification** - Smart detection of retryable vs non-retryable errors
+- **🆕 Custom Error Handlers** - Application-specific error processing and monitoring
 
-Great for understanding the fundamentals of fjell-client-api HTTP operations.
+Great for understanding the fundamentals of fjell-client-api HTTP operations and modern error handling patterns.
 
 ### 2. `multi-level-keys.ts`
 **Advanced hierarchical data models!** Demonstrates complex data structures with multi-level contained items:
@@ -30,8 +34,21 @@ Shows how fjell-client-api handles enterprise organizational data patterns with 
 - **Advanced analytics facets**: Customer analytics, product performance, order metrics
 - **Enterprise features**: Multi-tenant configuration, complex business logic, predictive analytics
 - **Real business scenarios**: Complete e-commerce platform with customer lifecycle management
+- **🆕 Enterprise Error Handling** - Production-grade resilience, monitoring integration, circuit breakers
+- **🆕 Business Continuity** - Graceful degradation, fallback strategies, error recovery workflows
 
 Perfect for understanding how to build complete enterprise applications with fjell-client-api.
+
+### 4. `error-handling-example.ts` 🛡️ **Error Handling Deep Dive**
+**Comprehensive error handling demonstration!** Shows all error handling capabilities in detail:
+- **Error Type Demonstrations** - Network, server, authentication, validation, rate limiting errors
+- **Retry Logic Showcase** - Exponential backoff, jitter, custom retry strategies
+- **Error Recovery Patterns** - Graceful degradation, fallback mechanisms, circuit breaker patterns
+- **Configuration Examples** - Basic and aggressive retry configs, custom error handlers
+- **Real-world Scenarios** - Production error handling patterns and best practices
+- **Monitoring Integration** - Error tracking, logging, alerting for enterprise environments
+
+Essential for understanding how to build resilient, production-ready applications with fjell-client-api.
 
 ## Key Concepts Demonstrated
 
@@ -340,6 +357,7 @@ npx tsx -e "
 import { runSimpleExample } from './examples/simple-example.js';
 import { runMultiLevelKeysExample } from './examples/multi-level-keys.js';
 import { runEnterpriseExample } from './examples/enterprise-example.js';
+import { runErrorHandlingExample } from './examples/error-handling-example.js';
 
 console.log('🚀 Running All Fjell-Client-API Examples\\n');
 
@@ -350,9 +368,18 @@ await runMultiLevelKeysExample();
 console.log('\\n' + '='.repeat(50) + '\\n');
 
 await runEnterpriseExample();
+console.log('\\n' + '='.repeat(50) + '\\n');
+
+await runErrorHandlingExample();
 
 console.log('\\n✅ All examples completed successfully!');
 "
+```
+
+### Run Error Handling Example
+```bash
+# Run the comprehensive error handling demonstration
+npx tsx examples/error-handling-example.ts
 ```
 
 ## Next Steps

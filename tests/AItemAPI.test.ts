@@ -1,5 +1,5 @@
-import { createAItemAPI } from "@/AItemAPI";
-import { ClientApi } from "@/ClientApi";
+import { createAItemAPI } from "../src/AItemAPI";
+import { ClientApi } from "../src/ClientApi";
 import { Item, PriKey, UUID } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { beforeEach, describe, expect, it, vi } from 'vitest';

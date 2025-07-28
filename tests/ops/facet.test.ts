@@ -1,8 +1,8 @@
 import { ComKey, Item, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
-import { getFacetOperation } from "@/ops/facet";
-import { ClientApiOptions } from "@/ClientApiOptions";
-import { Utilities } from "@/Utilities";
+import { getFacetOperation } from "../../src/ops/facet";
+import { ClientApiOptions } from "../../src/ClientApiOptions";
+import { Utilities } from "../../src/Utilities";
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Test types
