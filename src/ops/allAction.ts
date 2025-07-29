@@ -39,7 +39,7 @@ export const getAllActionOperation = <
     return utilities.validatePK(
       await utilities.processArray(
         api.httpPost<V[]>(
-          utilities.getPath(loc),
+          `${utilities.getPath(loc)}/${action}`,
           body,
           requestOptions,
         )
