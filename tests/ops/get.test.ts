@@ -280,7 +280,7 @@ describe('getGetOperation', () => {
     mockApi.httpGet
       .mockRejectedValueOnce(rateLimitError)
       .mockResolvedValueOnce(testItem);
-    
+
     mockUtilities.processOne.mockImplementation((promise) => promise);
     mockUtilities.validatePK.mockReturnValue(testItem);
 
