@@ -60,7 +60,10 @@ export const createUtilities = <
   ): Promise<V> => {
     logger.default('processOne', { apiCall });
     const response = await apiCall;
-    logger.default('processOne response', { response: JSON.stringify(response, null, 2) });
+    logger.default('processOne response', {
+      responseType: typeof response,
+      hasData: !!response
+    });
     return convertDoc(response);
   };
 
@@ -69,7 +72,11 @@ export const createUtilities = <
   ): Promise<V[]> => {
     logger.default('processArray', { api });
     const response = await api;
-    logger.default('processArray response', { response: JSON.stringify(response, null, 2) });
+    logger.default('processArray response', {
+      responseType: typeof response,
+      isArray: Array.isArray(response),
+      length: Array.isArray(response) ? response.length : 0
+    });
     if (response && Array.isArray(response)) {
       return response.map((subjectChat: V) =>
         convertDoc(subjectChat),

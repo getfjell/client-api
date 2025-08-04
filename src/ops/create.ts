@@ -7,60 +7,9 @@ import { HttpApi } from "@fjell/http-api";
 import { ClientApiOptions } from "../ClientApiOptions";
 import LibLogger from "../logger";
 import { Utilities } from "../Utilities";
+import { calculateRetryDelay, enhanceError, shouldRetryError } from "./errorHandling";
 
 const logger = LibLogger.get('client-api', 'ops', 'create');
-
-// Utility functions for error handling
-function shouldRetryError(error: any): boolean {
-  // Retry on network errors and 5xx server errors
-  if (error.code === 'ECONNREFUSED' ||
-    error.code === 'ENOTFOUND' ||
-    error.code === 'ENETUNREACH' ||
-    error.message?.includes('timeout') ||
-    error.message?.includes('network')) {
-    return true;
-  }
-
-  // Retry on HTTP 5xx errors and 429 (rate limiting)
-  if (error.status >= 500 || error.status === 429) {
-    return true;
-  }
-
-  // Don't retry on 4xx client errors (except 429)
-  if (error.status >= 400 && error.status < 500 && error.status !== 429) {
-    return false;
-  }
-
-  // Default to retrying unknown errors
-  return true;
-}
-
-function calculateRetryDelay(attempt: number, config: any): number {
-  const exponentialDelay = (config.initialDelayMs || 1000) * Math.pow(config.backoffMultiplier || 2, attempt);
-  const cappedDelay = Math.min(exponentialDelay, config.maxDelayMs || 30000);
-
-  // Add jitter: random value between 50% and 100% of calculated delay
-  const jitter = 0.5 + (Math.random() * 0.5);
-  return Math.floor(cappedDelay * jitter);
-}
-
-function enhanceError(error: any, context: any): any {
-  if (!error) return new Error('Unknown error occurred');
-
-  // If it's already enhanced, return as-is
-  if (error.context) return error;
-
-  // Add context to the error
-  const enhancedError = new Error(error.message || 'HTTP operation failed');
-  Object.assign(enhancedError, {
-    code: error.code || error.status || 'UNKNOWN_ERROR',
-    status: error.status,
-    context,
-    originalError: error
-  });
-
-  return enhancedError;
-}
 
 export const getCreateOperation = <
   V extends Item<S, L1, L2, L3, L4, L5>,
