@@ -37,7 +37,7 @@ export const getAllFacetOperation = <
 
     // TODO: This should respond to either a single object, or multiple objects in an array.
     return api.httpGet<V[]>(
-      utilities.getPath(loc),
+      `${utilities.getPath(loc)}/${facet}`,
       requestOptions,
     )
   };
