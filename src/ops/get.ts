@@ -8,51 +8,9 @@ import { HttpApi } from "@fjell/http-api";
 import { ClientApiOptions } from "../ClientApiOptions";
 import LibLogger from "../logger";
 import { Utilities } from "../Utilities";
+import { calculateRetryDelay, enhanceError, shouldRetryError } from "./errorHandling";
 
 const logger = LibLogger.get('client-api', 'ops', 'get');
-
-// Utility functions for error handling
-function shouldRetryError(error: any): boolean {
-  if (error.code === 'ECONNREFUSED' ||
-    error.code === 'ENOTFOUND' ||
-    error.code === 'ENETUNREACH' ||
-    error.message?.includes('timeout') ||
-    error.message?.includes('network')) {
-    return true;
-  }
-
-  if (error.status >= 500 || error.status === 429) {
-    return true;
-  }
-
-  if (error.status >= 400 && error.status < 500 && error.status !== 429) {
-    return false;
-  }
-
-  return true;
-}
-
-function calculateRetryDelay(attempt: number, config: any): number {
-  const exponentialDelay = (config.initialDelayMs || 1000) * Math.pow(config.backoffMultiplier || 2, attempt);
-  const cappedDelay = Math.min(exponentialDelay, config.maxDelayMs || 30000);
-  const jitter = 0.5 + (Math.random() * 0.5);
-  return Math.floor(cappedDelay * jitter);
-}
-
-function enhanceError(error: any, context: any): any {
-  if (!error) return new Error('Unknown error occurred');
-  if (error.context) return error;
-
-  const enhancedError = new Error(error.message || 'HTTP operation failed');
-  Object.assign(enhancedError, {
-    code: error.code || error.status || 'UNKNOWN_ERROR',
-    status: error.status,
-    context,
-    originalError: error
-  });
-
-  return enhancedError;
-}
 
 export const getGetOperation = <
   V extends Item<S, L1, L2, L3, L4, L5>,
