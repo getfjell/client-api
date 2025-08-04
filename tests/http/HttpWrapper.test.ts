@@ -207,10 +207,11 @@ describe('HttpWrapper', () => {
 
       const resultPromise = httpWrapper.get('/test-url');
 
-      // Fast-forward through all delays
-      await vi.runAllTimersAsync();
-
-      await expect(resultPromise).rejects.toThrow(serverError);
+      // Handle both timer advancement and error expectation together
+      const [, error] = await Promise.all([
+        vi.runAllTimersAsync(),
+        expect(resultPromise).rejects.toThrow(serverError)
+      ]);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledTimes(4); // 1 initial + 3 retries
       expect(mockConsole.error).toHaveBeenCalledWith(
@@ -261,10 +262,11 @@ describe('HttpWrapper', () => {
 
       const resultPromise = wrapper.get('/test-url');
 
-      // Fast-forward through delays
-      await vi.runAllTimersAsync();
-
-      await expect(resultPromise).rejects.toThrow(serverError);
+      // Handle both timer advancement and error expectation together
+      const [, error] = await Promise.all([
+        vi.runAllTimersAsync(),
+        expect(resultPromise).rejects.toThrow(serverError)
+      ]);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledTimes(2); // 1 initial + 1 retry
     });
