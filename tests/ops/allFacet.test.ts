@@ -65,7 +65,7 @@ describe("getAllFacetOperation", () => {
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith(locations);
       expect(mockUtilities.getPath).toHaveBeenCalledWith(locations);
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/status",
         {
           isAuthenticated: true,
           params: {}
@@ -95,7 +95,7 @@ describe("getAllFacetOperation", () => {
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith(locations);
       expect(mockUtilities.getPath).toHaveBeenCalledWith(locations);
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/metadata",
         {
           isAuthenticated: true,
           params: {}
@@ -117,7 +117,7 @@ describe("getAllFacetOperation", () => {
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith(locations);
       expect(mockUtilities.getPath).toHaveBeenCalledWith(locations);
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/permissions",
         {
           isAuthenticated: true,
           params: {}
@@ -139,7 +139,7 @@ describe("getAllFacetOperation", () => {
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith([]);
       expect(mockUtilities.getPath).toHaveBeenCalledWith([]);
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/config",
         {
           isAuthenticated: true,
           params: {}
@@ -161,7 +161,7 @@ describe("getAllFacetOperation", () => {
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith([]);
       expect(mockUtilities.getPath).toHaveBeenCalledWith([]);
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/settings",
         {
           isAuthenticated: true,
           params: {}
@@ -180,7 +180,7 @@ describe("getAllFacetOperation", () => {
       await allFacet(facetName);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/analytics",
         {
           isAuthenticated: true,
           params: {}
@@ -202,7 +202,7 @@ describe("getAllFacetOperation", () => {
       await allFacet(facetName);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/reports",
         {
           isAuthenticated: false,
           params: {}
@@ -221,7 +221,7 @@ describe("getAllFacetOperation", () => {
       await allFacet(facetName);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/audit",
         {
           isAuthenticated: true,
           params: {}
@@ -241,7 +241,7 @@ describe("getAllFacetOperation", () => {
       await allFacet(facetName);
 
       expect(mockHttpApi.httpGet).toHaveBeenCalledWith(
-        "/test/path",
+        "/test/path/logs",
         {
           isAuthenticated: void 0,
           params: {}
