@@ -1,21 +1,28 @@
 {
   "name": "@fjell/client-api",
   "description": "Client API for Fjell",
-  "version": "4.4.25",
+  "version": "4.4.26",
   "keywords": [
     "client",
     "api",
     "fjell"
   ],
   "license": "Apache-2.0",
-  "type": "module",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
+  "browser": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"tsc --noEmit --watch\" \"node build.js --watch\"",
     "build": "npm run lint && tsc --noEmit && node build.js",
@@ -30,10 +37,10 @@
     "docs:test": "cd docs && npm run test"
   },
   "dependencies": {
-    "@fjell/core": "^4.4.35",
-    "@fjell/http-api": "^4.4.34",
-    "@fjell/logging": "^4.4.41",
-    "@fjell/registry": "^4.4.29",
+    "@fjell/core": "^4.4.37",
+    "@fjell/http-api": "^4.4.35",
+    "@fjell/logging": "^4.4.43",
+    "@fjell/registry": "^4.4.31",
     "deepmerge": "^4.3.1"
   },
   "devDependencies": {
@@ -41,6 +48,7 @@
     "@eslint/js": "^9.33.0",
     "@fjell/eslint-config": "^1.1.20",
     "@tsconfig/recommended": "^1.0.10",
+    "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
     "@vitest/coverage-istanbul": "^3.2.4",
@@ -49,8 +57,11 @@
     "concurrently": "^9.2.0",
     "esbuild": "^0.25.8",
     "eslint": "^9.33.0",
+    "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "undici": "^7.13.0",
+    "vitest": "^3.2.4",
+    "vitest-fetch-mock": "^0.4.5"
   },
   "repository": {
     "type": "git",

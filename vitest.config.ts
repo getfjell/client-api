@@ -1,19 +1,22 @@
-import { defineConfig } from 'vitest/config';
+/// <reference types="vitest" />
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    environment: 'jsdom',
+    setupFiles: ['./tests/setup.ts'],
     globals: true,
-    environment: 'node',
-    include: ['tests/**/*.{test,spec}.ts'],
+    testTimeout: 30000,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      include: ['src/**/*.ts'],
       exclude: [
-        'node_modules/',
-        'tests/',
-        'src/index.ts',
-      ],
-    },
+        'build.js',
+        'docs/**',
+        'coverage/**',
+        'output/**',
+        '**/*.config.*',
+        '**/*.d.ts',
+        'dist/**',
+      ]
+    }
   },
-});
+})
