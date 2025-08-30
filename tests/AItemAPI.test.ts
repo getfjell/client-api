@@ -34,9 +34,9 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         },
       };
-      api.httpPost = vi.fn().mockResolvedValue(item);
+      api.httpPost = vi.fn().mockResolvedValue([item, []]);
       const result = await containersAPI.action(key, "action", {});
-      expect(result).toEqual(item);
+      expect(result).toEqual([item, []]);
     });
   });
 
@@ -74,9 +74,9 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       };
-      api.httpPost = vi.fn().mockResolvedValue([item]);
+      api.httpPost = vi.fn().mockResolvedValue([[item], []]);
       const result = await containersAPI.allAction("action", {}, []);
-      expect(result).toEqual([item]);
+      expect(result).toEqual([[item], []]);
     });
   });
 

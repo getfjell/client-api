@@ -9,5 +9,5 @@ runs:
       run: |
         # Change to docs directory and install dependencies
         cd docs
-        npm install
+        npm ci
         npm run build
