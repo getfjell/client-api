@@ -85,7 +85,7 @@ Delete an item.
 const deleted = await userApi.remove(userKey)
 ```
 
-##### `action(key: PriKey<S>, action: string, body?: any): Promise<any>`
+##### `action(key: PriKey<S>, action: string, body?: any): Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>`
 Execute a business action on a specific item.
 
 **Parameters:**
@@ -93,11 +93,15 @@ Execute a business action on a specific item.
 - `action` - Name of the action to execute
 - `body` (optional) - Action parameters
 
-**Returns:** Promise resolving to action result
+**Returns:** Promise resolving to a tuple containing:
+- `[0]` - The primary action result (updated item or action response)
+- `[1]` - Array of keys for other items that were affected by this action
 
 **Example:**
 ```typescript
-await userApi.action(userKey, 'activate', { reason: 'manual activation' })
+const [result, affectedItems] = await userApi.action(userKey, 'activate', { reason: 'manual activation' })
+// result = the updated user or action response
+// affectedItems = array of keys for other items affected (e.g., related orders, notifications, etc.)
 ```
 
 ##### `find(finder: string, params?: any): Promise<V[]>`
@@ -129,18 +133,22 @@ Retrieve computed data or analytics for a specific item.
 const userStats = await userApi.facet(userKey, 'activity-stats')
 ```
 
-##### `allAction(action: string, body?: any): Promise<V[]>`
+##### `allAction(action: string, body?: any): Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>`
 Execute a business action on all items or collections.
 
 **Parameters:**
 - `action` - Name of the action to execute
 - `body` (optional) - Action parameters
 
-**Returns:** Promise resolving to action results
+**Returns:** Promise resolving to a tuple containing:
+- `[0]` - Array of primary action results (updated items or action responses)
+- `[1]` - Array of keys for other items that were affected by this action
 
 **Example:**
 ```typescript
-const results = await userApi.allAction('bulk-update', { status: 'active' })
+const [results, affectedItems] = await userApi.allAction('bulk-update', { status: 'active' })
+// results = array of updated users or action responses
+// affectedItems = array of keys for other items affected (e.g., related records, audit logs, etc.)
 ```
 
 ##### `allFacet(facet: string, params?: any): Promise<any>`
@@ -207,11 +215,103 @@ const task = await taskApi.create({
 ##### `find(finder: string, params?: any, locations?: LocKeyArray<L1, L2, L3, L4, L5>): Promise<V[]>`
 Execute a custom finder within a location context.
 
-##### `allAction(action: string, body?: any, locations?: LocKeyArray<L1, L2, L3, L4, L5>): Promise<V[]>`
+##### `allAction(action: string, body?: any, locations?: LocKeyArray<L1, L2, L3, L4, L5>): Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>`
 Execute actions on collections within a location context.
+
+**Parameters:**
+- `action` - Name of the action to execute
+- `body` (optional) - Action parameters
+- `locations` (optional) - Array of location keys defining the context
+
+**Returns:** Promise resolving to a tuple containing:
+- `[0]` - Array of primary action results (updated items or action responses)
+- `[1]` - Array of keys for other items that were affected by this action
+
+**Example:**
+```typescript
+const [results, affectedItems] = await taskApi.allAction('bulk-complete', { reason: 'project finished' }, [userId])
+// results = array of updated tasks
+// affectedItems = array of keys for other items affected (e.g., user stats, project milestones, etc.)
+```
 
 ##### `allFacet(facet: string, params?: any, locations?: LocKeyArray<L1, L2, L3, L4, L5>): Promise<any>`
 Retrieve analytics for collections within a location context.
+
+**Parameters:**
+- `facet` - Name of the facet
+- `params` (optional) - Facet parameters
+- `locations` (optional) - Array of location keys defining the context
+
+**Returns:** Promise resolving to facet data
+
+**Example:**
+```typescript
+const userAnalytics = await userApi.allFacet('engagement-metrics', { period: 'monthly' })
+```
+
+## Affected Items Feature
+
+The Client API now supports tracking items that are affected as side effects of actions. This is particularly useful for complex business operations that may impact multiple entities across your system.
+
+### Understanding Affected Items
+
+When you execute an action or allAction, the API returns a tuple where:
+- The first element contains the primary result (the item(s) you directly acted upon)
+- The second element contains an array of keys for other items that were indirectly affected
+
+### Use Cases
+
+**Example 1: Order Phase Update**
+```typescript
+// When updating an order phase, you might also affect the parent order
+const [updatedPhase, affectedItems] = await orderPhaseApi.action(phaseKey, 'complete', {})
+// updatedPhase = the completed order phase
+// affectedItems = [PriKey<'order'>(orderId)] - the parent order was also updated
+```
+
+**Example 2: Bulk User Activation**
+```typescript
+// When bulk-activating users, you might affect related records
+const [activatedUsers, affectedItems] = await userApi.allAction('bulk-activate', { reason: 'campaign' })
+// activatedUsers = array of activated users
+// affectedItems = [
+//   PriKey<'notification'>(notificationId),     // notification records created
+//   ComKey<'audit', 'user'>(auditId, userId),  // audit logs created
+//   PriKey<'campaign'>(campaignId)             // campaign status updated
+// ]
+```
+
+### Working with Affected Items
+
+```typescript
+const [result, affectedItems] = await api.action(key, 'someAction', params)
+
+// Check if any items were affected
+if (affectedItems.length > 0) {
+  console.log(`${affectedItems.length} items were affected by this action`)
+  
+  // Process each affected item type
+  affectedItems.forEach(itemKey => {
+    if (itemKey.kt === 'order') {
+      // Handle affected order
+      console.log('Order was affected:', itemKey.pk)
+    } else if (itemKey.kt === 'notification') {
+      // Handle affected notification
+      console.log('Notification was affected:', itemKey.pk)
+    }
+  })
+}
+```
+
+### Key Types in Affected Items
+
+The affected items array can contain any combination of:
+
+- **`PriKey<any>`** - Primary keys for any item type
+- **`ComKey<any, any, any, any, any, any>`** - Composite keys for any item type
+- **`LocKeyArray<any, any, any, any, any>`** - Location key arrays for any item type
+
+This flexibility allows actions to signal effects on completely unrelated item types, giving you full visibility into the impact of your operations.
 
 ## Configuration
 

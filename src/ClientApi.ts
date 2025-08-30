@@ -13,7 +13,7 @@ export interface ClientApi<
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     action: string,
     body?: any,
-  ) => Promise<V>;
+  ) => Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
   all: (
     query: ItemQuery,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
@@ -22,7 +22,7 @@ export interface ClientApi<
     action: string,
     body?: any,
     locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V[]>;
+  ) => Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
   allFacet: (
     facet: string,
     params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,

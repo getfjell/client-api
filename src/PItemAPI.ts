@@ -1,4 +1,4 @@
-import { ComKey, Item, ItemQuery, PriKey } from "@fjell/core";
+import { ComKey, Item, ItemQuery, LocKeyArray, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
@@ -16,7 +16,7 @@ export interface PItemApi<
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
     action: string,
     body: any,
-  ) => Promise<V>;
+  ) => Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
 
   all: (
     query: ItemQuery,
@@ -25,7 +25,7 @@ export interface PItemApi<
   allAction: (
     action: string,
     body?: any,
-  ) => Promise<V[]>;
+  ) => Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
 
   allFacet: (
     facet: string,
@@ -86,8 +86,8 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
       ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
       action: string,
       body: any = {},
-    ): Promise<V> =>
-      await aItemAPI.action(ik, action, body) as V;
+    ): Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]> =>
+      await aItemAPI.action(ik, action, body) as [V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>];
 
   const all =
     async (
@@ -99,8 +99,8 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     async (
       action: string,
       body: any = {},
-    ): Promise<V[]> =>
-      await aItemAPI.allAction(action, body, []) as V[];
+    ): Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]> =>
+      await aItemAPI.allAction(action, body, []) as [V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>];
 
   const allFacet =
     async (

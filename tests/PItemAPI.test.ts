@@ -24,7 +24,7 @@ describe("PItemAPI", () => {
 
   it("should call action method", async () => {
 
-    const actionMethod = vi.fn().mockResolvedValue({} as Item<"test">);
+    const actionMethod = vi.fn().mockResolvedValue([{} as Item<"test">, []]);
     (createAItemAPI as Mock).mockReturnValue({ action: actionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
@@ -34,7 +34,7 @@ describe("PItemAPI", () => {
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
     expect(actionMethod).toHaveBeenCalledWith(primaryKey, "testAction", {});
-    expect(result).toEqual({});
+    expect(result).toEqual([{}, []]);
   });
 
   it("should call all method", async () => {
@@ -50,7 +50,7 @@ describe("PItemAPI", () => {
   });
 
   it("should call allAction method", async () => {
-    const allActionMethod = vi.fn().mockResolvedValue([{} as Item<"test">]);
+    const allActionMethod = vi.fn().mockResolvedValue([[{} as Item<"test">], []]);
     (createAItemAPI as Mock).mockReturnValue({ allAction: allActionMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
@@ -58,7 +58,7 @@ describe("PItemAPI", () => {
     const result = await pItemAPI.allAction("testAction", {});
 
     expect(allActionMethod).toHaveBeenCalledWith("testAction", {}, []);
-    expect(result).toEqual([{}]);
+    expect(result).toEqual([[{}], []]);
   });
 
   it("should call one method", async () => {
