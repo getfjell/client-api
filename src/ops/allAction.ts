@@ -16,10 +16,10 @@ export const getAllActionOperation = <
   L4 extends string = never,
   L5 extends string = never,
 >(
-    api: HttpApi,
-    apiOptions: ClientApiOptions,
-    utilities: Utilities<V, S, L1, L2, L3, L4, L5>
-  ) => {
+  api: HttpApi,
+  apiOptions: ClientApiOptions,
+  utilities: Utilities<V, S, L1, L2, L3, L4, L5>
+) => {
   const allAction = async (
     action: string,
     body: any = {},
@@ -37,14 +37,27 @@ export const getAllActionOperation = <
       requestOptions,
     );
 
-    // Handle Express edge case where [[],[]] gets converted to {} on the server-side
-    let processedResponse = response;
-    if (response && typeof response === 'object' && !Array.isArray(response) && Object.keys(response).length === 0) {
-      logger.warning('Detected empty object response from server, converting to [[],[]] to handle Express edge case', { action, path: utilities.getPath(loc) });
-      processedResponse = [[], []] as [V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>];
-    }
+    // Handle edge cases where response might not be an array
+    let items: V[] = [];
+    let affectedItems: Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>> = [];
 
-    const [items, affectedItems] = processedResponse;
+    if (Array.isArray(response)) {
+      if (response[0] !== undefined && response[1] !== undefined) {
+        [items, affectedItems] = response;
+      } else if (response[0] !== undefined) {
+        // Handle single array response - assume it's the items array
+        items = response[0] as V[];
+        affectedItems = [];
+      }
+    } else if (response && typeof response === 'object' && Object.keys(response).length === 0) {
+      // Handle empty object response {}
+      items = [];
+      affectedItems = [];
+    } else if (typeof response === 'string' && response === '{}') {
+      // Handle string response "{}"
+      items = [];
+      affectedItems = [];
+    }
 
     return [
       utilities.validatePK(

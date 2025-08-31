@@ -3,15 +3,11 @@ import { getAllActionOperation } from '../../src/ops/allAction';
 import { HttpApi } from '@fjell/http-api';
 import { ClientApiOptions } from '../../src/ClientApiOptions';
 import { Utilities } from '../../src/Utilities';
-import { ComKey, Item, LocKeyArray, PriKey } from '@fjell/core';
-
-// Mock types
-type TestItem = Item<'test', 'loc1', 'loc2'>;
 
 describe('allAction', () => {
   let mockApi: HttpApi;
   let mockApiOptions: ClientApiOptions;
-  let mockUtilities: Utilities<TestItem, 'test', 'loc1', 'loc2'>;
+  let mockUtilities: Utilities<any, any, any, any, any, any, any>;
   let allAction: ReturnType<typeof getAllActionOperation>;
 
   beforeEach(() => {
@@ -47,10 +43,7 @@ describe('allAction', () => {
   });
 
   it('should handle normal array response correctly', async () => {
-    const mockResponse: [TestItem[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>] = [
-      [{ id: '1', type: 'test' } as TestItem],
-      ['key1', 'key2']
-    ];
+    const mockResponse = [['item1'], ['key1', 'key2']];
 
     (mockApi.httpPost as any).mockResolvedValue(mockResponse);
 
@@ -63,9 +56,22 @@ describe('allAction', () => {
   it('should handle empty object response and convert to [[],[]]', async () => {
     // Mock the server returning an empty object (Express edge case)
     const mockEmptyObjectResponse = {};
-    const expectedResponse: [TestItem[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>] = [[], []];
+    const expectedResponse = [[], []];
 
     (mockApi.httpPost as any).mockResolvedValue(mockEmptyObjectResponse);
+
+    const result = await allAction('testAction', {}, []);
+
+    expect(result).toEqual(expectedResponse);
+    expect(mockApi.httpPost).toHaveBeenCalledWith('/test/path/testAction', {}, { isAuthenticated: true });
+  });
+
+  it('should handle empty string response "{}" and convert to [[],[]]', async () => {
+    // Mock the server returning the string "{}" (Express edge case)
+    const mockEmptyStringResponse = '{}';
+    const expectedResponse = [[], []];
+
+    (mockApi.httpPost as any).mockResolvedValue(mockEmptyStringResponse);
 
     const result = await allAction('testAction', {}, []);
 
@@ -84,10 +90,7 @@ describe('allAction', () => {
   });
 
   it('should call utilities methods correctly', async () => {
-    const mockResponse: [TestItem[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>] = [
-      [{ id: '1', type: 'test' } as TestItem],
-      ['key1']
-    ];
+    const mockResponse = [['item1'], ['key1']];
 
     (mockApi.httpPost as any).mockResolvedValue(mockResponse);
 
