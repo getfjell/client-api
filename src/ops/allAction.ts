@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 import { ComKey, Item, LocKeyArray, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
@@ -16,10 +17,10 @@ export const getAllActionOperation = <
   L4 extends string = never,
   L5 extends string = never,
 >(
-  api: HttpApi,
-  apiOptions: ClientApiOptions,
-  utilities: Utilities<V, S, L1, L2, L3, L4, L5>
-) => {
+    api: HttpApi,
+    apiOptions: ClientApiOptions,
+    utilities: Utilities<V, S, L1, L2, L3, L4, L5>
+  ) => {
   const allAction = async (
     action: string,
     body: any = {},
