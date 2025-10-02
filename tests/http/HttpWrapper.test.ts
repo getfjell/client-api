@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-undefined */
+ 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpApi } from '@fjell/http-api';
 import { HttpWrapper, RetryConfig } from '../../src/http/HttpWrapper';
