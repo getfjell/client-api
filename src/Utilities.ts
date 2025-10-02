@@ -153,22 +153,35 @@ export const createUtilities = <
       logger.default('addPath returning base', { base });
       return base;
     } else {
-      // Retrieve the next key and collection, and create the next base
-      let nextBase: string;
-      const key = keys.pop();
-      const pathName = localPathNames.pop();
-      if (isPriKey(key)) {
-        const PriKey = key as PriKey<S>;
-        nextBase = `${base}/${pathName}/${PriKey.pk}`;
-        logger.default('Adding Path for PK', { pathName, PriKey, nextBase });
+      // For LocKey arrays, we need to match key types to path names
+      if (!isPriKey(keys[0])) {
+        // This is a LocKey, find the matching pathName
+        const key = keys.shift() as LocKey<L1 | L2 | L3 | L4 | L5>;
+        const matchingPathNameIndex = localPathNames.findIndex(pathName =>
+          pathName.toLowerCase().includes(key.kt.toLowerCase()) ||
+          key.kt.toLowerCase().includes(pathName.toLowerCase())
+        );
+        
+        if (matchingPathNameIndex === -1) {
+          // Fallback to first available pathName
+          const pathName = localPathNames.shift()!;
+          const nextBase = `${base}/${pathName}/${key.lk}`;
+          logger.default('Adding Path for LK (fallback)', { pathName, LocKey: key, nextBase });
+          return addPath(nextBase, keys, localPathNames);
+        } else {
+          const pathName = localPathNames.splice(matchingPathNameIndex, 1)[0];
+          const nextBase = `${base}/${pathName}/${key.lk}`;
+          logger.default('Adding Path for LK (matched)', { pathName, LocKey: key, nextBase });
+          return addPath(nextBase, keys, localPathNames);
+        }
       } else {
-        const LocKey = key as LocKey<L1 | L2 | L3 | L4 | L5>;
-        nextBase = `${base}/${pathName}/${LocKey.lk}`;
-        logger.default('Retrieving Collection for LK', { pathName, LocKey });
+        // This is a PriKey, use the first available pathName
+        const key = keys.shift() as PriKey<S>;
+        const pathName = localPathNames.shift()!;
+        const nextBase = `${base}/${pathName}/${key.pk}`;
+        logger.default('Adding Path for PK', { pathName, PriKey: key, nextBase });
+        return addPath(nextBase, keys, localPathNames);
       }
-
-      logger.default('calling addPath recursively', { nextBase, keys, localPathNames });
-      return addPath(nextBase, keys, localPathNames);
     }
 
   }
