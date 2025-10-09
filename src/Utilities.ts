@@ -118,17 +118,45 @@ export const createUtilities = <
       // console.log('getPath keys: ' + JSON.stringify(keys));
       // console.log('getPath pathNames: ' + JSON.stringify(pathNames));
 
-      let path: string = addPath('', keys, localPathNames);
+      // For contained items (ComKey), we need to process location keys first
+      // to match the URL structure: /parents/{parentId}/children/{childId}
+      if (keys.length > 1) {
+        // Separate PriKeys and LocKeys
+        const priKeys = keys.filter(k => isPriKey(k));
+        const locKeys = keys.filter(k => !isPriKey(k));
+        
+        // Reorder: LocKeys first, then PriKeys
+        const reorderedKeys = [...locKeys, ...priKeys];
+        logger.default('Reordered keys for contained item', {
+          original: keys,
+          reordered: reorderedKeys,
+          priKeys,
+          locKeys
+        });
+        
+        let path: string = addPath('', reorderedKeys, localPathNames);
 
-      // If there is only one collection left in the collections array, this means that
-      // we received LocKeys and we need to add the last collection to the reference
-      if (localPathNames.length === 1) {
-        path = `${path}/${localPathNames[0]}`;
+        // If there is only one collection left in the collections array, this means that
+        // we received LocKeys and we need to add the last collection to the reference
+        if (localPathNames.length === 1) {
+          path = `${path}/${localPathNames[0]}`;
+        }
+
+        logger.default('getPath created', { key, path });
+        return path;
+      } else {
+        // For primary items, use the original logic
+        let path: string = addPath('', keys, localPathNames);
+
+        // If there is only one collection left in the collections array, this means that
+        // we received LocKeys and we need to add the last collection to the reference
+        if (localPathNames.length === 1) {
+          path = `${path}/${localPathNames[0]}`;
+        }
+
+        logger.default('getPath created', { key, path });
+        return path;
       }
-
-      logger.default('getPath created', { key, path });
-
-      return path;
     };
 
   const addPath = (
@@ -153,33 +181,49 @@ export const createUtilities = <
       logger.default('addPath returning base', { base });
       return base;
     } else {
-      // For LocKey arrays, we need to match key types to path names
-      if (!isPriKey(keys[0])) {
-        // This is a LocKey, find the matching pathName
-        const key = keys.shift() as LocKey<L1 | L2 | L3 | L4 | L5>;
-        const matchingPathNameIndex = localPathNames.findIndex(pathName =>
-          pathName.toLowerCase().includes(key.kt.toLowerCase()) ||
-          key.kt.toLowerCase().includes(pathName.toLowerCase())
-        );
+      const currentKey = keys[0];
+      const keyType = isPriKey(currentKey) ? currentKey.kt : currentKey.kt;
+      
+      // Find the best matching pathName for this key type
+      const matchingPathNameIndex = localPathNames.findIndex(pathName => {
+        const singularPathName = pathName.endsWith('s') ? pathName.slice(0, -1) : pathName;
+        const pluralKeyType = keyType + 's';
         
-        if (matchingPathNameIndex === -1) {
-          // Fallback to first available pathName
-          const pathName = localPathNames.shift()!;
-          const nextBase = `${base}/${pathName}/${key.lk}`;
-          logger.default('Adding Path for LK (fallback)', { pathName, LocKey: key, nextBase });
-          return addPath(nextBase, keys, localPathNames);
-        } else {
-          const pathName = localPathNames.splice(matchingPathNameIndex, 1)[0];
-          const nextBase = `${base}/${pathName}/${key.lk}`;
-          logger.default('Adding Path for LK (matched)', { pathName, LocKey: key, nextBase });
-          return addPath(nextBase, keys, localPathNames);
-        }
+        // Try various matching strategies
+        return pathName === pluralKeyType || // photos === photo+s
+               pathName === keyType + 'es' || // matches === match+es
+               singularPathName === keyType || // photo === photo
+               pathName.toLowerCase() === keyType.toLowerCase() || // case insensitive
+               pathName.toLowerCase() === pluralKeyType.toLowerCase(); // case insensitive plural
+      });
+      
+      if (matchingPathNameIndex !== -1) {
+        // Found a matching pathName
+        const pathName = localPathNames.splice(matchingPathNameIndex, 1)[0];
+        const key = keys.shift()!;
+        const id = isPriKey(key) ? (key as PriKey<S>).pk : (key as LocKey<L1 | L2 | L3 | L4 | L5>).lk;
+        const nextBase = `${base}/${pathName}/${id}`;
+        logger.default('Adding Path (matched)', {
+          pathName,
+          keyType,
+          isPriKey: isPriKey(key),
+          key,
+          nextBase
+        });
+        return addPath(nextBase, keys, localPathNames);
       } else {
-        // This is a PriKey, use the first available pathName
-        const key = keys.shift() as PriKey<S>;
+        // No match found, use first available pathName
         const pathName = localPathNames.shift()!;
-        const nextBase = `${base}/${pathName}/${key.pk}`;
-        logger.default('Adding Path for PK', { pathName, PriKey: key, nextBase });
+        const key = keys.shift()!;
+        const id = isPriKey(key) ? (key as PriKey<S>).pk : (key as LocKey<L1 | L2 | L3 | L4 | L5>).lk;
+        const nextBase = `${base}/${pathName}/${id}`;
+        logger.default('Adding Path (no match, using first)', {
+          pathName,
+          keyType,
+          isPriKey: isPriKey(key),
+          key,
+          nextBase
+        });
         return addPath(nextBase, keys, localPathNames);
       }
     }
