@@ -41,7 +41,7 @@
     "@fjell/core": "^4.4.42",
     "@fjell/http-api": "^4.4.39",
     "@fjell/logging": "^4.4.47",
-    "@fjell/registry": "^4.4.40",
+    "@fjell/registry": "^4.4.41",
     "deepmerge": "^4.3.1"
   },
   "devDependencies": {
