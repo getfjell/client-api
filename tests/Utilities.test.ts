@@ -106,6 +106,128 @@ describe("Utilities", () => {
       const path = utilities.getPath([containerKey]);
       expect(path).toBe("/containers/container-1/tests");
     });
+
+    it("should generate path for nested entities with correct order (order -> orderForm -> orderNoseShape)", () => {
+      // This tests the case where we have:
+      // - order (primary entity, level 1)
+      // - orderForm (contained in order, level 2)
+      // - orderNoseShape (contained in orderForm, level 3)
+      const pkType = "orderNoseShape";
+      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
+
+      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
+        pkType,
+        pathNames
+      );
+
+      // For a 3-level hierarchy, the loc array contains ALL ancestor keys from outermost to innermost
+      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
+      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
+      
+      // ComKey for orderNoseShape with full location hierarchy
+      const comKey = {
+        kt: "orderNoseShape" as const,
+        pk: "nose-123" as UUID,
+        loc: [orderKey, orderFormKey]  // Parent order first, then orderForm
+      };
+
+      const path = utilities.getPath(comKey);
+      
+      // Expected: /fjell/order/<orderId>/orderForm/<orderFormId>/orderNoseShape/<noseId>
+      // The hierarchy should be maintained: order (parent) -> orderForm (child) -> orderNoseShape (grandchild)
+      expect(path).toBe("/fjell/order/26669/orderForm/26693/orderNoseShape/nose-123");
+    });
+
+    it("should generate path for collection access with location keys only (order -> orderForm -> orderNoseShape collection)", () => {
+      // This tests accessing the orderNoseShape COLLECTION within a specific orderForm
+      const pkType = "orderNoseShape";
+      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
+
+      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
+        pkType,
+        pathNames
+      );
+
+      // When accessing a collection, we only pass location keys (no PriKey for the item itself)
+      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
+      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
+      
+      const path = utilities.getPath([orderKey, orderFormKey]);
+      
+      // Expected: /fjell/order/<orderId>/orderForm/<orderFormId>/orderNoseShape
+      // This should follow the pathNames order: order first, then orderForm, then collection name
+      expect(path).toBe("/fjell/order/26669/orderForm/26693/orderNoseShape");
+    });
+
+    it("should throw error when location keys are in wrong order", () => {
+      // This validates that passing keys in the WRONG order throws an error
+      const pkType = "orderNoseShape";
+      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
+
+      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
+        pkType,
+        pathNames
+      );
+
+      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
+      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
+      
+      // WRONG ORDER: orderForm before order!
+      // Using 'as any' to bypass TypeScript's type checking to test runtime validation
+      expect(() => utilities.getPath([orderFormKey, orderKey] as any)).toThrow(
+        /Location keys must be ordered from parent to child/
+      );
+    });
+
+    it("should throw error with helpful message explaining the issue", () => {
+      const pkType = "orderNoseShape";
+      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
+
+      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
+        pkType,
+        pathNames
+      );
+
+      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
+      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
+      
+      // Verify the error message includes helpful details
+      // Using 'as any' to bypass TypeScript's type checking to test runtime validation
+      let thrownError: Error | null = null;
+      try {
+        utilities.getPath([orderFormKey, orderKey] as any);
+      } catch (error: any) {
+        thrownError = error;
+      }
+      
+      expect(thrownError).not.toBeNull();
+      expect(thrownError!.message).toContain("Location keys must be ordered from parent to child");
+      expect(thrownError!.message).toContain("fjell/order, orderForm, orderNoseShape");
+      expect(thrownError!.message).toContain("orderForm, order");
+    });
+
+    it("should generate path for deeply nested ComKey with multiple location levels", () => {
+      const pkType = "child";
+      const pathNames = ["parents", "children"];
+
+      const utilities = createUtilities<Item<"child", "parent">, "child", "parent">(
+        pkType,
+        pathNames
+      );
+
+      const parentKey: LocKey<"parent"> = { kt: "parent", lk: "parent-1" };
+      const comKey = {
+        kt: "child" as const,
+        pk: "child-1" as UUID,
+        loc: [parentKey]
+      };
+
+      const path = utilities.getPath(comKey);
+      
+      // Expected: /parents/parent-1/children/child-1
+      // The hierarchy should be maintained: parent first, then child
+      expect(path).toBe("/parents/parent-1/children/child-1");
+    });
   });
 
   describe("validatePK", () => {
