@@ -17,9 +17,10 @@ describe('Utilities - Location Key Ordering Integration', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
       // Location array representing: /orders/26513/orderPhases/25826
-      const parentLocations: LocKeyArray<'order', 'orderPhase'> = [
-        { kt: 'order', lk: 26513 },
-        { kt: 'orderPhase', lk: 25826 }
+      // CHILD -> PARENT order (orderPhase is child of order)
+      const parentLocations: LocKeyArray<'orderPhase', 'order'> = [
+        { kt: 'orderPhase', lk: 25826 },
+        { kt: 'order', lk: 26513 }
       ];
 
       // Should build: /orders/26513/orderPhases/25826/orderSteps
@@ -36,21 +37,22 @@ describe('Utilities - Location Key Ordering Integration', () => {
     it('should fail gracefully with clear error for incorrectly ordered location keys', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
-      // WRONG ORDER: child before parent
-      const wrongOrderLocations: LocKeyArray<'orderPhase', 'order'> = [
-        { kt: 'orderPhase', lk: 25826 }, // WRONG: should come second
-        { kt: 'order', lk: 26513 }        // WRONG: should come first
+      // WRONG ORDER: parent before child (should be child -> parent)
+      const wrongOrderLocations: LocKeyArray<'order', 'orderPhase'> = [
+        { kt: 'order', lk: 26513 },        // WRONG: should come second
+        { kt: 'orderPhase', lk: 25826 }   // WRONG: should come first
       ];
 
       // This should throw with a clear error message
       expect(() => {
         utilities.getPath(wrongOrderLocations);
-      }).toThrow(/Location keys must be ordered from parent to child/);
+      }).toThrow(/Location keys must be ordered from child to parent/);
     });
 
     it('should build paths for single-level containment', () => {
       const utilities = createUtilities('orderPhase', ['orders', 'orderPhases']);
 
+      // Single location key (no ordering issue with just one)
       const parentLocations: LocKeyArray<'order'> = [
         { kt: 'order', lk: 26513 }
       ];
@@ -64,9 +66,10 @@ describe('Utilities - Location Key Ordering Integration', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
       // Representing: /orders/123/orderPhases/456
-      const parentLocations: LocKeyArray<'order', 'orderPhase'> = [
-        { kt: 'order', lk: 123 },
-        { kt: 'orderPhase', lk: 456 }
+      // CHILD -> PARENT order
+      const parentLocations: LocKeyArray<'orderPhase', 'order'> = [
+        { kt: 'orderPhase', lk: 456 },
+        { kt: 'order', lk: 123 }
       ];
 
       const path = utilities.getPath(parentLocations);
@@ -80,12 +83,13 @@ describe('Utilities - Location Key Ordering Integration', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
       // A full orderStep key with its parent locations
-      const orderStepKey: ComKey<'orderStep', 'order', 'orderPhase'> = {
+      // CHILD -> PARENT order in loc array
+      const orderStepKey: ComKey<'orderStep', 'orderPhase', 'order'> = {
         pk: 25825,
         kt: 'orderStep',
         loc: [
-          { kt: 'order', lk: 26513 },
-          { kt: 'orderPhase', lk: 25826 }
+          { kt: 'orderPhase', lk: 25826 },
+          { kt: 'order', lk: 26513 }
         ]
       };
 
@@ -135,9 +139,10 @@ describe('Utilities - Location Key Ordering Integration', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
       // Parent locations from an orderPhase item
-      const parentLocations: LocKeyArray<'order', 'orderPhase'> = [
-        { kt: 'order', lk: 26513 },
-        { kt: 'orderPhase', lk: 25826 }
+      // CHILD -> PARENT order
+      const parentLocations: LocKeyArray<'orderPhase', 'order'> = [
+        { kt: 'orderPhase', lk: 25826 },
+        { kt: 'order', lk: 26513 }
       ];
 
       // This is what gets called internally in the 'all' operation
@@ -151,12 +156,13 @@ describe('Utilities - Location Key Ordering Integration', () => {
       // Simulating: api.get(itemKey) for a specific orderStep
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
-      const orderStepKey: ComKey<'orderStep', 'order', 'orderPhase'> = {
+      // CHILD -> PARENT order in loc array
+      const orderStepKey: ComKey<'orderStep', 'orderPhase', 'order'> = {
         pk: 25825,
         kt: 'orderStep',
         loc: [
-          { kt: 'order', lk: 26513 },
-          { kt: 'orderPhase', lk: 25826 }
+          { kt: 'orderPhase', lk: 25826 },
+          { kt: 'order', lk: 26513 }
         ]
       };
 
@@ -175,14 +181,15 @@ describe('Utilities - Location Key Ordering Integration', () => {
         'level5s'
       ]);
 
-      const deepKey: ComKey<'level5', 'level1', 'level2', 'level3', 'level4'> = {
+      // CHILD -> PARENT order (level4 is most immediate parent of level5)
+      const deepKey: ComKey<'level5', 'level4', 'level3', 'level2', 'level1'> = {
         pk: 'l5-id',
         kt: 'level5',
         loc: [
-          { kt: 'level1', lk: 'l1-id' },
-          { kt: 'level2', lk: 'l2-id' },
+          { kt: 'level4', lk: 'l4-id' },
           { kt: 'level3', lk: 'l3-id' },
-          { kt: 'level4', lk: 'l4-id' }
+          { kt: 'level2', lk: 'l2-id' },
+          { kt: 'level1', lk: 'l1-id' }
         ]
       };
 
@@ -202,10 +209,10 @@ describe('Utilities - Location Key Ordering Integration', () => {
     it('should reject locations in reverse order', () => {
       const utilities = createUtilities('level3', ['level1s', 'level2s', 'level3s']);
 
-      // Completely reversed order
-      const reversedLocations: LocKeyArray<'level2', 'level1'> = [
-        { kt: 'level2', lk: 'l2-id' },
-        { kt: 'level1', lk: 'l1-id' }
+      // Wrong order: parent before child (should be child -> parent)
+      const reversedLocations: LocKeyArray<'level1', 'level2'> = [
+        { kt: 'level1', lk: 'l1-id' },
+        { kt: 'level2', lk: 'l2-id' }
       ];
 
       expect(() => {
@@ -216,11 +223,11 @@ describe('Utilities - Location Key Ordering Integration', () => {
     it('should reject partially misordered locations', () => {
       const utilities = createUtilities('level4', ['level1s', 'level2s', 'level3s', 'level4s']);
 
-      // level1 and level3 are swapped
-      const misordered: LocKeyArray<'level3', 'level2', 'level1'> = [
-        { kt: 'level3', lk: 'l3-id' }, // Wrong position
-        { kt: 'level2', lk: 'l2-id' },
-        { kt: 'level1', lk: 'l1-id' }  // Wrong position
+      // level2 and level3 not in proper child->parent order
+      const misordered: LocKeyArray<'level1', 'level2', 'level3'> = [
+        { kt: 'level1', lk: 'l1-id' },  // Wrong: should be last
+        { kt: 'level2', lk: 'l2-id' },  // Wrong position
+        { kt: 'level3', lk: 'l3-id' }   // Wrong: should be first
       ];
 
       expect(() => {
@@ -246,9 +253,10 @@ describe('Utilities - Location Key Ordering Integration', () => {
     it('should provide clear error message with diagnostic info', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
-      const wrongOrder: LocKeyArray<'orderPhase', 'order'> = [
-        { kt: 'orderPhase', lk: 25826 },
-        { kt: 'order', lk: 26513 }
+      // WRONG ORDER: parent before child (should be child -> parent)
+      const wrongOrder: LocKeyArray<'order', 'orderPhase'> = [
+        { kt: 'order', lk: 26513 },
+        { kt: 'orderPhase', lk: 25826 }
       ];
 
       try {
@@ -264,58 +272,57 @@ describe('Utilities - Location Key Ordering Integration', () => {
         expect(errorMessage.toLowerCase()).toMatch(/hierarch|parent|child/);
         
         // Error should mention the problematic key type
-        expect(errorMessage).toContain('order');
+        expect(errorMessage).toContain('orderPhase');
       }
     });
   });
 
   describe('Pathological Cases That Should Have Failed Before Fix', () => {
-    it('should fail the exact bug scenario before fix: orderPhase before order', () => {
+    it('should accept the correct child->parent order that was incorrectly flagged before', () => {
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
-      // This is what the BUG was producing: child before parent
-      const buggyOrder: LocKeyArray<'orderPhase', 'order'> = [
-        { kt: 'orderPhase', lk: 25826 }, // BUG: child first
-        { kt: 'order', lk: 26513 }        // BUG: parent second
+      // This is the CORRECT order: child -> parent
+      const correctOrder: LocKeyArray<'orderPhase', 'order'> = [
+        { kt: 'orderPhase', lk: 25826 }, // CORRECT: child first
+        { kt: 'order', lk: 26513 }        // CORRECT: parent second
       ];
 
-      // This MUST throw an error
+      // This should NOT throw an error (it's correct)
       expect(() => {
-        utilities.getPath(buggyOrder);
-      }).toThrow(/Location keys must be ordered from parent to child/);
+        utilities.getPath(correctOrder);
+      }).not.toThrow();
+      
+      const path = utilities.getPath(correctOrder);
+      expect(path).toBe('/orders/26513/orderPhases/25826/orderSteps');
     });
 
-    it('should document what the old buggy implementation would have produced', () => {
-      // This test documents the bug for posterity
+    it('should reject parent->child order which was incorrectly accepted before', () => {
+      // This test documents that parent->child is WRONG
       const utilities = createUtilities('orderStep', ['orders', 'orderPhases', 'orderSteps']);
 
-      // The OLD buggy itemKeyToLocKeyArray would have produced this from a ComKey:
-      // [{ kt: 'orderStep' }, { kt: 'orderPhase' }, { kt: 'order' }]
-      // Which is COMPLETELY BACKWARDS
-      
-      const oldBuggyOutput: LocKeyArray<'orderStep', 'orderPhase', 'order'> = [
-        { kt: 'orderStep', lk: 25825 },   // Most nested (leaf) - WRONG to be first
-        { kt: 'orderPhase', lk: 25826 },  // Middle - WRONG order
-        { kt: 'order', lk: 26513 }        // Root - WRONG to be last
+      // The WRONG order: parent -> child (should be child -> parent)
+      const wrongOrder: LocKeyArray<'order', 'orderPhase'> = [
+        { kt: 'order', lk: 26513 },       // WRONG: parent first
+        { kt: 'orderPhase', lk: 25826 }  // WRONG: child second
       ];
 
       // This should fail validation
       expect(() => {
-        utilities.getPath(oldBuggyOutput);
-      }).toThrow();
+        utilities.getPath(wrongOrder);
+      }).toThrow(/Location keys must be ordered from child to parent/);
     });
   });
 
-  describe('Contract Validation: Location Arrays Must Be Root-to-Leaf', () => {
+  describe('Contract Validation: Location Arrays Must Be Child-to-Parent', () => {
     /**
      * These tests encode the fundamental contract:
-     * Location arrays MUST be ordered from root to leaf (parent to child)
+     * Location arrays MUST be ordered from child to parent (leaf to root)
      */
     
     it('should validate the contract for simple parent-child relationship', () => {
       const utilities = createUtilities('child', ['parents', 'children']);
 
-      // CORRECT: parent first, child second
+      // CORRECT: just parent (single location)
       const correct: LocKeyArray<'parent'> = [
         { kt: 'parent', lk: 'p-id' }
       ];
@@ -331,20 +338,20 @@ describe('Utilities - Location Key Ordering Integration', () => {
     it('should enforce the contract for grandparent-parent-child relationship', () => {
       const utilities = createUtilities('child', ['grandparents', 'parents', 'children']);
 
-      // CORRECT: grandparent, then parent, then child location
-      const correct: LocKeyArray<'grandparent', 'parent'> = [
-        { kt: 'grandparent', lk: 'gp-id' },
-        { kt: 'parent', lk: 'p-id' }
+      // CORRECT: parent, then grandparent (child -> parent order)
+      const correct: LocKeyArray<'parent', 'grandparent'> = [
+        { kt: 'parent', lk: 'p-id' },
+        { kt: 'grandparent', lk: 'gp-id' }
       ];
 
       expect(() => {
         utilities.getPath(correct);
       }).not.toThrow();
 
-      // WRONG: parent before grandparent
-      const wrong: LocKeyArray<'parent', 'grandparent'> = [
-        { kt: 'parent', lk: 'p-id' },
-        { kt: 'grandparent', lk: 'gp-id' }
+      // WRONG: grandparent before parent (parent -> child order, backwards!)
+      const wrong: LocKeyArray<'grandparent', 'parent'> = [
+        { kt: 'grandparent', lk: 'gp-id' },
+        { kt: 'parent', lk: 'p-id' }
       ];
 
       expect(() => {
