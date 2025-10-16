@@ -141,8 +141,8 @@ export const createUtilities = <
       pathNameOrder.set(plural.toLowerCase(), index);
     });
 
-    // Check if location keys are in ascending order based on pathNames
-    let lastIndex = -1;
+    // Check if location keys are in descending order based on pathNames (child -> parent)
+    let lastIndex = Infinity;
     const keyDetails: Array<{ kt: string; pathNameIndex: number | undefined }> = [];
 
     for (const locKey of locKeys) {
@@ -152,20 +152,20 @@ export const createUtilities = <
       keyDetails.push({ kt: keyType, pathNameIndex: currentIndex });
       
       if (typeof currentIndex !== 'undefined') {
-        if (currentIndex <= lastIndex) {
+        if (currentIndex >= lastIndex) {
           // Keys are out of order!
           logger.error('Location keys are not in the correct hierarchical order', {
             keys: locKeys.map(k => ({ kt: k.kt, lk: k.lk })),
             pathNames,
             keyDetails,
-            issue: `Key type "${keyType}" (index ${currentIndex}) should come before the previous key (index ${lastIndex})`
+            issue: `Key type "${keyType}" (index ${currentIndex}) should come after the previous key (index ${lastIndex})`
           });
           
           throw new Error(
-            `Location keys must be ordered from parent to child according to the entity hierarchy. ` +
+            `Location keys must be ordered from child to parent according to the entity hierarchy. ` +
             `Expected order based on pathNames: [${pathNames.join(', ')}]. ` +
             `Received key types in order: [${locKeys.map(k => k.kt).join(', ')}]. ` +
-            `Key "${keyType}" is out of order - it should appear earlier in the hierarchy.`
+            `Key "${keyType}" is out of order - it should appear later in the hierarchy.`
           );
         }
         lastIndex = currentIndex;
@@ -204,13 +204,18 @@ export const createUtilities = <
         const priKeys = keys.filter(k => isPriKey(k));
         const locKeys = keys.filter(k => !isPriKey(k));
         
-        // Reorder: LocKeys first, then PriKeys
-        const reorderedKeys = [...locKeys, ...priKeys];
+        // Location keys come in child->parent order, but paths must be parent->child
+        // So reverse the locKeys to get parent->child order for path building
+        const reversedLocKeys = [...locKeys].reverse();
+        
+        // Reorder: reversed LocKeys first, then PriKeys
+        const reorderedKeys = [...reversedLocKeys, ...priKeys];
         logger.default('Reordered keys for contained item', {
           original: keys,
+          locKeys,
+          reversedLocKeys,
           reordered: reorderedKeys,
-          priKeys,
-          locKeys
+          priKeys
         });
         
         let path: string = addPath('', reorderedKeys, localPathNames);
@@ -224,8 +229,16 @@ export const createUtilities = <
         logger.default('getPath created', { key, path });
         return path;
       } else {
-        // For primary items, use the original logic
-        let path: string = addPath('', keys, localPathNames);
+        // For primary items or single keys
+        // If it's a LocKey array, we still need to reverse it for path building
+        const priKeys = keys.filter(k => isPriKey(k));
+        const locKeys = keys.filter(k => !isPriKey(k));
+        
+        // Reverse locKeys if present (child->parent to parent->child)
+        const reversedLocKeys = locKeys.length > 0 ? [...locKeys].reverse() : [];
+        const orderedKeys = [...reversedLocKeys, ...priKeys];
+        
+        let path: string = addPath('', orderedKeys, localPathNames);
 
         // If there is only one collection left in the collections array, this means that
         // we received LocKeys and we need to add the last collection to the reference

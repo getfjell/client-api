@@ -128,7 +128,7 @@ describe("Utilities", () => {
       const comKey = {
         kt: "orderNoseShape" as const,
         pk: "nose-123" as UUID,
-        loc: [orderKey, orderFormKey]  // Parent order first, then orderForm
+        loc: [orderFormKey, orderKey]  // CHILD -> PARENT order: orderForm first, then order
       };
 
       const path = utilities.getPath(comKey);
@@ -152,7 +152,8 @@ describe("Utilities", () => {
       const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
       const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
       
-      const path = utilities.getPath([orderKey, orderFormKey]);
+      // CHILD -> PARENT order
+      const path = utilities.getPath([orderFormKey, orderKey]);
       
       // Expected: /fjell/order/<orderId>/orderForm/<orderFormId>/orderNoseShape
       // This should follow the pathNames order: order first, then orderForm, then collection name
@@ -172,10 +173,10 @@ describe("Utilities", () => {
       const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
       const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
       
-      // WRONG ORDER: orderForm before order!
+      // WRONG ORDER: order before orderForm (should be child -> parent)!
       // Using 'as any' to bypass TypeScript's type checking to test runtime validation
-      expect(() => utilities.getPath([orderFormKey, orderKey] as any)).toThrow(
-        /Location keys must be ordered from parent to child/
+      expect(() => utilities.getPath([orderKey, orderFormKey] as any)).toThrow(
+        /Location keys must be ordered from child to parent/
       );
     });
 
@@ -195,15 +196,15 @@ describe("Utilities", () => {
       // Using 'as any' to bypass TypeScript's type checking to test runtime validation
       let thrownError: Error | null = null;
       try {
-        utilities.getPath([orderFormKey, orderKey] as any);
+        utilities.getPath([orderKey, orderFormKey] as any);
       } catch (error: any) {
         thrownError = error;
       }
       
       expect(thrownError).not.toBeNull();
-      expect(thrownError!.message).toContain("Location keys must be ordered from parent to child");
+      expect(thrownError!.message).toContain("Location keys must be ordered from child to parent");
       expect(thrownError!.message).toContain("fjell/order, orderForm, orderNoseShape");
-      expect(thrownError!.message).toContain("orderForm, order");
+      expect(thrownError!.message).toContain("order, orderForm");
     });
 
     it("should generate path for deeply nested ComKey with multiple location levels", () => {
