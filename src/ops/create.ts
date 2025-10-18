@@ -73,7 +73,7 @@ export const getCreateOperation = <
           requestOptions,
         ));
 
-        const created: V = utilities.validatePK(result) as V;
+        utilities.validatePK(result);
 
         if (attempt > 0) {
           logger.info(`Create operation succeeded after ${attempt} retries`, {
@@ -83,7 +83,7 @@ export const getCreateOperation = <
           });
         }
 
-        return created;
+        return result;
       } catch (error: any) {
         lastError = error;
 

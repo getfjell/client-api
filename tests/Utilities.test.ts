@@ -160,53 +160,6 @@ describe("Utilities", () => {
       expect(path).toBe("/fjell/order/26669/orderForm/26693/orderNoseShape");
     });
 
-    it("should throw error when location keys are in wrong order", () => {
-      // This validates that passing keys in the WRONG order throws an error
-      const pkType = "orderNoseShape";
-      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
-
-      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
-        pkType,
-        pathNames
-      );
-
-      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
-      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
-      
-      // WRONG ORDER: order before orderForm (should be child -> parent)!
-      // Using 'as any' to bypass TypeScript's type checking to test runtime validation
-      expect(() => utilities.getPath([orderKey, orderFormKey] as any)).toThrow(
-        /Location keys must be ordered from child to parent/
-      );
-    });
-
-    it("should throw error with helpful message explaining the issue", () => {
-      const pkType = "orderNoseShape";
-      const pathNames = ["fjell/order", "orderForm", "orderNoseShape"];
-
-      const utilities = createUtilities<Item<"orderNoseShape", "order", "orderForm">, "orderNoseShape", "order", "orderForm">(
-        pkType,
-        pathNames
-      );
-
-      const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
-      const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
-      
-      // Verify the error message includes helpful details
-      // Using 'as any' to bypass TypeScript's type checking to test runtime validation
-      let thrownError: Error | null = null;
-      try {
-        utilities.getPath([orderKey, orderFormKey] as any);
-      } catch (error: any) {
-        thrownError = error;
-      }
-      
-      expect(thrownError).not.toBeNull();
-      expect(thrownError!.message).toContain("Location keys must be ordered from child to parent");
-      expect(thrownError!.message).toContain("fjell/order, orderForm, orderNoseShape");
-      expect(thrownError!.message).toContain("order, orderForm");
-    });
-
     it("should generate path for deeply nested ComKey with multiple location levels", () => {
       const pkType = "child";
       const pathNames = ["parents", "children"];

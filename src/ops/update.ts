@@ -33,12 +33,12 @@ export const getUpdateOperation = <
     const requestOptions = Object.assign({}, apiOptions.putOptions, { isAuthenticated: apiOptions.writeAuthenticated });
     logger.default('update', { ik, item, requestOptions });
 
-    return utilities.validatePK(await utilities.processOne(
+    return await utilities.processOne(
       api.httpPut<V>(
         utilities.getPath(ik),
         item,
         requestOptions,
-      ))) as V;
+      ));
   }
 
   return update;

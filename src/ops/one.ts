@@ -42,11 +42,11 @@ export const getOneOperation = <
 
     let item: V | null = null;
 
-    const items = utilities.validatePK(await utilities.processArray(
+    const items = await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
-      ))) as V[];
+      ));
 
     if (items.length > 0) {
       item = items[0];

@@ -39,11 +39,11 @@ export const getAllOperation = <
 
     logger.default('all', { query, locations, requestOptions });
 
-    return utilities.validatePK(await utilities.processArray(
+    return await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
-      ))) as V[];
+      ));
   }
 
   return all;

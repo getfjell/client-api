@@ -36,7 +36,7 @@ export const getActionOperation = <
 
     const [item, affectedItems] = response;
     return [
-      utilities.validatePK(await utilities.processOne(Promise.resolve(item))) as V,
+      await utilities.processOne(Promise.resolve(item)),
       affectedItems
     ];
   };

@@ -61,7 +61,7 @@ export const getGetOperation = <
           )
         );
 
-        const item = utilities.validatePK(result) as V;
+        utilities.validatePK(result);
 
         if (attempt > 0) {
           logger.info(`Get operation succeeded after ${attempt} retries`, {
@@ -71,7 +71,7 @@ export const getGetOperation = <
           });
         }
 
-        return item;
+        return result;
       } catch (error: any) {
         lastError = error;
 

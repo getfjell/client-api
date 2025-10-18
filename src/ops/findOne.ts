@@ -41,11 +41,18 @@ export const getFindOneOperation = <
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params });
     logger.default('findOne', { finder, finderParams, locations, requestOptions });
 
-    return (utilities.validatePK(await utilities.processArray(
+    const results = await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
-      ))) as V[])[0];
+      ));
+    
+    const result = results[0];
+    if (result) {
+      utilities.validatePK(result);
+    }
+    
+    return result;
   }
 
   return findOne;

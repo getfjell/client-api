@@ -39,11 +39,11 @@ export const getFindOperation = <
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params: mergedParams });
     logger.default('find', { finder, finderParams, locations, requestOptions });
 
-    return utilities.validatePK(await utilities.processArray(
+    return await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
-      ))) as V[];
+      ));
   }
 
   return find;

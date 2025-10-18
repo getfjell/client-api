@@ -41,12 +41,12 @@ export const getUpsertOperation = <
       ? `${path}?locations=${encodeURIComponent(JSON.stringify(locations))}`
       : path;
 
-    return utilities.validatePK(await utilities.processOne(
+    return await utilities.processOne(
       api.httpPut<V>(
         url,
         { ...item, upsert: true },
         requestOptions,
-      ))) as V;
+      ));
   }
 
   return upsert;

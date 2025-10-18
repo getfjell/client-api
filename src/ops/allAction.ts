@@ -1,4 +1,4 @@
-/* eslint-disable no-undefined */
+ 
 import { AllActionOperationMethod, ComKey, Item, LocKeyArray, OperationParams, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
@@ -42,12 +42,12 @@ export const getAllActionOperation = <
     let affectedItems: Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>> = [];
 
     if (Array.isArray(response)) {
-      if (response[0] !== undefined && response[1] !== undefined) {
+      // Check if this is a properly formatted tuple response [items, affectedItems]
+      if (response.length === 2 && Array.isArray(response[0])) {
         [items, affectedItems] = response;
-      } else if (response[0] !== undefined) {
-        // Handle single array response - assume it's the items array
-        items = response[0] as V[];
-        affectedItems = [];
+      } else {
+        // Handle other array responses - return as-is
+        return response as any;
       }
     } else if (response && typeof response === 'object' && Object.keys(response).length === 0) {
       // Handle empty object response {}
@@ -59,10 +59,12 @@ export const getAllActionOperation = <
       affectedItems = [];
     }
 
+    const processedItems = await utilities.processArray(Promise.resolve(items));
+    if (Array.isArray(processedItems)) {
+      processedItems.forEach(item => utilities.validatePK(item));
+    }
     return [
-      utilities.validatePK(
-        await utilities.processArray(Promise.resolve(items))
-      ) as V[],
+      processedItems,
       affectedItems
     ];
   };
