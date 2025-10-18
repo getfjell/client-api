@@ -15,5 +15,8 @@ export * from './Registry';
 export * from './errors/index';
 export * from './ops/errorHandling';
 
+// Re-export FjellHttpError from http-api for convenience
+export { FjellHttpError, isFjellHttpError, extractErrorInfo, type ErrorInfo } from '@fjell/http-api';
+
 // HTTP wrapper
 export * from './http/HttpWrapper';
