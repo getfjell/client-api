@@ -2,10 +2,17 @@
  * Shared error handling utilities for all HTTP operations
  */
 
+import { isFjellHttpError } from '@fjell/http-api';
+
 /**
  * Determines if an error should be retried based on error type and status code
  */
 export function shouldRetryError(error: any): boolean {
+  // Check FjellHttpError retryable flag first
+  if (isFjellHttpError(error)) {
+    return error.isRetryable();
+  }
+
   // Retry on network errors and timeouts
   if (error.code === 'ECONNREFUSED' ||
     error.code === 'ENOTFOUND' ||
@@ -43,9 +50,15 @@ export function calculateRetryDelay(attempt: number, config: any): number {
 
 /**
  * Enhances error with additional context information
+ * Preserves FjellHttpError without modification
  */
 export function enhanceError(error: any, context: any): any {
   if (!error) return new Error('Unknown error occurred');
+
+  // Don't modify FjellHttpError - it already has full context
+  if (isFjellHttpError(error)) {
+    return error;
+  }
 
   // If it's already enhanced, return as-is
   if (error.context) return error;

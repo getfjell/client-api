@@ -1,5 +1,6 @@
 import {
   ComKey,
+  GetMethod,
   Item,
   PriKey,
 } from "@fjell/core";
@@ -24,7 +25,7 @@ export const getGetOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): GetMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const get = async (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
@@ -60,7 +61,7 @@ export const getGetOperation = <
           )
         );
 
-        const item = utilities.validatePK(result) as V;
+        utilities.validatePK(result);
 
         if (attempt > 0) {
           logger.info(`Get operation succeeded after ${attempt} retries`, {
@@ -70,7 +71,7 @@ export const getGetOperation = <
           });
         }
 
-        return item;
+        return result;
       } catch (error: any) {
         lastError = error;
 

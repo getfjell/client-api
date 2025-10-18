@@ -234,13 +234,14 @@ describe("getOperations", () => {
       const clientApi = getOperations(mockHttpApi, mockApiOptions, mockUtilities);
       const operationKeys = Object.keys(clientApi);
 
-      // Verify that we get a consistent set of operations
-      expect(operationKeys.length).toBe(12); // Current count of working operations
+      // Verify that we get a consistent set of operations (including upsert)
+      expect(operationKeys.length).toBe(13); // Count includes upsert operation
       expect(operationKeys).toContain('all');
       expect(operationKeys).toContain('action');
       expect(operationKeys).toContain('create');
       expect(operationKeys).toContain('get');
       expect(operationKeys).toContain('update');
+      expect(operationKeys).toContain('upsert');
       expect(operationKeys).toContain('remove');
       expect(operationKeys).toContain('find');
       expect(operationKeys).toContain('one');
@@ -254,10 +255,10 @@ describe("getOperations", () => {
       const clientApi = getOperations(mockHttpApi, mockApiOptions, mockUtilities);
       const operationKeys = Object.keys(clientApi).sort();
 
-      // Test the exact current behavior
+      // Test the exact current behavior (including upsert)
       const expectedOperations = [
         'action', 'all', 'allAction', 'allFacet', 'create',
-        'facet', 'find', 'findOne', 'get', 'one', 'remove', 'update'
+        'facet', 'find', 'findOne', 'get', 'one', 'remove', 'update', 'upsert'
       ].sort();
 
       expect(operationKeys).toEqual(expectedOperations);

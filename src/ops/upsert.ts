@@ -1,8 +1,9 @@
 import {
   ComKey,
   Item,
+  LocKeyArray,
   PriKey,
-  UpdateMethod
+  UpsertMethod
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
@@ -10,9 +11,9 @@ import { ClientApiOptions } from "../ClientApiOptions";
 import LibLogger from "../logger";
 import { Utilities } from "../Utilities";
 
-const logger = LibLogger.get('client-api', 'ops', 'update');
+const logger = LibLogger.get('client-api', 'ops', 'upsert');
 
-export const getUpdateOperation = <
+export const getUpsertOperation = <
   V extends Item<S, L1, L2, L3, L4, L5>,
   S extends string,
   L1 extends string = never,
@@ -24,22 +25,30 @@ export const getUpdateOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ): UpdateMethod<V, S, L1, L2, L3, L4, L5> => {
+  ): UpsertMethod<V, S, L1, L2, L3, L4, L5> => {
 
-  const update = async (
-    ik: PriKey<S> | ComKey<S, L1, L2, L3, L4, L5>,
+  const upsert = async (
+    key: PriKey<S> | ComKey<S, L1, L2, L3, L4, L5>,
     item: Partial<Item<S, L1, L2, L3, L4, L5>>,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5>
   ): Promise<V> => {
     const requestOptions = Object.assign({}, apiOptions.putOptions, { isAuthenticated: apiOptions.writeAuthenticated });
-    logger.default('update', { ik, item, requestOptions });
+    logger.default('upsert', { key, item, locations, requestOptions });
+
+    // Add locations to query params if provided
+    const path = utilities.getPath(key);
+    const url = locations && locations.length > 0
+      ? `${path}?locations=${encodeURIComponent(JSON.stringify(locations))}`
+      : path;
 
     return await utilities.processOne(
       api.httpPut<V>(
-        utilities.getPath(ik),
-        item,
+        url,
+        { ...item, upsert: true },
         requestOptions,
       ));
   }
 
-  return update;
+  return upsert;
 }
+

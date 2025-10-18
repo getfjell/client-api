@@ -134,7 +134,8 @@ describe("AItemAPI", () => {
     it("should remove item correctly", async () => {
       api.httpDelete = vi.fn().mockResolvedValue(true);
       const result = await containersAPI.remove(key);
-      expect(result).toBe(true);
+      // remove now returns void when server returns boolean
+      expect(result).toBeUndefined();
     });
   });
 

@@ -2,6 +2,7 @@ import {
   ComKey,
   Item,
   PriKey,
+  RemoveMethod
 } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
@@ -23,15 +24,23 @@ export const getRemoveOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): RemoveMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const remove = async (
     ik: PriKey<S> | ComKey<S, L1, L2, L3, L4, L5>,
-  ): Promise<boolean> => {
+  ): Promise<V | void> => {
     const requestOptions = Object.assign({}, apiOptions.deleteOptions, { isAuthenticated: apiOptions.writeAuthenticated });
     logger.default('remove', { ik, requestOptions });
 
-    return api.httpDelete<boolean>(utilities.getPath(ik), requestOptions);
+    const result = await api.httpDelete<V | boolean | void>(utilities.getPath(ik), requestOptions);
+    
+    // If result is a boolean, return void for compatibility
+    if (typeof result === 'boolean') {
+      return;
+    }
+    
+    // Otherwise return the item (if the server returns it)
+    return result as V | void;
   }
 
   return remove;

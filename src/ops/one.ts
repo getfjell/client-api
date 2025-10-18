@@ -2,6 +2,7 @@ import {
   Item,
   ItemQuery,
   LocKeyArray,
+  OneMethod,
   QueryParams,
   queryToParams
 } from "@fjell/core";
@@ -25,10 +26,7 @@ export const getOneOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ): (
-    query: ItemQuery,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V | null> => {
+  ): OneMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const one = async (
     query: ItemQuery = {} as ItemQuery,
@@ -44,11 +42,11 @@ export const getOneOperation = <
 
     let item: V | null = null;
 
-    const items = utilities.validatePK(await utilities.processArray(
+    const items = await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
-      ))) as V[];
+      ));
 
     if (items.length > 0) {
       item = items[0];

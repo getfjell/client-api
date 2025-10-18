@@ -1,8 +1,9 @@
 
 import LibLogger from "./logger";
 import { Item } from "@fjell/core";
-import { Instance as BaseInstance, Coordinate, createInstance as createBaseInstance, Registry } from "@fjell/registry";
+import { Instance as BaseInstance, createInstance as createBaseInstance, Registry } from "@fjell/registry";
 import { ClientApi } from "./ClientApi";
+import { Coordinate } from "@fjell/core";
 
 const logger = LibLogger.get("Instance");
 
