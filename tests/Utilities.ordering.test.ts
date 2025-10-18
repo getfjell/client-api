@@ -74,8 +74,6 @@ describe('Utilities - REST Path Building', () => {
         loc: [
           { kt: 'orderPhase', lk: 25826 },
           { kt: 'order', lk: 26513 }
-          { kt: 'orderPhase', lk: 25826 },
-          { kt: 'order', lk: 26513 }
         ]
       };
 
@@ -143,13 +141,9 @@ describe('Utilities - REST Path Building', () => {
 
       // CHILD -> PARENT order in loc array
       const orderStepKey: ComKey<'orderStep', 'orderPhase', 'order'> = {
-      // CHILD -> PARENT order in loc array
-      const orderStepKey: ComKey<'orderStep', 'orderPhase', 'order'> = {
         pk: 25825,
         kt: 'orderStep',
         loc: [
-          { kt: 'orderPhase', lk: 25826 },
-          { kt: 'order', lk: 26513 }
           { kt: 'orderPhase', lk: 25826 },
           { kt: 'order', lk: 26513 }
         ]
@@ -172,17 +166,12 @@ describe('Utilities - REST Path Building', () => {
 
       // CHILD -> PARENT order (level4 is most immediate parent of level5)
       const deepKey: ComKey<'level5', 'level4', 'level3', 'level2', 'level1'> = {
-      // CHILD -> PARENT order (level4 is most immediate parent of level5)
-      const deepKey: ComKey<'level5', 'level4', 'level3', 'level2', 'level1'> = {
         pk: 'l5-id',
         kt: 'level5',
         loc: [
           { kt: 'level4', lk: 'l4-id' },
           { kt: 'level3', lk: 'l3-id' },
-          { kt: 'level4', lk: 'l4-id' },
-          { kt: 'level3', lk: 'l3-id' },
           { kt: 'level2', lk: 'l2-id' },
-          { kt: 'level1', lk: 'l1-id' }
           { kt: 'level1', lk: 'l1-id' }
         ]
       };
