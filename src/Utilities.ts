@@ -131,11 +131,20 @@ export const createUtilities = <
         
         // Reorder: reversed LocKeys first, then PriKeys
         const reorderedKeys = [...reversedLocKeys, ...priKeys];
+        // Location keys come in child->parent order, but paths must be parent->child
+        // So reverse the locKeys to get parent->child order for path building
+        const reversedLocKeys = [...locKeys].reverse();
+        
+        // Reorder: reversed LocKeys first, then PriKeys
+        const reorderedKeys = [...reversedLocKeys, ...priKeys];
         logger.default('Reordered keys for contained item', {
           original: keys,
           locKeys,
           reversedLocKeys,
+          locKeys,
+          reversedLocKeys,
           reordered: reorderedKeys,
+          priKeys
           priKeys
         });
         
@@ -150,6 +159,16 @@ export const createUtilities = <
         logger.default('getPath created', { key, path });
         return path;
       } else {
+        // For primary items or single keys
+        // If it's a LocKey array, we still need to reverse it for path building
+        const priKeys = keys.filter(k => isPriKey(k));
+        const locKeys = keys.filter(k => !isPriKey(k));
+        
+        // Reverse locKeys if present (child->parent to parent->child)
+        const reversedLocKeys = locKeys.length > 0 ? [...locKeys].reverse() : [];
+        const orderedKeys = [...reversedLocKeys, ...priKeys];
+        
+        let path: string = addPath('', orderedKeys, localPathNames);
         // For primary items or single keys
         // If it's a LocKey array, we still need to reverse it for path building
         const priKeys = keys.filter(k => isPriKey(k));

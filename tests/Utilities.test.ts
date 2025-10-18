@@ -129,6 +129,7 @@ describe("Utilities", () => {
         kt: "orderNoseShape" as const,
         pk: "nose-123" as UUID,
         loc: [orderFormKey, orderKey]  // CHILD -> PARENT order: orderForm first, then order
+        loc: [orderFormKey, orderKey]  // CHILD -> PARENT order: orderForm first, then order
       };
 
       const path = utilities.getPath(comKey);
@@ -152,6 +153,8 @@ describe("Utilities", () => {
       const orderKey: LocKey<"order"> = { kt: "order", lk: "26669" };
       const orderFormKey: LocKey<"orderForm"> = { kt: "orderForm", lk: "26693" };
       
+      // CHILD -> PARENT order
+      const path = utilities.getPath([orderFormKey, orderKey]);
       // CHILD -> PARENT order
       const path = utilities.getPath([orderFormKey, orderKey]);
       
