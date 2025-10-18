@@ -1,5 +1,6 @@
 import {
   ComKey,
+  GetMethod,
   Item,
   PriKey,
 } from "@fjell/core";
@@ -24,7 +25,7 @@ export const getGetOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): GetMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const get = async (
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,

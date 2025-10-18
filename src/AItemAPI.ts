@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { Item, QueryParams } from "@fjell/core";
+import { Item } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "./ClientApiOptions";
@@ -33,7 +33,7 @@ export type PathNamesArray<
 export const finderToParams = (
   finder: string,
   finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>
-): QueryParams => {
+): Record<string, string> => {
   return {
     finder,
     finderParams: JSON.stringify(finderParams),
@@ -91,5 +91,6 @@ export const createAItemAPI = <
     one: operations.one,
     remove: operations.remove,
     update: operations.update,
+    upsert: operations.upsert,
   }
 }

@@ -8,6 +8,7 @@ import { getAllActionOperation } from "./allAction"
 import { getOneOperation } from "./one"
 import { getCreateOperation } from "./create"
 import { getUpdateOperation } from "./update"
+import { getUpsertOperation } from "./upsert"
 import { getGetOperation } from "./get"
 import { getRemoveOperation } from "./remove"
 import { getFindOperation } from "./find"
@@ -88,6 +89,11 @@ export const getOperations =
         utilities,
       ),
       update: getUpdateOperation<V, S, L1, L2, L3, L4, L5>(
+        api,
+        apiOptions,
+        utilities,
+      ),
+      upsert: getUpsertOperation<V, S, L1, L2, L3, L4, L5>(
         api,
         apiOptions,
         utilities,

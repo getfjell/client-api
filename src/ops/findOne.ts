@@ -1,4 +1,5 @@
 import {
+  FindOneMethod,
   Item,
   LocKeyArray,
   QueryParams
@@ -24,7 +25,7 @@ export const getFindOneOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): FindOneMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const findOne = async (
     finder: string,

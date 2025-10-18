@@ -1,4 +1,5 @@
 import {
+  AllFacetOperationMethod,
   Item,
   LocKeyArray
 } from "@fjell/core";
@@ -22,7 +23,7 @@ export const getAllFacetOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): AllFacetOperationMethod<L1, L2, L3, L4, L5> => {
 
   const allFacet = async (
     facet: string,

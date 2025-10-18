@@ -1,4 +1,4 @@
-import { ComKey, Item, LocKeyArray, PriKey } from "@fjell/core";
+import { ActionOperationMethod, ComKey, Item, LocKeyArray, OperationParams, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";
@@ -19,18 +19,18 @@ export const getActionOperation = <
     api: HttpApi,
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
-  ) => {
+  ): ActionOperationMethod<V, S, L1, L2, L3, L4, L5> => {
   const action = async (
     ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
     action: string,
-    body: any = {},
+    params?: OperationParams,
   ): Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]> => {
     const requestOptions = Object.assign({}, apiOptions.postOptions, { isAuthenticated: apiOptions.writeAuthenticated });
-    logger.default('action', { ik, action, body, requestOptions });
+    logger.default('action', { ik, action, params, requestOptions });
 
     const response = await api.httpPost<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>(
       `${utilities.getPath(ik)}/${action}`,
-      body,
+      params || {},
       requestOptions,
     );
 

@@ -1,10 +1,6 @@
 
 import {
-  ComKey,
   Item,
-  ItemQuery,
-  LocKeyArray,
-  PriKey,
 } from "@fjell/core";
 import {
   HttpApi
@@ -17,6 +13,11 @@ import { ClientApiOptions } from "./ClientApiOptions";
 
 const logger = LibLogger.get('CItemAPI');
 
+/**
+ * CItemApi extends ClientApi for contained items.
+ * No additional methods needed - pure Operations interface.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CItemApi<
   V extends Item<S, L1, L2, L3, L4, L5>,
   S extends string,
@@ -26,55 +27,8 @@ export interface CItemApi<
   L4 extends string = never,
   L5 extends string = never,
 > extends ClientApi<V, S, L1, L2, L3, L4, L5> {
-  action: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    action: string,
-    body: any,
-  ) => Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
-  all: (
-    query: ItemQuery,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V[]>;
-  allAction: (
-    action: string,
-    body?: any,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
-  allFacet: (
-    facet: string,
-    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<any>;
-  get: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-  ) => Promise<V | null>;
-  create: (
-    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V>;
-  remove: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-  ) => Promise<boolean>;
-  update: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
-  ) => Promise<V>;
-  facet: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    facet: string,
-    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-  ) => Promise<any>;
-  find: (
-    finder: string,
-    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V[]>;
-  findOne: (
-    finder: string,
-    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V>;
-};
+  // Inherits all methods from ClientApi (which extends core Operations)
+}
 
 export const createCItemApi = <
   V extends Item<S, L1, L2, L3, L4, L5>,
@@ -100,6 +54,7 @@ export const createCItemApi = <
     create: aItemAPI.create,
     remove: aItemAPI.remove,
     update: aItemAPI.update,
+    upsert: aItemAPI.upsert,
     facet: aItemAPI.facet,
     find: aItemAPI.find,
     findOne: aItemAPI.findOne,

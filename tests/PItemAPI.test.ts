@@ -93,7 +93,8 @@ describe("PItemAPI", () => {
 
     const result = await pItemAPI.create({} as Item<"test">);
 
-    expect(createMethod).toHaveBeenCalledWith({}, []);
+    // create now passes options object (or undefined) instead of locations array
+    expect(createMethod).toHaveBeenCalledWith({}, undefined);
     expect(result).toEqual([{ kt: "test", pk: "1-1-1-1-1" }, {}]);
   });
 
@@ -184,7 +185,8 @@ describe("PItemAPI", () => {
 
     await expect(pItemAPI.create({} as Item<"test">)).rejects.toThrow("Test Error");
 
-    expect(createMethod).toHaveBeenCalledWith({}, []);
+    // create now passes options object (or undefined) instead of locations array
+    expect(createMethod).toHaveBeenCalledWith({}, undefined);
   });
 
   it("should handle errors in remove method", async () => {

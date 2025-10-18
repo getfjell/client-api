@@ -1,5 +1,6 @@
 import {
   ComKey,
+  FacetOperationMethod,
   Item,
   PriKey,
 } from "@fjell/core";
@@ -23,7 +24,7 @@ export const getFacetOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): FacetOperationMethod<S, L1, L2, L3, L4, L5> => {
 
   /**
    * Executes a facet operation on an item.

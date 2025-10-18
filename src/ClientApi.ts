@@ -1,5 +1,25 @@
-import { ComKey, Item, ItemQuery, LocKeyArray, PriKey } from "@fjell/core";
+import {
+  AffectedKeys,
+  Operations as CoreOperations,
+  CreateOptions,
+  Item,
+  OperationParams
+} from "@fjell/core";
 
+// Re-export core types for convenience
+export type { OperationParams, AffectedKeys, CreateOptions };
+
+/**
+ * ClientApi interface - HTTP transport layer for Operations.
+ * This is a direct mapping of the core Operations interface to HTTP calls.
+ *
+ * @example
+ * ```typescript
+ * const api: ClientApi<User, 'user'> = createClientApi(httpApi, 'user', ['user']);
+ * const users = await api.all({});
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ClientApi<
   V extends Item<S, L1, L2, L3, L4, L5>,
   S extends string,
@@ -8,57 +28,7 @@ export interface ClientApi<
   L3 extends string = never,
   L4 extends string = never,
   L5 extends string = never
-> {
-  action: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    action: string,
-    body?: any,
-  ) => Promise<[V, Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
-  all: (
-    query: ItemQuery,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V[]>;
-  allAction: (
-    action: string,
-    body?: any,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>;
-  allFacet: (
-    facet: string,
-    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<any>;
-  create: (
-    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V>;
-  facet: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    facet: string,
-    params?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-  ) => Promise<any>;
-  find: (
-    finder: string,
-    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V[]>;
-  findOne: (
-    finder: string,
-    finderParams?: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>>,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V>;
-  get: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-  ) => Promise<V | null>;
-  one: (
-    query: ItemQuery,
-    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
-  ) => Promise<V | null>;
-  remove: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-  ) => Promise<boolean>;
-  update: (
-    ik: ComKey<S, L1, L2, L3, L4, L5> | PriKey<S>,
-    item: Partial<Item<S, L1, L2, L3, L4, L5>>,
-  ) => Promise<V>;
+> extends CoreOperations<V, S, L1, L2, L3, L4, L5> {
+  // ClientApi is a pure implementation of Operations over HTTP
+  // No additional methods needed
 }

@@ -1,4 +1,6 @@
 import {
+  CreateMethod,
+  CreateOptions,
   Item,
   LocKeyArray
 } from "@fjell/core";
@@ -23,15 +25,23 @@ export const getCreateOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): CreateMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const create = async (
     item: Partial<Item<S, L1, L2, L3, L4, L5>>,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
+    options?: CreateOptions<S, L1, L2, L3, L4, L5>
   ): Promise<V> => {
+    // Extract locations or key from options for backward compatibility
+    const locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = options?.locations || [];
     const requestOptions = Object.assign({}, apiOptions.postOptions, { isAuthenticated: apiOptions.writeAuthenticated });
-    logger.default('create', { item, locations, requestOptions });
+    logger.default('create', { item, options, locations, requestOptions });
     utilities.verifyLocations(locations);
+    
+    // If a key was provided in options, include it in the item
+    let itemToCreate = item;
+    if (options?.key) {
+      itemToCreate = { ...item, ...options.key };
+    }
 
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
     const operationContext = {
@@ -59,7 +69,7 @@ export const getCreateOperation = <
 
         const result = await utilities.processOne(api.httpPost<V>(
           utilities.getPath(loc),
-          item,
+          itemToCreate,
           requestOptions,
         ));
 

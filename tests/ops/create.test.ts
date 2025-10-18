@@ -110,8 +110,8 @@ describe("getCreateOperation", () => {
       const locations: LocKeyArray<"loc1", "loc2"> = ["location1", "location2"];
       mockHttpApi.httpPost = vi.fn().mockResolvedValue(mockCreatedItem);
 
-      // Execute
-      const result = await createOperation(mockItem, locations);
+      // Execute - now uses CreateOptions
+      const result = await createOperation(mockItem, { locations });
 
       // Verify
       expect(result).toEqual(mockCreatedItem);
@@ -326,8 +326,8 @@ describe("getCreateOperation", () => {
       const locations: LocKeyArray<"loc1", "loc2"> = ["loc1", "loc2"];
       mockHttpApi.httpPost = vi.fn().mockResolvedValue(mockCreatedItem);
 
-      // Execute
-      await createOperation(mockItem, locations);
+      // Execute - now uses CreateOptions
+      await createOperation(mockItem, { locations });
 
       // Verify
       expect(mockUtilities.verifyLocations).toHaveBeenCalledWith(locations);

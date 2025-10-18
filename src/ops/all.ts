@@ -1,4 +1,5 @@
 import {
+  AllMethod,
   Item,
   ItemQuery,
   LocKeyArray,
@@ -24,7 +25,7 @@ export const getAllOperation = <
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
 
-  ) => {
+  ): AllMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const all = async (
     query: ItemQuery = {} as ItemQuery,

@@ -1,5 +1,5 @@
 /* eslint-disable no-undefined */
-import { ComKey, Item, LocKeyArray, PriKey } from "@fjell/core";
+import { AllActionOperationMethod, ComKey, Item, LocKeyArray, OperationParams, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";
@@ -20,21 +20,20 @@ export const getAllActionOperation = <
     api: HttpApi,
     apiOptions: ClientApiOptions,
     utilities: Utilities<V, S, L1, L2, L3, L4, L5>
-  ) => {
+  ): AllActionOperationMethod<V, S, L1, L2, L3, L4, L5> => {
   const allAction = async (
     action: string,
-    body: any = {},
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
+    params?: OperationParams,
+    locations?: LocKeyArray<L1, L2, L3, L4, L5> | []
   ): Promise<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]> => {
     const requestOptions = Object.assign({}, apiOptions.postOptions, { isAuthenticated: apiOptions.writeAuthenticated });
-    logger.default('allAction', { action, body, locations, requestOptions });
-    utilities.verifyLocations(locations);
-
-    const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
+    const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations || [];
+    logger.default('allAction', { action, params, locations: loc, requestOptions });
+    utilities.verifyLocations(loc);
 
     const response = await api.httpPost<[V[], Array<PriKey<any> | ComKey<any, any, any, any, any, any> | LocKeyArray<any, any, any, any, any>>]>(
       `${utilities.getPath(loc)}/${action}`,
-      body,
+      params || {},
       requestOptions,
     );
 
