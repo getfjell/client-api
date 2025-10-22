@@ -15,6 +15,11 @@ export default defineConfig({
         'node_modules/**',
         'tests/**',
         'src/index.ts',
+        // Exclude non-library example files from coverage
+        'examples/**',
+        // Exclude type-only interface files that contain no runtime code
+        'src/ClientApi.ts',
+        'src/ClientApiOptions.ts',
         '**/*.d.ts',
         'dist/**',
         'build.js',
