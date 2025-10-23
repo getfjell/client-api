@@ -1,4 +1,4 @@
-import buildLibrary from '@fjell/eslint-config/esbuild/library';
+import buildLibrary from '@fjell/common-config/esbuild/library';
 
 // Simple library build - replaces custom configuration
 buildLibrary();
