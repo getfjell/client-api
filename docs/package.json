@@ -12,7 +12,7 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
-    "@fjell/docs-template": "^1.0.24",
+    "@fjell/docs-template": "^1.0.40",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -28,7 +28,7 @@
     "@vitest/ui": "^3.2.4",
     "jsdom": "^26.1.0",
     "typescript": "^5.8.3",
-    "vite": "^7.0.6",
+    "vite": "^7.1.12",
     "vitest": "^3.2.4"
   },
   "overrides": {
