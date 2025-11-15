@@ -40,6 +40,14 @@ export const getFindOneOperation = <
 
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params });
     logger.default('findOne', { finder, finderParams, locations, requestOptions });
+    logger.debug('QUERY_CACHE: client-api.findOne() - Making API request', {
+      finder,
+      finderParams: JSON.stringify(finderParams),
+      locations: JSON.stringify(locations),
+      path: utilities.getPath(loc),
+      params: JSON.stringify(params),
+      isAuthenticated: apiOptions.allAuthenticated
+    });
 
     const results = await utilities.processArray(
       api.httpGet<V[]>(
@@ -50,6 +58,18 @@ export const getFindOneOperation = <
     const result = results[0];
     if (result) {
       utilities.validatePK(result);
+      logger.debug('QUERY_CACHE: client-api.findOne() - API response received', {
+        finder,
+        finderParams: JSON.stringify(finderParams),
+        locations: JSON.stringify(locations),
+        itemKey: JSON.stringify(result.key)
+      });
+    } else {
+      logger.debug('QUERY_CACHE: client-api.findOne() - API returned no items', {
+        finder,
+        finderParams: JSON.stringify(finderParams),
+        locations: JSON.stringify(locations)
+      });
     }
     
     return result;

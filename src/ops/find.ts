@@ -38,12 +38,30 @@ export const getFindOperation = <
     const mergedParams: QueryParams = finderToParams(finder, finderParams);
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params: mergedParams });
     logger.default('find', { finder, finderParams, locations, requestOptions });
+    logger.debug('QUERY_CACHE: client-api.find() - Making API request', {
+      finder,
+      finderParams: JSON.stringify(finderParams),
+      locations: JSON.stringify(locations),
+      path: utilities.getPath(loc),
+      params: JSON.stringify(mergedParams),
+      isAuthenticated: apiOptions.allAuthenticated
+    });
 
-    return await utilities.processArray(
+    const result = await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
       ));
+    
+    logger.debug('QUERY_CACHE: client-api.find() - API response received', {
+      finder,
+      finderParams: JSON.stringify(finderParams),
+      locations: JSON.stringify(locations),
+      itemCount: result.length,
+      itemKeys: result.map(item => JSON.stringify(item.key))
+    });
+
+    return result;
   }
 
   return find;
