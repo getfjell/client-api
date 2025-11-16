@@ -38,12 +38,28 @@ export const getAllOperation = <
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params });
 
     logger.default('all', { query, locations, requestOptions });
+    logger.debug('QUERY_CACHE: client-api.all() - Making API request', {
+      query: JSON.stringify(query),
+      locations: JSON.stringify(locations),
+      path: utilities.getPath(loc),
+      params: JSON.stringify(params),
+      isAuthenticated: apiOptions.allAuthenticated
+    });
 
-    return await utilities.processArray(
+    const result = await utilities.processArray(
       api.httpGet<V[]>(
         utilities.getPath(loc),
         requestOptions,
       ));
+    
+    logger.debug('QUERY_CACHE: client-api.all() - API response received', {
+      query: JSON.stringify(query),
+      locations: JSON.stringify(locations),
+      itemCount: result.length,
+      itemKeys: result.map(item => JSON.stringify(item.key))
+    });
+
+    return result;
   }
 
   return all;

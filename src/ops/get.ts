@@ -31,13 +31,21 @@ export const getGetOperation = <
     ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
   ): Promise<V | null> => {
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.readAuthenticated });
+    const keyStr = JSON.stringify(ik);
+    
     logger.default('get', { ik, requestOptions });
 
     const operationContext = {
       operation: 'get',
       path: utilities.getPath(ik),
-      keyType: typeof ik
+      keyType: typeof ik,
+      key: keyStr
     };
+
+    logger.debug('CLIENT_API: get() started', {
+      ...operationContext,
+      isAuthenticated: apiOptions.readAuthenticated
+    });
 
     const retryConfig = {
       maxRetries: 3,
@@ -51,35 +59,68 @@ export const getGetOperation = <
     const startTime = Date.now();
 
     for (let attempt = 0; attempt <= retryConfig.maxRetries; attempt++) {
+      const attemptStartTime = Date.now();
       try {
-        logger.debug(`Getting item (attempt ${attempt + 1})`, operationContext);
+        logger.debug(`CLIENT_API: get() attempt ${attempt + 1}`, {
+          ...operationContext,
+          attempt: attempt + 1,
+          maxRetries: retryConfig.maxRetries + 1
+        });
 
+        const httpStartTime = Date.now();
         const result = await utilities.processOne(
           api.httpGet<V>(
             utilities.getPath(ik),
             requestOptions,
           )
         );
+        const httpDuration = Date.now() - httpStartTime;
 
         utilities.validatePK(result);
 
+        const attemptDuration = Date.now() - attemptStartTime;
+        const totalDuration = Date.now() - startTime;
+
         if (attempt > 0) {
-          logger.info(`Get operation succeeded after ${attempt} retries`, {
+          logger.info(`CLIENT_API: get() succeeded after retries`, {
             ...operationContext,
             totalAttempts: attempt + 1,
-            duration: Date.now() - startTime
+            httpDuration,
+            attemptDuration,
+            totalDuration
+          });
+        } else {
+          logger.debug(`CLIENT_API: get() succeeded (first attempt)`, {
+            ...operationContext,
+            httpDuration,
+            totalDuration,
+            hasResult: !!result
           });
         }
 
         return result;
       } catch (error: any) {
         lastError = error;
+        const attemptDuration = Date.now() - attemptStartTime;
 
         // Handle 404 errors specially - return null instead of throwing
         if (error.status === 404) {
-          logger.debug('Item not found (404)', operationContext);
+          logger.debug('CLIENT_API: get() - item not found (404)', {
+            ...operationContext,
+            attemptDuration,
+            totalDuration: Date.now() - startTime
+          });
           return null;
         }
+
+        logger.debug('CLIENT_API: get() attempt failed', {
+          ...operationContext,
+          attempt: attempt + 1,
+          attemptDuration,
+          errorStatus: error.status,
+          errorCode: error.code,
+          errorMessage: error.message
+        });
 
         if (attempt === retryConfig.maxRetries) {
           break;
@@ -87,23 +128,28 @@ export const getGetOperation = <
 
         const isRetryable = shouldRetryError(error);
         if (!isRetryable) {
-          logger.debug('Not retrying get operation due to non-retryable error', {
+          logger.debug('CLIENT_API: get() - not retrying (non-retryable error)', {
             ...operationContext,
             errorMessage: error.message,
             errorCode: error.code || error.status,
-            attempt: attempt + 1
+            errorStatus: error.status,
+            attempt: attempt + 1,
+            totalDuration: Date.now() - startTime
           });
           break;
         }
 
         const delay = calculateRetryDelay(attempt, retryConfig);
 
-        logger.warning(`Retrying get operation (attempt ${attempt + 2}) after ${delay}ms`, {
+        logger.warning(`CLIENT_API: get() - retrying after ${delay}ms`, {
           ...operationContext,
           errorMessage: error.message,
           errorCode: error.code || error.status,
+          errorStatus: error.status,
           delay,
-          attemptNumber: attempt + 1
+          attemptNumber: attempt + 1,
+          nextAttempt: attempt + 2,
+          maxRetries: retryConfig.maxRetries + 1
         });
 
         await new Promise(resolve => setTimeout(resolve, delay));
@@ -111,23 +157,26 @@ export const getGetOperation = <
     }
 
     const finalError = enhanceError(lastError, operationContext);
+    const totalDuration = Date.now() - startTime;
 
     if (apiOptions.errorHandler) {
       try {
         apiOptions.errorHandler(finalError, operationContext);
       } catch (handlerError: any) {
-        logger.error('Custom error handler failed', {
+        logger.error('CLIENT_API: Custom error handler failed', {
+          ...operationContext,
           originalError: finalError.message,
           handlerError: handlerError?.message || String(handlerError)
         });
       }
     }
 
-    logger.error(`Get operation failed after ${retryConfig.maxRetries + 1} attempts`, {
+    logger.error(`CLIENT_API: get() failed after all retries`, {
       ...operationContext,
       errorMessage: finalError.message,
       errorCode: finalError.code || finalError.status,
-      duration: Date.now() - startTime,
+      errorStatus: finalError.status,
+      totalDuration,
       totalAttempts: retryConfig.maxRetries + 1
     });
 

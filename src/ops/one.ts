@@ -39,6 +39,13 @@ export const getOneOperation = <
     const params: QueryParams = queryToParams(query);
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.readAuthenticated, params });
     logger.default('one', { query, locations, requestOptions });
+    logger.debug('QUERY_CACHE: client-api.one() - Making API request', {
+      query: JSON.stringify(query),
+      locations: JSON.stringify(locations),
+      path: utilities.getPath(loc),
+      params: JSON.stringify(params),
+      isAuthenticated: apiOptions.readAuthenticated
+    });
 
     let item: V | null = null;
 
@@ -50,6 +57,16 @@ export const getOneOperation = <
 
     if (items.length > 0) {
       item = items[0];
+      logger.debug('QUERY_CACHE: client-api.one() - API response received', {
+        query: JSON.stringify(query),
+        locations: JSON.stringify(locations),
+        itemKey: JSON.stringify(item.key)
+      });
+    } else {
+      logger.debug('QUERY_CACHE: client-api.one() - API returned no items', {
+        query: JSON.stringify(query),
+        locations: JSON.stringify(locations)
+      });
     }
 
     return item as V;
