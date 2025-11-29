@@ -1,5 +1,7 @@
 import {
   AllMethod,
+  AllOperationResult,
+  AllOptions,
   Item,
   ItemQuery,
   LocKeyArray,
@@ -29,37 +31,58 @@ export const getAllOperation = <
 
   const all = async (
     query: ItemQuery = {} as ItemQuery,
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
-  ): Promise<V[]> => {
+    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = [],
+    allOptions?: AllOptions
+  ): Promise<AllOperationResult<V>> => {
     utilities.verifyLocations(locations);
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
 
+    // Build query params from ItemQuery
     const params: QueryParams = queryToParams(query);
+    
+    // Override with AllOptions if provided (takes precedence)
+    if (allOptions && 'limit' in allOptions && allOptions.limit != null) {
+      params.limit = String(allOptions.limit);
+    }
+    if (allOptions && 'offset' in allOptions && allOptions.offset != null) {
+      params.offset = String(allOptions.offset);
+    }
+
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params });
 
-    logger.default('all', { query, locations, requestOptions });
+    logger.default('all', { query, locations, allOptions, requestOptions });
     logger.debug('QUERY_CACHE: client-api.all() - Making API request', {
       query: JSON.stringify(query),
       locations: JSON.stringify(locations),
+      allOptions: JSON.stringify(allOptions),
       path: utilities.getPath(loc),
       params: JSON.stringify(params),
       isAuthenticated: apiOptions.allAuthenticated
     });
 
-    const result = await utilities.processArray(
-      api.httpGet<V[]>(
-        utilities.getPath(loc),
-        requestOptions,
-      ));
+    // Server returns AllOperationResult<V> with items and metadata
+    const result = await api.httpGet<AllOperationResult<V>>(
+      utilities.getPath(loc),
+      requestOptions,
+    );
+
+    // Process items through utilities (date conversion, validation, etc.)
+    const processedItems = await utilities.processArray(Promise.resolve(result.items));
     
     logger.debug('QUERY_CACHE: client-api.all() - API response received', {
       query: JSON.stringify(query),
       locations: JSON.stringify(locations),
-      itemCount: result.length,
-      itemKeys: result.map(item => JSON.stringify(item.key))
+      itemCount: processedItems.length,
+      total: result.metadata?.total,
+      hasMore: result.metadata?.hasMore,
+      itemKeys: processedItems.map(item => JSON.stringify(item.key))
     });
 
-    return result;
+    // Return AllOperationResult with processed items
+    return {
+      items: processedItems,
+      metadata: result.metadata
+    };
   }
 
   return all;

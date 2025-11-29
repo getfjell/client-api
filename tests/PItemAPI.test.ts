@@ -38,15 +38,20 @@ describe("PItemAPI", () => {
   });
 
   it("should call all method", async () => {
-    const allMethod = vi.fn().mockResolvedValue([{} as Item<"test">]);
+    const mockResult: AllOperationResult<Item<"test">> = {
+      items: [{} as Item<"test">],
+      metadata: { total: 1, returned: 1, offset: 0, hasMore: false }
+    };
+    const allMethod = vi.fn().mockResolvedValue(mockResult);
     (createAItemAPI as Mock).mockReturnValue({ all: allMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
     const result = await pItemAPI.all({});
 
-    expect(allMethod).toHaveBeenCalledWith({}, []);
-    expect(result).toEqual([{}]);
+    expect(allMethod).toHaveBeenCalledWith({}, [], undefined);
+    expect(result.items).toEqual([{}]);
+    expect(result.metadata.total).toBe(1);
   });
 
   it("should call allAction method", async () => {
@@ -141,7 +146,7 @@ describe("PItemAPI", () => {
 
     await expect(pItemAPI.all({})).rejects.toThrow("Test Error");
 
-    expect(allMethod).toHaveBeenCalledWith({}, []);
+    expect(allMethod).toHaveBeenCalledWith({}, [], undefined);
   });
 
   it("should handle errors in allAction method", async () => {
