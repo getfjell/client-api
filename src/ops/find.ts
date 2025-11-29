@@ -1,5 +1,7 @@
 import {
   FindMethod,
+  FindOperationResult,
+  FindOptions,
   Item,
   LocKeyArray,
   QueryParams
@@ -30,39 +32,57 @@ export const getFindOperation = <
   const find = async (
     finder: string,
     finderParams: Record<string, string | number | boolean | Date | Array<string | number | boolean | Date>> = {},
-    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = []
-  ): Promise<V[]> => {
+    locations: LocKeyArray<L1, L2, L3, L4, L5> | [] = [],
+    findOptions?: FindOptions
+  ): Promise<FindOperationResult<V>> => {
     utilities.verifyLocations(locations);
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
 
     const mergedParams: QueryParams = finderToParams(finder, finderParams);
+    
+    // Add pagination options to query parameters
+    if (findOptions?.limit != null) {
+      mergedParams.limit = findOptions.limit.toString();
+    }
+    if (findOptions?.offset != null) {
+      mergedParams.offset = findOptions.offset.toString();
+    }
+    
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.allAuthenticated, params: mergedParams });
-    logger.default('find', { finder, finderParams, locations, requestOptions });
+    logger.default('find', { finder, finderParams, locations, findOptions, requestOptions });
     logger.debug('QUERY_CACHE: client-api.find() - Making API request', {
       finder,
       finderParams: JSON.stringify(finderParams),
       locations: JSON.stringify(locations),
+      findOptions,
       path: utilities.getPath(loc),
       params: JSON.stringify(mergedParams),
       isAuthenticated: apiOptions.allAuthenticated
     });
 
-    const result = await utilities.processArray(
-      api.httpGet<V[]>(
-        utilities.getPath(loc),
-        requestOptions,
-      ));
+    // Expect FindOperationResult from server
+    const response = await api.httpGet<FindOperationResult<V>>(
+      utilities.getPath(loc),
+      requestOptions,
+    );
+    
+    // Process items array (convert dates, etc.)
+    const processedItems = await utilities.processArray(Promise.resolve(response.items || []));
     
     logger.debug('QUERY_CACHE: client-api.find() - API response received', {
       finder,
       finderParams: JSON.stringify(finderParams),
       locations: JSON.stringify(locations),
-      itemCount: result.length,
-      itemKeys: result.map(item => JSON.stringify(item.key))
+      itemCount: processedItems.length,
+      total: response.metadata?.total || 0,
+      itemKeys: processedItems.map(item => JSON.stringify(item.key))
     });
 
-    return result;
+    return {
+      items: processedItems,
+      metadata: response.metadata
+    };
   }
 
-  return find;
+  return find as unknown as FindMethod<V, S, L1, L2, L3, L4, L5>;
 }
