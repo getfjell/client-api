@@ -1,4 +1,5 @@
 import {
+  AllOperationResult,
   Item,
   ItemQuery,
   LocKeyArray,
@@ -36,7 +37,10 @@ export const getOneOperation = <
 
     const loc: LocKeyArray<L1, L2, L3, L4, L5> | [] = locations;
 
+    // Add limit: 1 to optimize the query
     const params: QueryParams = queryToParams(query);
+    params.limit = '1';
+    
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.readAuthenticated, params });
     logger.default('one', { query, locations, requestOptions });
     logger.debug('QUERY_CACHE: client-api.one() - Making API request', {
@@ -47,14 +51,16 @@ export const getOneOperation = <
       isAuthenticated: apiOptions.readAuthenticated
     });
 
+    // Server returns AllOperationResult<V> with items and metadata
+    const result = await api.httpGet<AllOperationResult<V>>(
+      utilities.getPath(loc),
+      requestOptions,
+    );
+
+    // Process items through utilities (date conversion, validation, etc.)
+    const items = await utilities.processArray(Promise.resolve(result.items));
+
     let item: V | null = null;
-
-    const items = await utilities.processArray(
-      api.httpGet<V[]>(
-        utilities.getPath(loc),
-        requestOptions,
-      ));
-
     if (items.length > 0) {
       item = items[0];
       logger.debug('QUERY_CACHE: client-api.one() - API response received', {
@@ -69,7 +75,7 @@ export const getOneOperation = <
       });
     }
 
-    return item as V;
+    return item;
   }
 
   return one;

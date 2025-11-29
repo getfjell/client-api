@@ -1,4 +1,4 @@
-import { ComKey, Item, ItemQuery, PriKey } from "@fjell/core";
+import { AllOptions, ComKey, Item, ItemQuery, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
@@ -35,8 +35,8 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     params?: any,
   ) => await aItemAPI.action(ik, action, params);
 
-  const all = async (query?: ItemQuery) =>
-    await aItemAPI.all(query || {}, []);
+  const all = async (query?: ItemQuery, locations?: [], allOptions?: AllOptions) =>
+    await aItemAPI.all(query || {}, locations || [], allOptions);
 
   const allAction = async (action: string, params?: any) =>
     await aItemAPI.allAction(action, params, []);

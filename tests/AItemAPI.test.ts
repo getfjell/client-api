@@ -57,9 +57,14 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = vi.fn().mockResolvedValue(items);
+      const mockResult: AllOperationResult<Item<'container'>> = {
+        items,
+        metadata: { total: 2, returned: 2, offset: 0, hasMore: false }
+      };
+      api.httpGet = vi.fn().mockResolvedValue(mockResult);
       const result = await containersAPI.all({}, []);
-      expect(result).toEqual(items);
+      expect(result.items).toEqual(items);
+      expect(result.metadata.total).toBe(2);
     });
   });
 
@@ -107,7 +112,11 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = vi.fn().mockResolvedValue(items);
+      const mockResult: AllOperationResult<Item<'container'>> = {
+        items,
+        metadata: { total: 1, returned: 1, offset: 0, hasMore: false }
+      };
+      api.httpGet = vi.fn().mockResolvedValue(mockResult);
       const result = await containersAPI.one({}, []);
       expect(result).toEqual(items[0]);
     });
