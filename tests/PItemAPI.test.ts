@@ -216,16 +216,22 @@ describe("PItemAPI", () => {
     expect(updateMethod).toHaveBeenCalledWith(primaryKey, {});
   });
 
-  it('should call super.find and return an array of composite items', async () => {
+  it('should call super.find and return FindOperationResult', async () => {
     const mockItems = [{} as Item<"test">];
-    const findMethod = vi.fn().mockResolvedValue(mockItems);
+    const mockFindResult = {
+      items: mockItems,
+      metadata: { total: mockItems.length, returned: mockItems.length, offset: 0, hasMore: false }
+    };
+    const findMethod = vi.fn().mockResolvedValue(mockFindResult);
     (createAItemAPI as Mock).mockReturnValue({ find: findMethod });
 
     pItemAPI = createPItemApi(api, "test", "testPath", {});
 
     const result = await pItemAPI.find('someFinder', {});
 
-    expect(findMethod).toHaveBeenCalledWith('someFinder', {});
-    expect(result).toBe(mockItems);
+    expect(findMethod).toHaveBeenCalledWith('someFinder', {}, [], undefined);
+    // find() now returns FindOperationResult
+    expect(result.items).toBe(mockItems);
+    expect(result.metadata.total).toBe(mockItems.length);
   });
 });

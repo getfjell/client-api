@@ -190,7 +190,12 @@ describe("AItemAPI", () => {
           deleted: { at: null }
         }
       }];
-      api.httpGet = vi.fn().mockResolvedValue(items);
+      // Server now returns FindOperationResult, not array
+      const mockFindResult = {
+        items,
+        metadata: { total: items.length, returned: items.length, offset: 0, hasMore: false }
+      };
+      api.httpGet = vi.fn().mockResolvedValue(mockFindResult);
       const result = await containersAPI.find("testFinder", {
         param1: "value1",
         param2: 123,
@@ -198,7 +203,9 @@ describe("AItemAPI", () => {
         param4: new Date(),
         param5: ["a", "b", "c"]
       }, []);
-      expect(result).toEqual(items);
+      // find() now returns FindOperationResult
+      expect(result.items).toEqual(items);
+      expect(result.metadata.total).toBe(items.length);
       expect(api.httpGet).toHaveBeenCalledWith(
         "/containers",
         expect.objectContaining({

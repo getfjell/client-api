@@ -1,4 +1,4 @@
-import { AllOptions, ComKey, Item, ItemQuery, PriKey } from "@fjell/core";
+import { AllOptions, ComKey, FindOptions, Item, ItemQuery, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
@@ -73,8 +73,8 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     params?: any,
   ) => await aItemAPI.facet(ik, facet, params);
 
-  const find = async (finder: string, finderParams?: any) =>
-    await aItemAPI.find(finder, finderParams);
+  const find = async (finder: string, finderParams?: any, locations?: [], findOptions?: FindOptions) =>
+    await (aItemAPI.find as any)(finder, finderParams, locations || [], findOptions);
 
   const findOne = async (finder: string, finderParams?: any) =>
     await aItemAPI.findOne(finder, finderParams);
