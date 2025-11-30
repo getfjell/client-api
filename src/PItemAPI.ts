@@ -1,4 +1,4 @@
-import { AllOptions, ComKey, FindOptions, Item, ItemQuery, PriKey } from "@fjell/core";
+import { AllOperationResult, AllOptions, ComKey, FindOperationResult, FindOptions, Item, ItemQuery, PriKey } from "@fjell/core";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
@@ -6,6 +6,57 @@ import { ClientApi } from "./ClientApi";
 import LibLogger from "./logger";
 import { ClientApiOptions } from "./ClientApiOptions";
 const logger = LibLogger.get('PItemAPI');
+
+/**
+ * Helper function to ensure items are extracted from { items, metadata } response structure.
+ * This provides defensive handling in case the underlying API doesn't extract items properly.
+ */
+function ensureItemsExtracted<T>(
+  result: any,
+  operationName: string
+): { items: T[]; metadata: any } {
+  // If result already has the correct structure with items array, return as-is
+  if (result && typeof result === 'object' && Array.isArray(result.items)) {
+    return result;
+  }
+  
+  // If result is the raw { items, metadata } structure but items wasn't extracted
+  if (result && typeof result === 'object' && 'items' in result && 'metadata' in result) {
+    logger.debug(`${operationName}: Extracting items from response structure`, {
+      hasItems: Array.isArray(result.items),
+      itemsType: typeof result.items,
+      itemsLength: Array.isArray(result.items) ? result.items.length : 'N/A'
+    });
+    return {
+      items: Array.isArray(result.items) ? result.items : [],
+      metadata: result.metadata || {}
+    };
+  }
+  
+  // If result is an array (legacy format), wrap it
+  if (Array.isArray(result)) {
+    logger.debug(`${operationName}: Wrapping array result in { items, metadata } structure`);
+    return {
+      items: result,
+      metadata: {
+        total: result.length,
+        returned: result.length,
+        offset: 0,
+        hasMore: false
+      }
+    };
+  }
+  
+  // Fallback: return empty result
+  logger.warning(`${operationName}: Unexpected response format, returning empty result`, {
+    resultType: typeof result,
+    resultKeys: result && typeof result === 'object' ? Object.keys(result) : []
+  });
+  return {
+    items: [],
+    metadata: {}
+  };
+}
 
 // PItemApi now directly extends ClientApi without re-declaring methods
 // This ensures compatibility with core Operations interface
@@ -35,8 +86,11 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     params?: any,
   ) => await aItemAPI.action(ik, action, params);
 
-  const all = async (query?: ItemQuery, locations?: [], allOptions?: AllOptions) =>
-    await aItemAPI.all(query || {}, locations || [], allOptions);
+  const all = async (query?: ItemQuery, locations?: [], allOptions?: AllOptions): Promise<AllOperationResult<V>> => {
+    const result = await aItemAPI.all(query || {}, locations || [], allOptions);
+    const extracted = ensureItemsExtracted<V>(result, 'all');
+    return extracted as AllOperationResult<V>;
+  };
 
   const allAction = async (action: string, params?: any) =>
     await aItemAPI.allAction(action, params, []);
@@ -73,8 +127,11 @@ export const createPItemApi = <V extends Item<S>, S extends string>(
     params?: any,
   ) => await aItemAPI.facet(ik, facet, params);
 
-  const find = async (finder: string, finderParams?: any, locations?: [], findOptions?: FindOptions) =>
-    await (aItemAPI.find as any)(finder, finderParams, locations || [], findOptions);
+  const find = async (finder: string, finderParams?: any, locations?: [], findOptions?: FindOptions): Promise<FindOperationResult<V>> => {
+    const result = await (aItemAPI.find as any)(finder, finderParams, locations || [], findOptions);
+    const extracted = ensureItemsExtracted<V>(result, 'find');
+    return extracted as FindOperationResult<V>;
+  };
 
   const findOne = async (finder: string, finderParams?: any) =>
     await aItemAPI.findOne(finder, finderParams);

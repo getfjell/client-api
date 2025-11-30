@@ -51,7 +51,8 @@ describe('CItemAPI', () => {
     const result = await cItemApi.all({}, [locKey]);
 
     expect(allMethod).toHaveBeenCalledWith({}, [locKey]);
-    expect(result).toBe(mockItems);
+    expect(result.items).toEqual(mockItems);
+    expect(result.metadata).toBeDefined();
   });
 
   it('should call super.allAction and return a composite item', async () => {
@@ -144,7 +145,8 @@ describe('CItemAPI', () => {
     const result = await cItemApi.find('someFinder', {}, [locKey]);
 
     expect(findMethod).toHaveBeenCalledWith('someFinder', {}, [locKey]);
-    expect(result).toBe(mockItems);
+    expect(result.items).toEqual(mockItems);
+    expect(result.metadata).toBeDefined();
   });
 
 });
