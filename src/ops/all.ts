@@ -39,7 +39,7 @@ export const getAllOperation = <
 
     // Build query params from ItemQuery
     const params: QueryParams = queryToParams(query);
-    
+
     // Override with AllOptions if provided (takes precedence)
     if (allOptions && 'limit' in allOptions && allOptions.limit != null) {
       params.limit = String(allOptions.limit);
@@ -66,22 +66,48 @@ export const getAllOperation = <
       requestOptions,
     );
 
+    // Handle case where server returns {} or result.items is undefined
+    // Extract items array from result, defaulting to empty array if missing
+    let itemsArray: V[] = [];
+    if (result) {
+      if (result.items && Array.isArray(result.items)) {
+        itemsArray = result.items;
+      } else if (Array.isArray(result)) {
+        itemsArray = result;
+      } else {
+        // Log unexpected response format
+        logger.warning('Unexpected response format from server', {
+          result,
+          resultType: typeof result,
+          hasItems: 'items' in result,
+          resultKeys: result && typeof result === 'object' ? Object.keys(result) : []
+        });
+        itemsArray = [];
+      }
+    }
+
+    // Ensure itemsArray is always a valid array before processing
+    if (!Array.isArray(itemsArray)) {
+      logger.error('itemsArray is not an array, defaulting to empty array', { itemsArray });
+      itemsArray = [];
+    }
+
     // Process items through utilities (date conversion, validation, etc.)
-    const processedItems = await utilities.processArray(Promise.resolve(result.items));
-    
+    const processedItems = await utilities.processArray(Promise.resolve(itemsArray));
+
     logger.debug('QUERY_CACHE: client-api.all() - API response received', {
       query: JSON.stringify(query),
       locations: JSON.stringify(locations),
       itemCount: processedItems.length,
-      total: result.metadata?.total,
-      hasMore: result.metadata?.hasMore,
+      total: result?.metadata?.total,
+      hasMore: result?.metadata?.hasMore,
       itemKeys: processedItems.map(item => JSON.stringify(item.key))
     });
 
     // Return AllOperationResult with processed items
     return {
       items: processedItems,
-      metadata: result.metadata
+      metadata: result?.metadata || { total: 0, returned: 0, offset: 0, hasMore: false }
     };
   }
 
