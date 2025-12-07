@@ -89,7 +89,6 @@ export const createUtilities = <
 
   const convertDoc = (doc: V): V => {
     logger.default('convertDoc', { doc });
-    // console.log(JSON.stringify(doc, null, 2));
     if (doc && doc.events) {
       const events = doc.events;
       for (const key in events) {
@@ -111,12 +110,7 @@ export const createUtilities = <
       const localPathNames = [...pathNames];
       logger.default('getPath', { key, pathNames: localPathNames });
 
-      // console.log('getPath key: ' + JSON.stringify(key));
-
       const keys = generateKeyArray(key);
-
-      // console.log('getPath keys: ' + JSON.stringify(keys));
-      // console.log('getPath pathNames: ' + JSON.stringify(pathNames));
 
       // For contained items (ComKey), we need to process location keys first
       // to match the URL structure: /parents/{parentId}/children/{childId}
