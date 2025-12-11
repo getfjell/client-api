@@ -1,7 +1,7 @@
 {
   "name": "@fjell/client-api",
   "description": "Client API for Fjell",
-  "version": "4.4.65",
+  "version": "4.4.66",
   "keywords": [
     "client",
     "api",
@@ -39,9 +39,9 @@
   },
   "dependencies": {
     "@fjell/core": "^4.4.70",
-    "@fjell/http-api": "^4.4.60",
-    "@fjell/logging": "^4.4.60",
-    "@fjell/registry": "^4.4.77",
+    "@fjell/http-api": "^4.4.61",
+    "@fjell/logging": "^4.4.62",
+    "@fjell/registry": "^4.4.79",
     "deepmerge": "^4.3.1"
   },
   "devDependencies": {
