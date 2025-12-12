@@ -6,12 +6,53 @@ import {
   RateLimitError
 } from '../errors/index';
 
-// Simple logger interface for now
+// Structured logger interface for agentic debugging
 const logger = {
-  debug: (message: string, context?: any) => console.debug(message, context),
-  info: (message: string, context?: any) => console.info(message, context),
-  warning: (message: string, context?: any) => console.warn(message, context),
-  error: (message: string, context?: any) => console.error(message, context)
+  debug: (message: string, context?: any) => {
+    const logData = {
+      component: 'client-api',
+      subcomponent: 'HttpWrapper',
+      level: 'debug',
+      message,
+      ...context,
+      timestamp: new Date().toISOString()
+    };
+    console.debug(JSON.stringify(logData));
+  },
+  info: (message: string, context?: any) => {
+    const logData = {
+      component: 'client-api',
+      subcomponent: 'HttpWrapper',
+      level: 'info',
+      message,
+      ...context,
+      timestamp: new Date().toISOString()
+    };
+    console.info(JSON.stringify(logData));
+  },
+  warning: (message: string, context?: any) => {
+    const logData = {
+      component: 'client-api',
+      subcomponent: 'HttpWrapper',
+      level: 'warning',
+      message,
+      ...context,
+      timestamp: new Date().toISOString()
+    };
+    console.warn(JSON.stringify(logData));
+  },
+  error: (message: string, context?: any) => {
+    const logData = {
+      component: 'client-api',
+      subcomponent: 'HttpWrapper',
+      level: 'error',
+      message,
+      ...context,
+      timestamp: new Date().toISOString(),
+      suggestion: context?.suggestion || 'Check error details, retry configuration, and network connectivity'
+    };
+    console.error(JSON.stringify(logData));
+  }
 };
 
 /**
@@ -162,11 +203,23 @@ export class HttpWrapper {
       }
     }
 
-    // Log final failure
-    logger.error(`${operationName} failed after ${this.retryConfig.maxRetries + 1} attempts`, {
+    // Log final failure with comprehensive context
+    logger.error(`${operationName} failed after all retry attempts`, {
+      operation: operationName,
       errorCode: lastError?.code,
       errorMessage: lastError?.message,
+      errorType: lastError?.constructor?.name,
+      isRetryable: lastError?.isRetryable,
+      totalAttempts: this.retryConfig.maxRetries + 1,
       duration: Date.now() - startTime,
+      retryConfig: {
+        maxRetries: this.retryConfig.maxRetries,
+        initialDelayMs: this.retryConfig.initialDelayMs,
+        backoffMultiplier: this.retryConfig.backoffMultiplier
+      },
+      suggestion: lastError?.isRetryable
+        ? 'Error is retryable but all attempts exhausted. Check network connectivity, server status, and increase retry limits if needed.'
+        : 'Error is not retryable. Check request parameters, authentication, and server-side validation.',
       ...context
     });
 
