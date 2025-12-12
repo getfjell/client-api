@@ -96,13 +96,35 @@ export const getFindOperation = <
 
         // Validate response shape to prevent downstream errors
         if (!response || typeof response !== 'object') {
-          throw new Error('Invalid response: expected FindOperationResult object');
+          logger.error('Invalid response from find operation', {
+            component: 'client-api',
+            operation: 'find',
+            finder,
+            responseType: typeof response,
+            response,
+            suggestion: 'Server should return FindOperationResult with { items: [], metadata: {...} } structure'
+          });
+          throw new Error(
+            `Invalid response from find operation: expected FindOperationResult object with items and metadata, got ${typeof response}. ` +
+            `This indicates a server-side API issue.`
+          );
         }
 
         // Handle case where response.items might be undefined
         const items = response.items || [];
         if (!Array.isArray(items)) {
-          throw new Error('Invalid response: items must be an array');
+          logger.error('Invalid response items from find operation', {
+            component: 'client-api',
+            operation: 'find',
+            finder,
+            itemsType: typeof items,
+            response,
+            suggestion: 'Server should return FindOperationResult.items as an array'
+          });
+          throw new Error(
+            `Invalid response from find operation: items must be an array, got ${typeof items}. ` +
+            `This indicates a server-side API issue.`
+          );
         }
         
         // Process items array (convert dates, etc.)
