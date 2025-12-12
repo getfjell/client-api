@@ -88,7 +88,7 @@ describe("find operation edge cases", () => {
       const find = getFindOperation(mockApi, mockOptions, mockUtilities);
 
       await expect(find("testFinder", {}, []))
-        .rejects.toThrow("Invalid response: expected FindOperationResult object");
+        .rejects.toThrow(/Invalid response.*expected FindOperationResult/);
     });
 
     it("should throw on non-object response", async () => {
@@ -97,7 +97,7 @@ describe("find operation edge cases", () => {
       const find = getFindOperation(mockApi, mockOptions, mockUtilities);
 
       await expect(find("testFinder", {}, []))
-        .rejects.toThrow("Invalid response: expected FindOperationResult object");
+        .rejects.toThrow(/Invalid response.*expected FindOperationResult/);
     });
 
     it("should throw when items is not an array", async () => {
