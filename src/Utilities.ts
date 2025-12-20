@@ -1,13 +1,15 @@
 import {
   ComKey,
-  validatePK as coreValidatePK,
-  generateKeyArray,
-  isPriKey,
   Item,
   LocKey,
   LocKeyArray,
   PriKey,
+} from "@fjell/types";
+import {
+  generateKeyArray,
+  isPriKey,
 } from "@fjell/core";
+import { validatePK as coreValidatePK } from "@fjell/validation";
 
 import LibLogger from "./logger";
 import deepmerge from "deepmerge";

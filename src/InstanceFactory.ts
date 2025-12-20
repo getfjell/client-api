@@ -1,4 +1,4 @@
-import { Item } from "@fjell/core";
+import { Item } from "@fjell/types";
 import { ClientApi } from "./ClientApi";
 import { InstanceFactory as BaseInstanceFactory, Registry, RegistryHub } from "@fjell/registry";
 import { createInstance, Instance } from "./Instance";

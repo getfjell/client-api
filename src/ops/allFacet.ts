@@ -2,7 +2,7 @@ import {
   AllFacetOperationMethod,
   Item,
   LocKeyArray
-} from "@fjell/core";
+} from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";

@@ -4,10 +4,9 @@ import {
   ItemQuery,
   LocKeyArray,
   OneMethod,
-  QueryParams,
-  queryToParams
-} from "@fjell/core";
-import { HttpApi } from "@fjell/http-api";
+} from "@fjell/types";
+import { queryToParams } from "@fjell/core";
+import { HttpApi, QueryParams } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";
 import LibLogger from "../logger";

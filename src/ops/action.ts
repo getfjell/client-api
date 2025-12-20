@@ -1,4 +1,4 @@
-import { ActionOperationMethod, ComKey, Item, LocKeyArray, OperationParams, PriKey } from "@fjell/core";
+import { ActionOperationMethod, ComKey, Item, LocKeyArray, OperationParams, PriKey } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";

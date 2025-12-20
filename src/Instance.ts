@@ -1,6 +1,6 @@
 
 import LibLogger from "./logger";
-import { Item } from "@fjell/core";
+import { Item } from "@fjell/types";
 import { Instance as BaseInstance, createInstance as createBaseInstance, Registry } from "@fjell/registry";
 import { ClientApi } from "./ClientApi";
 import { Coordinate } from "@fjell/core";

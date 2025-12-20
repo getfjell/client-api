@@ -1,4 +1,4 @@
-import { Item } from "@fjell/core";
+import { Item } from "@fjell/types";
 import { ClientApi } from "./ClientApi";
 import { DeleteMethodOptions, GetMethodOptions, PostMethodOptions, PutMethodOptions } from "@fjell/http-api";
 import { RetryConfig } from "./http/HttpWrapper";
