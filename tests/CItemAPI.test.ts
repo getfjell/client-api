@@ -1,7 +1,7 @@
 import { createAItemAPI } from '../src/AItemAPI';
 import { createCItemApi } from '../src/CItemAPI';
 import { ClientApi } from '../src/ClientApi';
-import { ComKey, Item, LocKey, UUID } from '@fjell/core';
+import { ComKey, Item, LocKey, UUID } from "@fjell/types";
 import { HttpApi } from '@fjell/http-api';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 vi.mock('../src/AItemAPI', () => ({

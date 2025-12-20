@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Item, LocKey, LocKeyArray, PriKey, UUID } from "@fjell/core";
+import { Item, LocKey, LocKeyArray, PriKey, UUID } from "@fjell/types";
 import { createUtilities } from "../src/Utilities";
 
 describe("Utilities", () => {

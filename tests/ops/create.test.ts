@@ -1,4 +1,4 @@
-import { Item, LocKeyArray } from "@fjell/core";
+import { Item, LocKeyArray } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getCreateOperation } from "../../src/ops/create";

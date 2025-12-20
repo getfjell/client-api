@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ComKey, LocKeyArray, PriKey } from '@fjell/core';
+import { ComKey, LocKeyArray, PriKey } from "@fjell/types";
 import { createUtilities } from '../src/Utilities';
 
 /**

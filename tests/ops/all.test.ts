@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAllOperation } from '../../src/ops/all';
 import { HttpApi } from '@fjell/http-api';
 import { ClientApiOptions } from '../../src/ClientApiOptions';
-import { AllOperationResult, Item, ItemQuery, queryToParams, Utilities } from '@fjell/core';
+import { AllOperationResult, Item, ItemQuery } from "@fjell/types";
+import { queryToParams, Utilities } from "@fjell/core";
 
 // Mock the logger
 vi.mock('../../src/logger', () => ({

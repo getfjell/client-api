@@ -1,4 +1,4 @@
-import { ComKey, Item, PriKey } from "@fjell/core";
+import { ComKey, Item, PriKey } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { getFacetOperation } from "../../src/ops/facet";
 import { ClientApiOptions } from "../../src/ClientApiOptions";

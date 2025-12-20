@@ -1,4 +1,4 @@
-import { Item } from "@fjell/core";
+import { Item } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { getOperations } from "../../src/ops/index";
 import { ClientApiOptions } from "../../src/ClientApiOptions";

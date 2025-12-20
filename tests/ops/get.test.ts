@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { getGetOperation } from '../../src/ops/get';
-import { ComKey, Item, PriKey } from '@fjell/core';
+import { ComKey, Item, PriKey } from "@fjell/types";
 
 // Mock the logger
 vi.mock('../../src/logger', () => ({
