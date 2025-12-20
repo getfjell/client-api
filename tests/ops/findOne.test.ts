@@ -1,4 +1,4 @@
-import { Item, LocKeyArray, QueryParams } from "@fjell/core";
+import { Item, LocKeyArray, QueryParams } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { getFindOneOperation } from "../../src/ops/findOne";
 import { finderToParams } from "../../src/AItemAPI";

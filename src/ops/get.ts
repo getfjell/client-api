@@ -3,7 +3,7 @@ import {
   GetMethod,
   Item,
   PriKey,
-} from "@fjell/core";
+} from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";
@@ -28,7 +28,7 @@ export const getGetOperation = <
   ): GetMethod<V, S, L1, L2, L3, L4, L5> => {
 
   const get = async (
-    ik: PriKey<S> | ComKey<S, never, never, never, never, never>,
+    ik: PriKey<S> | ComKey<S, L1, L2, L3, L4, L5>,
   ): Promise<V | null> => {
     const requestOptions = Object.assign({}, apiOptions.getOptions, { isAuthenticated: apiOptions.readAuthenticated });
     const keyStr = JSON.stringify(ik);

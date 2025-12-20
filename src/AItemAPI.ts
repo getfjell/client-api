@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { Item } from "@fjell/core";
+import { Item } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "./ClientApiOptions";

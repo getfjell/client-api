@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { Item } from "@fjell/core"
+import { Item } from "@fjell/types"
 import { getAllOperation } from "./all"
 import { getActionOperation } from "./action"
 import { Utilities } from "../Utilities"

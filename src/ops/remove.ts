@@ -3,7 +3,7 @@ import {
   Item,
   PriKey,
   RemoveMethod
-} from "@fjell/core";
+} from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";

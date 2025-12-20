@@ -1,4 +1,4 @@
-import { Item, LocKeyArray } from "@fjell/core";
+import { Item, LocKeyArray } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { getAllFacetOperation } from "../../src/ops/allFacet";
 import { ClientApiOptions } from "../../src/ClientApiOptions";

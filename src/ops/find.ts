@@ -4,9 +4,8 @@ import {
   FindOptions,
   Item,
   LocKeyArray,
-  QueryParams
-} from "@fjell/core";
-import { HttpApi } from "@fjell/http-api";
+} from "@fjell/types";
+import { HttpApi, QueryParams } from "@fjell/http-api";
 
 import { finderToParams } from "../AItemAPI";
 import { ClientApiOptions } from "../ClientApiOptions";

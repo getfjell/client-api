@@ -5,8 +5,8 @@ import {
   Item,
   ItemQuery,
   LocKeyArray,
-  queryToParams,
-} from "@fjell/core";
+} from "@fjell/types";
+import { queryToParams } from "@fjell/core";
 import { HttpApi, QueryParams } from "@fjell/http-api";
 
 import { ClientApiOptions } from "../ClientApiOptions";

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createInstance, Instance } from '../src/Instance';
-import { Item } from '@fjell/core';
+import { Item } from "@fjell/types";
 
 // Mock the logger
 vi.mock('../src/logger', () => ({

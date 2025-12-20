@@ -4,7 +4,7 @@ import {
   CreateOptions,
   Item,
   OperationParams
-} from "@fjell/core";
+} from "@fjell/types";
 
 // Re-export core types for convenience
 export type { OperationParams, AffectedKeys, CreateOptions };

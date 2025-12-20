@@ -7,7 +7,7 @@ import {
   Item,
   ItemQuery,
   LocKeyArray,
-} from "@fjell/core";
+} from "@fjell/types";
 import {
   HttpApi
 } from "@fjell/http-api";

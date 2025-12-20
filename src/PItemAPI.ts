@@ -1,4 +1,4 @@
-import { AllOperationResult, AllOptions, ComKey, FindOperationResult, FindOptions, Item, ItemQuery, PriKey } from "@fjell/core";
+import { AllOperationResult, AllOptions, ComKey, FindOperationResult, FindOptions, Item, ItemQuery, PriKey } from "@fjell/types";
 import { HttpApi } from "@fjell/http-api";
 import { createAItemAPI } from "./AItemAPI";
 import { ClientApi } from "./ClientApi";
